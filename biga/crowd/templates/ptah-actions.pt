@@ -1,0 +1,5 @@
+<ul tal:define="url context.url()">
+  <li><a href="${url}/">${context.title}</a></li>
+  <li><a href="${url}/">Search</a></li>
+  <li><a href="${url}/create.html">Create user</a></li>
+</ul>
