@@ -4,7 +4,7 @@ from pyramid import security
 from pyramid.httpexceptions import HTTPFound
 
 import ptah
-from biga.settings import MAIL
+from ptah import MAIL
 
 from biga import crowd
 from settings import _, CROWD

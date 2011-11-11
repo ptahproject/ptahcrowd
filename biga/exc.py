@@ -6,7 +6,7 @@ from pyramid.interfaces import IRootFactory
 from pyramid.traversal import DefaultRootFactory
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden, HTTPNotFound
 
-from biga.settings import MAIL, CONFIG
+from biga.settings import CONFIG
 
 
 class Forbidden(view.View):
@@ -61,6 +61,6 @@ class NotFound(view.View):
         if getattr(self.context, '__parent__', None) is None:
             self.context.__parent__ = context
 
-        self.admin = MAIL.from_name
-        self.email = MAIL.from_address
+        self.admin = ptah.MAIL.from_name
+        self.email = ptah.MAIL.from_address
         self.request.response.status = HTTPNotFound.code

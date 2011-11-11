@@ -4,6 +4,7 @@ from ptah import config, form, view
 from pyramid import security
 from pyramid.httpexceptions import HTTPFound
 
+import ptah
 from ptah import mail
 from ptah import authService
 from ptah import pwd_tool
@@ -35,8 +36,8 @@ class ResetPassword(form.Form):
         return {'login': self.request.params.get('login', '')}
 
     def update(self):
-        self.from_name = mail.MAIL.from_name
-        self.from_address = mail.MAIL.from_address
+        self.from_name = ptah.MAIL.from_name
+        self.from_address = ptah.MAIL.from_address
 
         super(ResetPassword, self).update()
 

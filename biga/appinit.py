@@ -13,8 +13,7 @@ from repoze.sendmail.delivery import DirectMailDelivery
 import ptah
 from ptah import config
 from ptah.security import get_local_roles
-
-from biga.settings import types, CONFIG, MAIL, SESSION, SECURITY, SQLA
+from ptah.settings import MAIL, SESSION, SECURITY, SQLA
 
 SQL_compiled_cache = {}
 
@@ -25,20 +24,12 @@ def initializing(ev):
     if not SECURITY.secret:
         SECURITY.secret = uuid.uuid4().get_hex()
 
-    pname = SECURITY.policy
-    if pname not in ('', 'no-policy'):
-        policyFactory, attrs, kw = types[pname]
-
-        settings = []
-        for attr in attrs:
-            settings.append(SECURITY.get(attr))
-
+    if SECURITY.policy:
         kwargs = {'wild_domain': False,
                   'callback': get_local_roles}
-        for attr in kw:
-            kwargs[attr] = SECURITY.get(attr)
 
-        policy = policyFactory(*settings, **kwargs)
+        policy = AuthTktAuthenticationPolicy(
+            secret = SECURITY.secret, **kwargs)
         ev.registry.registerUtility(policy, IAuthenticationPolicy)
 
     if SECURITY.authorization:
@@ -71,9 +62,6 @@ def initializing(ev):
             engine = sqlalchemy.engine_from_config(
                 {'sqlalchemy.url': url}, 'sqlalchemy.', **engine_args)
             sqlahelper.add_engine(engine)
-
-    # password tool
-    ptah.pwd_tool.set_pwd_manager('{%s}'%CONFIG.pwdmanager)
 
 
 @config.subscriber(config.AppStarting)
