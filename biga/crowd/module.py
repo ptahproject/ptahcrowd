@@ -13,7 +13,7 @@ from memberprops import get_properties, MemberProperties
 class CrowdModule(manage.PtahModule):
     __doc__ = u'Default user management. Create, edit, and activate users.'
 
-    title = 'Crowd'
+    title = 'User management'
     manage.module('crowd')
 
     def __getitem__(self, key):
