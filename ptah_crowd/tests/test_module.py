@@ -1,9 +1,11 @@
 import transaction
-import ptah, ptah.crowd
+import ptah
 from ptah import config
 from webob.multidict import MultiDict
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
+
+import ptah_crowd
 
 from base import Base
 
@@ -12,20 +14,20 @@ class TestModule(Base):
 
     def test_manage_module(self):
         from ptah.manage.manage import PtahManageRoute
-        from ptah.crowd.module import CrowdModule
+        from ptah_crowd.module import CrowdModule
 
         request = DummyRequest()
 
         ptah.authService.set_userid('test')
-        ptah.PTAH_CONFIG['managers'] = ('*',)
+        ptah.manage.CONFIG['managers'] = ('*',)
         mr = PtahManageRoute(request)
         mod = mr['crowd']
 
         self.assertIsInstance(mod, CrowdModule)
 
     def test_manage_module_get(self):
-        from ptah.crowd.module import CrowdModule, UserWrapper
-        from ptah.crowd.provider import CrowdUser, Session
+        from ptah_crowd.module import CrowdModule, UserWrapper
+        from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('name', 'login', 'email')
         uri = user.uri
@@ -45,11 +47,11 @@ class TestModule(Base):
 class TestModuleView(Base):
 
     def _make_mod(self):
-        from ptah.crowd.module import CrowdModule
+        from ptah_crowd.module import CrowdModule
         return CrowdModule(None, DummyRequest())
 
     def _make_user(self):
-        from ptah.crowd.provider import CrowdUser, Session
+        from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('name', 'login', 'email')
         Session.add(user)
@@ -57,7 +59,7 @@ class TestModuleView(Base):
         return user
 
     def test_module_search(self):
-        from ptah.crowd.module import CrowdModuleView
+        from ptah_crowd.module import CrowdModuleView
 
         mod = self._make_mod()
 
@@ -76,7 +78,7 @@ class TestModuleView(Base):
             form.request.session['ptah-search-term'], 'search term')
 
     def test_module_clear(self):
-        from ptah.crowd.module import CrowdModuleView
+        from ptah_crowd.module import CrowdModuleView
 
         mod = self._make_mod()
 
@@ -89,7 +91,7 @@ class TestModuleView(Base):
         self.assertNotIn('ptah-search-term', form.request.session)
 
     def test_module_search_error(self):
-        from ptah.crowd.module import CrowdModuleView
+        from ptah_crowd.module import CrowdModuleView
 
         mod = self._make_mod()
 
@@ -102,7 +104,7 @@ class TestModuleView(Base):
                       form.request.session['msgservice'][0])
 
     def test_module_list(self):
-        from ptah.crowd.module import CrowdModuleView
+        from ptah_crowd.module import CrowdModuleView
 
         mod = self._make_mod()
         user = self._make_user()
@@ -129,14 +131,14 @@ class TestModuleView(Base):
         self.assertIn('value="%s"'%user.uri, res.body)
 
     def test_module_validate(self):
-        from ptah.crowd.module import CrowdModuleView
-        from ptah.crowd.provider import Session
+        from ptah_crowd.module import CrowdModuleView
+        from ptah_crowd.provider import Session
 
         mod = self._make_mod()
         user = self._make_user()
         uri = user.uri
 
-        props = ptah.crowd.get_properties(uri)
+        props = ptah_crowd.get_properties(uri)
         props.validated = False
 
         form = CrowdModuleView(mod, DummyRequest(
@@ -150,18 +152,18 @@ class TestModuleView(Base):
 
         self.assertIn('Selected accounts have been validated.',
                       form.request.session['msgservice'][0])
-        props = ptah.crowd.get_properties(uri)
+        props = ptah_crowd.get_properties(uri)
         self.assertTrue(props.validated)
 
     def test_module_suspend(self):
-        from ptah.crowd.module import CrowdModuleView
-        from ptah.crowd.provider import Session
+        from ptah_crowd.module import CrowdModuleView
+        from ptah_crowd.provider import Session
 
         mod = self._make_mod()
         user = self._make_user()
         uri = user.uri
 
-        props = ptah.crowd.get_properties(uri)
+        props = ptah_crowd.get_properties(uri)
         props.suspended = False
 
         form = CrowdModuleView(mod, DummyRequest(
@@ -175,18 +177,18 @@ class TestModuleView(Base):
 
         self.assertIn('Selected accounts have been suspended.',
                       form.request.session['msgservice'][0])
-        props = ptah.crowd.get_properties(uri)
+        props = ptah_crowd.get_properties(uri)
         self.assertTrue(props.suspended)
 
     def test_module_activate(self):
-        from ptah.crowd.module import CrowdModuleView
-        from ptah.crowd.provider import Session
+        from ptah_crowd.module import CrowdModuleView
+        from ptah_crowd.provider import Session
 
         mod = self._make_mod()
         user = self._make_user()
         uri = user.uri
 
-        props = ptah.crowd.get_properties(uri)
+        props = ptah_crowd.get_properties(uri)
         props.suspended = True
 
         form = CrowdModuleView(mod, DummyRequest(
@@ -200,5 +202,5 @@ class TestModuleView(Base):
 
         self.assertIn('Selected accounts have been activated.',
                       form.request.session['msgservice'][0])
-        props = ptah.crowd.get_properties(uri)
+        props = ptah_crowd.get_properties(uri)
         self.assertFalse(props.suspended)

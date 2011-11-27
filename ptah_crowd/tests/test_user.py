@@ -1,17 +1,18 @@
 import transaction
 import ptah
-from ptah import config, crowd
+from ptah import config
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPException, HTTPFound, HTTPForbidden
 
+import ptah_crowd
 from base import Base
 
 
 class TestCreateUser(Base):
 
     def test_create_user_back(self):
-        from ptah.crowd.module import CrowdModule
-        from ptah.crowd.user import CreateUserForm
+        from ptah_crowd.module import CrowdModule
+        from ptah_crowd.user import CreateUserForm
 
         request = DummyRequest(
             POST = {'form.buttons.back': 'Back'})
@@ -26,8 +27,8 @@ class TestCreateUser(Base):
         self.assertEqual(res.headers['location'], '.')
 
     def test_create_user_error(self):
-        from ptah.crowd.module import CrowdModule
-        from ptah.crowd.user import CreateUserForm
+        from ptah_crowd.module import CrowdModule
+        from ptah_crowd.user import CreateUserForm
 
         f = CreateUserForm(None, None)
 
@@ -43,8 +44,8 @@ class TestCreateUser(Base):
             request.session['msgservice'][0])
 
     def test_create_user(self):
-        from ptah.crowd.module import CrowdModule
-        from ptah.crowd.user import CreateUserForm
+        from ptah_crowd.module import CrowdModule
+        from ptah_crowd.user import CreateUserForm
 
         f = CreateUserForm(None, None)
 
@@ -71,7 +72,7 @@ class TestCreateUser(Base):
         self.assertEqual(user.name, 'NKim')
         self.assertEqual(user.login, 'ptah@ptahproject.org')
 
-        props = ptah.crowd.query_properties(user.uri)
+        props = ptah_crowd.query_properties(user.uri)
         self.assertTrue(props.suspended)
         self.assertFalse(props.validated)
 
@@ -79,7 +80,7 @@ class TestCreateUser(Base):
 class TestModifyUser(Base):
 
     def _user(self):
-        from ptah.crowd.provider import CrowdUser, Session
+        from ptah_crowd.provider import CrowdUser, Session
         user = CrowdUser('name', 'ptah@local', 'ptah@local')
         uri = user.uri
         Session.add(user)
@@ -87,8 +88,8 @@ class TestModifyUser(Base):
         return user
 
     def test_modify_user_back(self):
-        from ptah.crowd.module import UserWrapper
-        from ptah.crowd.user import ModifyUserForm
+        from ptah_crowd.module import UserWrapper
+        from ptah_crowd.user import ModifyUserForm
 
         user = self._user()
 
@@ -105,8 +106,8 @@ class TestModifyUser(Base):
         self.assertEqual(res.headers['location'], '..')
 
     def test_modify_user_changepwd(self):
-        from ptah.crowd.module import UserWrapper
-        from ptah.crowd.user import ModifyUserForm
+        from ptah_crowd.module import UserWrapper
+        from ptah_crowd.user import ModifyUserForm
 
         user = self._user()
 
@@ -123,8 +124,8 @@ class TestModifyUser(Base):
         self.assertEqual(res.headers['location'], 'password.html')
 
     def test_modify_user_forbidden(self):
-        from ptah.crowd.module import UserWrapper
-        from ptah.crowd.user import ModifyUserForm
+        from ptah_crowd.module import UserWrapper
+        from ptah_crowd.user import ModifyUserForm
 
         user = self._user()
 
@@ -147,8 +148,8 @@ class TestModifyUser(Base):
         self.assertEqual(str(res), 'Form authenticator is not found.')
 
     def test_modify_user_error(self):
-        from ptah.crowd.module import UserWrapper
-        from ptah.crowd.user import ModifyUserForm
+        from ptah_crowd.module import UserWrapper
+        from ptah_crowd.user import ModifyUserForm
 
         user = self._user()
         f = ModifyUserForm(None, None)
@@ -166,8 +167,8 @@ class TestModifyUser(Base):
             request.session['msgservice'][0])
 
     def test_modify_user(self):
-        from ptah.crowd.module import UserWrapper
-        from ptah.crowd.user import ModifyUserForm
+        from ptah_crowd.module import UserWrapper
+        from ptah_crowd.user import ModifyUserForm
 
         user = self._user()
         f = ModifyUserForm(None, None)
@@ -189,9 +190,9 @@ class TestModifyUser(Base):
         self.assertEqual(user.login, 'ptah@ptahproject.org')
 
     def test_modify_user_remove(self):
-        from ptah.crowd.module import UserWrapper
-        from ptah.crowd.user import ModifyUserForm
-        from ptah.crowd.provider import CrowdUser
+        from ptah_crowd.module import UserWrapper
+        from ptah_crowd.user import ModifyUserForm
+        from ptah_crowd.provider import CrowdUser
 
         user = self._user()
         f = ModifyUserForm(None, None)
@@ -216,7 +217,7 @@ class TestModifyUser(Base):
 class TestChangePassword(Base):
 
     def _user(self):
-        from ptah.crowd.provider import CrowdUser, Session
+        from ptah_crowd.provider import CrowdUser, Session
         user = CrowdUser('name', 'ptah@local', 'ptah@local')
         uri = user.uri
         Session.add(user)
@@ -224,8 +225,8 @@ class TestChangePassword(Base):
         return user
 
     def test_change_password_user_back(self):
-        from ptah.crowd.module import UserWrapper
-        from ptah.crowd.user import ChangePasswordForm
+        from ptah_crowd.module import UserWrapper
+        from ptah_crowd.user import ChangePasswordForm
 
         user = self._user()
 
@@ -242,8 +243,8 @@ class TestChangePassword(Base):
         self.assertEqual(res.headers['location'], '..')
 
     def test_change_password_forbidden(self):
-        from ptah.crowd.module import UserWrapper
-        from ptah.crowd.user import ChangePasswordForm
+        from ptah_crowd.module import UserWrapper
+        from ptah_crowd.user import ChangePasswordForm
 
         user = self._user()
 
@@ -262,8 +263,8 @@ class TestChangePassword(Base):
         self.assertEqual(str(res), 'Form authenticator is not found.')
 
     def test_change_password_error(self):
-        from ptah.crowd.module import UserWrapper
-        from ptah.crowd.user import ChangePasswordForm
+        from ptah_crowd.module import UserWrapper
+        from ptah_crowd.user import ChangePasswordForm
 
         user = self._user()
         f = ChangePasswordForm(None, None)
@@ -281,8 +282,8 @@ class TestChangePassword(Base):
             request.session['msgservice'][0])
 
     def test_change_password(self):
-        from ptah.crowd.module import UserWrapper
-        from ptah.crowd.user import ChangePasswordForm
+        from ptah_crowd.module import UserWrapper
+        from ptah_crowd.user import ChangePasswordForm
 
         user = self._user()
         f = ChangePasswordForm(None, None)

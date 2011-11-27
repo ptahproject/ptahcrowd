@@ -6,8 +6,8 @@ from pyramid.httpexceptions import HTTPFound
 import ptah
 from ptah import MAIL
 
-from biga import crowd
 from settings import _, CROWD
+from memberprops import get_properties
 
 view.register_route('ptah-login', '/login.html')
 view.register_route('ptah-logout', '/logout.html')
@@ -18,7 +18,7 @@ view.register_route('ptah-login-suspended', '/login-suspended.html')
 class LoginForm(form.Form):
     view.pview(
         route='ptah-login', layout='ptah-page',
-        template = view.template("biga.crowd:templates/login.pt"))
+        template = view.template("ptah_crowd:templates/login.pt"))
 
     id = 'login-form'
     title = _('Login')
@@ -98,7 +98,7 @@ class LoginSuccess(view.View):
 
     view.pview(
         route = 'ptah-login-success', layout='ptah-page',
-        template = view.template("biga.crowd:templates/login-success.pt"))
+        template = view.template("ptah_crowd:templates/login-success.pt"))
 
     def update(self):
         user = ptah.authService.get_current_principal()
@@ -118,20 +118,21 @@ class LoginSuspended(view.View):
 
     view.pview(
         route = 'ptah-login-suspended', layout='ptah-page',
-        template = view.template("biga.crowd:templates/login-suspended.pt"))
+        template = view.template("ptah_crowd:templates/login-suspended.pt"))
 
     def update(self):
         uid = ptah.authService.get_userid()
         if not uid:
             raise HTTPFound(location=self.request.application_url)
 
-        props = crowd.get_properties(uid)
+        props = get_properties(uid)
         if not props.suspended:
             raise HTTPFound(location=self.request.application_url)
 
         self.from_name = MAIL.from_name
         self.from_address = MAIL.from_address
-        self.full_address = MAIL.full_from_address
+        self.full_address = ptah.mail.formataddr(
+            (MAIL.from_name, MAIL.from_address))
 
 
 @view.pview(route='ptah-logout')

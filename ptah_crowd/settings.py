@@ -2,7 +2,7 @@ import colander
 import translationstring
 from ptah import config, view
 
-_ = translationstring.TranslationStringFactory('ptah.crowd')
+_ = translationstring.TranslationStringFactory('ptah_crowd')
 
 
 CROWD = config.register_settings(

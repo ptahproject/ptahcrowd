@@ -1,5 +1,5 @@
 import transaction
-import ptah, ptah.crowd
+import ptah, ptah_crowd
 from ptah import form
 from pyramid.testing import DummyRequest
 
@@ -9,8 +9,8 @@ from base import Base
 class TestCheckLogin(Base):
 
     def test_check_login(self):
-        from ptah.crowd import login
-        from ptah.crowd.provider import CrowdUser, Session
+        from ptah_crowd import login
+        from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('name', 'login', 'email')
         Session.add(user)
@@ -19,21 +19,21 @@ class TestCheckLogin(Base):
         request = DummyRequest()
 
         self.assertRaises(
-            form.Invalid, ptah.crowd.checkLoginValidator, None, 'login')
+            form.Invalid, ptah_crowd.checkLoginValidator, None, 'login')
 
         class Field(object):
             """ """
 
         field = Field()
         field.content = 'login'
-        ptah.crowd.checkLoginValidator(field, 'login')
+        ptah_crowd.checkLoginValidator(field, 'login')
 
         field.content = 'other-login'
         self.assertRaises(
-            form.Invalid, ptah.crowd.checkLoginValidator, field, 'login')
+            form.Invalid, ptah_crowd.checkLoginValidator, field, 'login')
 
     def test_lower(self):
-        from ptah.crowd.schemas import lower
+        from ptah_crowd.schemas import lower
 
         self.assertEqual(lower('Tttt'), 'tttt')
         self.assertEqual(lower('tttT'), 'tttt')

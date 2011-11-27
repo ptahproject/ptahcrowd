@@ -1,16 +1,17 @@
 import transaction
-import ptah, ptah.crowd
+import ptah
 from ptah import config
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 
+import ptah_crowd
 from base import Base
 
 
 class TestJoin(Base):
 
     def test_join_auth(self):
-        from ptah.crowd.registration import Registration
+        from ptah_crowd.registration import Registration
 
         request = DummyRequest()
         ptah.authService.set_userid('test')
@@ -26,17 +27,17 @@ class TestJoin(Base):
             res.headers['location'], 'http://example.com')
 
     def test_join_disabled(self):
-        from ptah.crowd.registration import Registration
+        from ptah_crowd.registration import Registration
 
-        ptah.crowd.CONFIG['join'] = False
+        ptah_crowd.CONFIG['join'] = False
 
         request = DummyRequest()
         form = Registration(None, request)
         self.assertRaises(HTTPForbidden, form.update)
 
     def test_join_error(self):
-        from ptah.crowd.registration import Registration
-        from ptah.crowd.provider import CrowdUser, Session
+        from ptah_crowd.registration import Registration
+        from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('name', 'login', 'email')
         uri = user.uri
@@ -71,13 +72,22 @@ class TestJoin(Base):
         self.assertEqual(len(errors), 0)
 
     def test_join(self):
-        from ptah.crowd.registration import Registration
-        from ptah.crowd.provider import CrowdUser, Session
+        import ptah
+        from ptah_crowd.registration import Registration
+        from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('name', 'login', 'email')
         uri = user.uri
         Session.add(user)
         Session.flush()
+
+        mailer = ptah.MAIL.get('Mailer')
+        class Stub(object):
+            status = ''
+            def send(self, frm, to, msg):
+                Stub.status = 'Email has been sended'
+
+        ptah.MAIL['Mailer'] = Stub()
 
         request = DummyRequest(
             POST = {'name': 'Test user',
@@ -90,6 +100,8 @@ class TestJoin(Base):
             form.register_handler()
         except Exception, res:
             pass
+
+        ptah.MAIL['Mailer'] = mailer
 
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'],
@@ -100,15 +112,23 @@ class TestJoin(Base):
         self.assertEqual(user.name, 'Test user')
 
     def test_join_unvalidated(self):
-        from ptah.crowd.registration import Registration
-        from ptah.crowd.provider import CrowdUser, Session
+        from ptah_crowd.registration import Registration
+        from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('name', 'login', 'email')
         uri = user.uri
         Session.add(user)
         Session.flush()
 
-        ptah.crowd.CONFIG['allow-unvalidated'] = False
+        mailer = ptah.MAIL.get('Mailer')
+        class Stub(object):
+            status = ''
+            def send(self, frm, to, msg):
+                Stub.status = 'Email has been sended'
+
+        ptah.MAIL['Mailer'] = Stub()
+
+        ptah_crowd.CONFIG['allow-unvalidated'] = False
 
         request = DummyRequest(
             POST = {'name': 'Test user',
@@ -121,6 +141,8 @@ class TestJoin(Base):
             form.register_handler()
         except Exception, res:
             pass
+
+        ptah.MAIL['Mailer'] = mailer
 
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'], 'http://example.com')

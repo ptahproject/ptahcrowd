@@ -1,6 +1,6 @@
 """ role """
 import transaction
-import ptah, ptah.crowd
+import ptah, ptah_crowd
 from ptah import config
 
 from base import Base
@@ -9,7 +9,7 @@ from base import Base
 class TestProvider(Base):
 
     def test_authenticate(self):
-        from ptah.crowd.provider import CrowdProvider, CrowdUser, Session
+        from ptah_crowd.provider import CrowdProvider, CrowdUser, Session
 
         provider = CrowdProvider()
 
@@ -18,7 +18,7 @@ class TestProvider(Base):
                 {'login': 'test', 'password': '12345'}))
 
         user = CrowdUser('test', 'test', 'test@ptahproject.org',
-                         ptah.passwordTool.encode('12345'))
+                         ptah.pwd_tool.encode('12345'))
         Session.add(user)
         transaction.commit()
 
@@ -32,14 +32,14 @@ class TestProvider(Base):
 
 
     def test_get_bylogin(self):
-        from ptah.crowd.provider import CrowdProvider, CrowdUser, Session
+        from ptah_crowd.provider import CrowdProvider, CrowdUser, Session
 
         provider = CrowdProvider()
 
         self.assertIsNone(provider.get_principal_bylogin('test'))
 
         user = CrowdUser('test', 'test', 'test@ptahproject.org',
-                         ptah.passwordTool.encode('12345'))
+                         ptah.pwd_tool.encode('12345'))
         Session.add(user)
         transaction.commit()
 
@@ -48,7 +48,7 @@ class TestProvider(Base):
         self.assertEqual(user.login, 'test')
 
     def test_crowd_user_ctor(self):
-        from ptah.crowd.provider import CrowdUser
+        from ptah_crowd.provider import CrowdUser
 
         user = CrowdUser('user-name', 'user-login', 'user-email', 'passwd')
 
@@ -61,7 +61,7 @@ class TestProvider(Base):
         self.assertEqual(repr(user), 'CrowdUser<%s:%s>'%(user.name, user.uri))
 
     def test_crowd_user_get(self):
-        from ptah.crowd.provider import CrowdUser, Session
+        from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('user-name', 'user-login', 'user-email', 'passwd')
         uri = user.uri
@@ -74,7 +74,7 @@ class TestProvider(Base):
         self.assertEqual(CrowdUser.get_bylogin(user.login).uri, uri)
 
     def test_crowd_user_change_password(self):
-        from ptah.crowd.provider import CrowdUser, change_pwd
+        from ptah_crowd.provider import CrowdUser, change_pwd
 
         user = CrowdUser('user-name', 'user-login', 'user-email', 'passwd')
         uri = user.uri
@@ -83,7 +83,7 @@ class TestProvider(Base):
         self.assertEqual(user.password, '123456')
 
     def test_crowd_user_change_search(self):
-        from ptah.crowd.provider import Session, CrowdUser, search
+        from ptah_crowd.provider import Session, CrowdUser, search
 
         user = CrowdUser('user-name', 'user-login', 'user-email', 'passwd')
         uri = user.uri

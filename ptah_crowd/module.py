@@ -35,13 +35,13 @@ class UserWrapper(object):
 
 view.register_snippet(
     'ptah-module-actions', CrowdModule,
-    template = view.template('biga.crowd:templates/ptah-actions.pt'))
+    template = view.template('ptah_crowd:templates/ptah-actions.pt'))
 
 
 class CrowdModuleView(form.Form):
     view.pview(
         context = CrowdModule,
-        template = view.template('biga.crowd:templates/search.pt'))
+        template = view.template('ptah_crowd:templates/search.pt'))
 
     __doc__ = 'List/search users view'
     __intr_path__ = '/ptah-manage/crowd/'

@@ -1,28 +1,29 @@
 import transaction
 import ptah
-from ptah import config, crowd
+from ptah import config
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPException, HTTPFound
 
+import ptah_crowd
 from base import Base
 
 
 class TestSuspended(Base):
 
     def test_suspended_anon(self):
-        from ptah.crowd import login
+        from ptah_crowd import login
 
         request = DummyRequest()
         view = login.LoginSuspended(None, request)
         self.assertRaises(HTTPFound, view.update)
 
     def test_suspended_not(self):
-        from ptah.crowd import login
-        from ptah.crowd.provider import CrowdUser, Session
+        from ptah_crowd import login
+        from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('name', 'login', 'email')
         uri = user.uri
-        props = ptah.crowd.get_properties(uri)
+        props = ptah_crowd.get_properties(uri)
         props.suspended = False
         transaction.commit()
 
@@ -36,8 +37,8 @@ class TestSuspended(Base):
         self.assertIsInstance(res, HTTPFound)
 
     def test_suspended(self):
-        from ptah.crowd import login
-        from ptah.crowd.provider import CrowdUser, Session
+        from ptah_crowd import login
+        from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('name', 'login', 'email')
         Session.add(user)
@@ -45,7 +46,7 @@ class TestSuspended(Base):
 
         uri = user.uri
 
-        props = ptah.crowd.get_properties(uri)
+        props = ptah_crowd.get_properties(uri)
         props.suspended = True
 
         ptah.authService.set_userid(user.uri)
@@ -59,14 +60,14 @@ class TestSuspended(Base):
 class TestLogout(Base):
 
     def test_logout_anon(self):
-        from ptah.crowd import login
+        from ptah_crowd import login
 
         request = DummyRequest()
         self.assertRaises(HTTPFound, login.logout, request)
 
     def test_logout(self):
-        from ptah.crowd import login
-        from ptah.crowd.provider import CrowdUser, Session
+        from ptah_crowd import login
+        from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('name', 'login', 'email')
         uri = user.uri
@@ -89,7 +90,7 @@ class TestLogout(Base):
 class TestLogoutSuccess(Base):
 
     def test_login_success_anon(self):
-        from ptah.crowd import login
+        from ptah_crowd import login
 
         request = DummyRequest()
         try:
@@ -101,8 +102,8 @@ class TestLogoutSuccess(Base):
             res.headers['location'], 'http://example.com/login.html')
 
     def test_login_success(self):
-        from ptah.crowd import login
-        from ptah.crowd.provider import CrowdUser, Session
+        from ptah_crowd import login
+        from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('name', 'login', 'email')
         uri = user.uri
@@ -120,7 +121,7 @@ class TestLogoutSuccess(Base):
 class TestLogin(Base):
 
     def test_login_auth(self):
-        from ptah.crowd import login
+        from ptah_crowd import login
 
         request = DummyRequest()
 
@@ -135,12 +136,12 @@ class TestLogin(Base):
                          'http://example.com/login-success.html')
 
     def test_login_update(self):
-        from ptah.crowd import login
+        from ptah_crowd import login
 
         request = DummyRequest()
 
-        ptah.crowd.CONFIG['join'] = False
-        ptah.crowd.CONFIG['joinurl'] = 'http://test/login.html'
+        ptah_crowd.CONFIG['join'] = False
+        ptah_crowd.CONFIG['joinurl'] = 'http://test/login.html'
 
         form = login.LoginForm(None, request)
         form.update()
@@ -151,12 +152,12 @@ class TestLogin(Base):
         self.assertNotIn('head over to the registration form', res)
 
     def test_login_update_join(self):
-        from ptah.crowd import login
+        from ptah_crowd import login
 
         request = DummyRequest()
 
-        ptah.crowd.CONFIG['join'] = True
-        ptah.crowd.CONFIG['joinurl'] = ''
+        ptah_crowd.CONFIG['join'] = True
+        ptah_crowd.CONFIG['joinurl'] = ''
 
         form = login.LoginForm(None, request)
         form.update()
@@ -167,8 +168,8 @@ class TestLogin(Base):
         self.assertIn('head over to the registration form', res)
 
     def test_login(self):
-        from ptah.crowd import login
-        from ptah.crowd.provider import CrowdUser, Session
+        from ptah_crowd import login
+        from ptah_crowd.provider import CrowdUser, Session
         user = CrowdUser('name', 'login', 'email',
                          password = '{plain}12345')
         uri = user.uri
@@ -203,8 +204,8 @@ class TestLogin(Base):
                          'http://example.com/login-success.html')
 
     def test_login_came_from(self):
-        from ptah.crowd import login
-        from ptah.crowd.provider import CrowdUser, Session
+        from ptah_crowd import login
+        from ptah_crowd.provider import CrowdUser, Session
         user = CrowdUser('name', 'login', 'email',
                          password = '{plain}12345')
         uri = user.uri
@@ -229,8 +230,8 @@ class TestLogin(Base):
                          'http://example.com/ptah-manage/')
 
     def test_login_wrong_login(self):
-        from ptah.crowd import login
-        from ptah.crowd.provider import CrowdUser, Session
+        from ptah_crowd import login
+        from ptah_crowd.provider import CrowdUser, Session
         user = CrowdUser('name', 'login', 'email',
                          password = '{plain}12345')
         uri = user.uri
@@ -249,16 +250,16 @@ class TestLogin(Base):
                       request.session['msgservice'][0])
 
     def test_login_unvalidated(self):
-        from ptah.crowd import login
-        from ptah.crowd.provider import CrowdUser, Session
+        from ptah_crowd import login
+        from ptah_crowd.provider import CrowdUser, Session
         user = CrowdUser('name', 'login', 'email',
                          password = '{plain}12345')
         uri = user.uri
         Session.add(user)
-        ptah.crowd.get_properties(uri).validated = False
+        ptah_crowd.get_properties(uri).validated = False
         transaction.commit()
 
-        ptah.crowd.CONFIG['allow-unvalidated'] = False
+        ptah_crowd.CONFIG['allow-unvalidated'] = False
 
         request = DummyRequest(
             POST={'login': 'login', 'password': '12345'})
@@ -271,13 +272,13 @@ class TestLogin(Base):
                       request.session['msgservice'][0])
 
     def test_login_suspended(self):
-        from ptah.crowd import login
-        from ptah.crowd.provider import CrowdUser, Session
+        from ptah_crowd import login
+        from ptah_crowd.provider import CrowdUser, Session
         user = CrowdUser('name', 'login', 'email',
                          password = '{plain}12345')
         uri = user.uri
         Session.add(user)
-        ptah.crowd.get_properties(uri).suspended = True
+        ptah_crowd.get_properties(uri).suspended = True
         transaction.commit()
 
         request = DummyRequest(

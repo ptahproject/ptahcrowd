@@ -21,7 +21,7 @@ view.register_route('ptah-resetpassword-form', '/resetpassword.html/*subpath')
 class ResetPassword(form.Form):
     view.pview(
         route = 'ptah-resetpassword', layout='ptah-page',
-        template = view.template('biga.crowd:templates/resetpassword.pt'))
+        template = view.template('ptah_crowd:templates/resetpassword.pt'))
 
     fields = form.Fieldset(
         form.FieldFactory(
@@ -75,7 +75,7 @@ class ResetPassword(form.Form):
 class ResetPasswordForm(form.Form):
     view.pview(
         route = 'ptah-resetpassword-form', layout='ptah-page',
-        template=view.template('biga.crowd:templates/resetpasswordform.pt'))
+        template=view.template('ptah_crowd:templates/resetpasswordform.pt'))
 
     fields = PasswordSchema
 
@@ -126,7 +126,7 @@ class ResetPasswordForm(form.Form):
 class ResetPasswordTemplate(mail.MailTemplate):
 
     subject = 'Password Reset Confirmation'
-    template = view.template('biga.crowd:templates/resetpasswordmail.pt')
+    template = view.template('ptah_crowd:templates/resetpasswordmail.pt')
 
     def update(self):
         super(ResetPasswordTemplate, self).update()

@@ -1,5 +1,5 @@
 import transaction
-import ptah, ptah.crowd
+import ptah
 from ptah import config
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
@@ -10,7 +10,7 @@ from base import Base
 class TestResetPassword(Base):
 
     def test_resetpassword_cancel(self):
-        from ptah.crowd.resetpassword import ResetPassword
+        from ptah_crowd.resetpassword import ResetPassword
         request = DummyRequest(
             POST={'form.buttons.cancel': 'Cancel'})
 
@@ -25,7 +25,7 @@ class TestResetPassword(Base):
             res.headers['location'], 'http://example.com')
 
     def test_resetpassword_required(self):
-        from ptah.crowd.resetpassword import ResetPassword
+        from ptah_crowd.resetpassword import ResetPassword
         request = DummyRequest(
             POST={'form.buttons.reset': 'Reset'})
 
@@ -36,9 +36,9 @@ class TestResetPassword(Base):
         self.assertIn("System can't restore password for this user.", msg)
 
     def test_resetpassword(self):
-        from ptah.crowd.provider import CrowdUser, Session
-        from ptah.crowd.resetpassword import ResetPassword
-        from ptah.crowd.resetpassword import ResetPasswordTemplate
+        from ptah_crowd.provider import CrowdUser, Session
+        from ptah_crowd.resetpassword import ResetPassword
+        from ptah_crowd.resetpassword import ResetPasswordTemplate
 
         user = CrowdUser('name', 'login', 'email')
         Session.add(user)
@@ -69,14 +69,14 @@ class TestResetPassword(Base):
             res.headers['location'], 'http://example.com')
         self.assertEqual(data[0], 2)
 
-        principal = ptah.passwordTool.get_principal(data[1])
+        principal = ptah.pwd_tool.get_principal(data[1])
         self.assertEqual(principal.name, 'name')
         self.assertEqual(principal.login, 'login')
 
         del ResetPasswordTemplate.send
 
     def test_resetpassword_form_unknown_passcode(self):
-        from ptah.crowd.resetpassword import ResetPasswordForm
+        from ptah_crowd.resetpassword import ResetPasswordForm
 
         request = DummyRequest(subpath=('unknown',))
 
@@ -92,14 +92,14 @@ class TestResetPassword(Base):
             res.headers['location'], 'http://example.com/resetpassword.html')
 
     def test_resetpassword_form_update(self):
-        from ptah.crowd.provider import CrowdUser, Session
-        from ptah.crowd.resetpassword import ResetPasswordForm
+        from ptah_crowd.provider import CrowdUser, Session
+        from ptah_crowd.resetpassword import ResetPasswordForm
 
         user = CrowdUser('name', 'login', 'email')
         Session.add(user)
         Session.flush()
 
-        passcode = ptah.passwordTool.generate_passcode(user)
+        passcode = ptah.pwd_tool.generate_passcode(user)
 
         request = DummyRequest(subpath=(passcode,))
 
@@ -110,14 +110,14 @@ class TestResetPassword(Base):
         self.assertEqual(form.passcode, passcode)
 
     def test_resetpassword_form_change_errors(self):
-        from ptah.crowd.provider import CrowdUser, Session
-        from ptah.crowd.resetpassword import ResetPasswordForm
+        from ptah_crowd.provider import CrowdUser, Session
+        from ptah_crowd.resetpassword import ResetPasswordForm
 
         user = CrowdUser('name', 'login', 'email')
         Session.add(user)
         Session.flush()
 
-        passcode = ptah.passwordTool.generate_passcode(user)
+        passcode = ptah.pwd_tool.generate_passcode(user)
 
         request = DummyRequest(
             subpath=(passcode,),
@@ -131,14 +131,14 @@ class TestResetPassword(Base):
         self.assertIn("Please fix indicated errors.", msg)
 
     def test_resetpassword_form_change(self):
-        from ptah.crowd.provider import CrowdUser, Session
-        from ptah.crowd.resetpassword import ResetPasswordForm
+        from ptah_crowd.provider import CrowdUser, Session
+        from ptah_crowd.resetpassword import ResetPasswordForm
 
         user = CrowdUser('name', 'login', 'email')
         Session.add(user)
         Session.flush()
 
-        passcode = ptah.passwordTool.generate_passcode(user)
+        passcode = ptah.pwd_tool.generate_passcode(user)
 
         request = DummyRequest(
             subpath=(passcode,),
@@ -154,18 +154,18 @@ class TestResetPassword(Base):
         msg = request.session['msgservice'][0]
         self.assertIn("You have successfully changed your password.", msg)
         self.assertEqual(res.headers['location'], 'http://example.com')
-        self.assertTrue(ptah.passwordTool.check(user.password, '123456'))
+        self.assertTrue(ptah.pwd_tool.check(user.password, '123456'))
 
     def test_resetpassword_template(self):
-        from ptah.crowd.provider import CrowdUser, Session
-        from ptah.crowd.resetpassword import ResetPasswordTemplate
+        from ptah_crowd.provider import CrowdUser, Session
+        from ptah_crowd.resetpassword import ResetPasswordTemplate
 
         user = CrowdUser('name', 'login', 'email')
         Session.add(user)
         Session.flush()
 
         request = DummyRequest()
-        passcode = ptah.passwordTool.generate_passcode(user)
+        passcode = ptah.pwd_tool.generate_passcode(user)
 
         template = ResetPasswordTemplate(user, request)
         template.passcode = passcode

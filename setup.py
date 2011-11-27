@@ -1,17 +1,15 @@
 import sys, os
 from setuptools import setup, find_packages
 
-version='0.1'
+version='0.1-dev'
 
 install_requires = ['setuptools',
                     'ptah',
-                    'pyramid_beaker',
-                    'repoze.sendmail',
                     ]
 tests_require = ['nose']
 
 
-setup(name='biga',
+setup(name='ptah_crowd',
       version=version,
       classifiers=[
         'Environment :: Web Environment',
@@ -22,7 +20,7 @@ setup(name='biga',
         'Topic :: Internet :: WWW/HTTP :: WSGI'],
       author='Ptah Project',
       author_email='ptahproject@googlegroups.com',
-      url='https://github.com/ptahproject/biga/',
+      url='https://github.com/ptahproject/ptah_crowd/',
       license='BSD-derived',
       packages=find_packages(),
       install_requires = install_requires,
@@ -31,6 +29,6 @@ setup(name='biga',
       include_package_data = True,
       zip_safe = False,
       entry_points = {
-        'ptah': ['package = biga'],
+        'ptah': ['package = ptah_crowd'],
         },
       )

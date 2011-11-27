@@ -1,16 +1,20 @@
 """ base class """
 import unittest
+import sqlalchemy
 import sqlahelper
 import transaction
+import ptah
 from ptah import config
 from pyramid import testing
 from pyramid.threadlocal import manager
+from pyramid.interfaces import IAuthenticationPolicy, IAuthorizationPolicy
+from pyramid.authorization import ACLAuthorizationPolicy
+from pyramid.authentication import AuthTktAuthenticationPolicy
 
 
 class Base(unittest.TestCase):
 
-    _settings = {'sqla.url': 'sqlite://',
-                 'auth.secret': 'test'}
+    _settings = {'auth.secret': 'test'}
 
     def _makeRequest(self, environ=None): #pragma: no cover
         from pyramid.request import Request
@@ -33,8 +37,10 @@ class Base(unittest.TestCase):
     def _init_ptah(self, settings=None, handler=None, *args, **kw):
         if settings is None:
             settings = self._settings
-        config.initialize(self.config, ('ptah', self.__class__.__module__),
-                          initsettings=False)
+        config.initialize(
+            self.config, ('ptah', 'ptah_crowd', self.__class__.__module__),
+            initsettings=False)
+        self.config.commit()
         config.initialize_settings(settings, self.config)
 
         # create sql tables
@@ -57,6 +63,13 @@ class Base(unittest.TestCase):
         request.registry = self.config.registry
 
     def setUp(self):
+        try:
+            engine = sqlahelper.get_engine()
+        except: # pragma: no cover
+            engine = sqlalchemy.engine_from_config(
+                {'sqlalchemy.url': 'sqlite://'})
+            sqlahelper.add_engine(engine)
+
         self._setup_pyramid()
         self._init_ptah()
 
