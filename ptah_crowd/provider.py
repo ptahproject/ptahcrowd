@@ -1,13 +1,13 @@
 import ptah
 import sqlalchemy as sqla
-import sqlahelper as psa
+import sqlahelper as sqlh
 
-Base = psa.get_base()
-Session = psa.get_session()
+Base = sqlh.get_base()
+Session = sqlh.get_session()
 
 
 class CrowdProvider(object):
-    #ptah.auth_provider('user-crowd')
+    ptah.auth_provider('user-crowd')
 
     def authenticate(self, creds):
         login, password = creds['login'], creds['password']
@@ -99,4 +99,4 @@ def change_pwd(principal, password):
     principal.password = password
 
 
-ptah.register_auth_provider('user-crowd', CrowdProvider())
+#ptah.register_auth_provider('user-crowd', CrowdProvider())

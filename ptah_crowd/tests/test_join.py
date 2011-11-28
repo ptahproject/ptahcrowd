@@ -1,14 +1,14 @@
 import transaction
 import ptah
 from ptah import config
+from ptah.testing import PtahTestCase
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 
 import ptah_crowd
-from base import Base
 
 
-class TestJoin(Base):
+class TestJoin(PtahTestCase):
 
     def test_join_auth(self):
         from ptah_crowd.registration import Registration

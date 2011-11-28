@@ -1,16 +1,15 @@
 import transaction
 import ptah
 from ptah import config
+from ptah.testing import PtahTestCase
 from webob.multidict import MultiDict
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 
 import ptah_crowd
 
-from base import Base
 
-
-class TestModule(Base):
+class TestModule(PtahTestCase):
 
     def test_manage_module(self):
         from ptah.manage.manage import PtahManageRoute
@@ -44,7 +43,7 @@ class TestModule(Base):
         self.assertEqual(wu.user.uri, uri)
 
 
-class TestModuleView(Base):
+class TestModuleView(PtahTestCase):
 
     def _make_mod(self):
         from ptah_crowd.module import CrowdModule

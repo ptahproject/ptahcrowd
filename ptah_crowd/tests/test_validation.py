@@ -2,10 +2,10 @@ import os, transaction
 import ptah
 from ptah import config
 from ptah.authentication import AuthInfo
+from ptah.testing import PtahTestCase
 from pyramid.testing import DummyRequest
 
 import ptah_crowd
-from base import Base
 
 
 class Principal(object):
@@ -16,7 +16,7 @@ class Principal(object):
         self.login = login
 
 
-class TestValidation(Base):
+class TestValidation(PtahTestCase):
 
     def test_validation_auth_checker_validation(self):
         from ptah_crowd.validation import validationAndSuspendedChecker
@@ -138,9 +138,7 @@ class TestValidation(Base):
 
         user = CrowdUser('name', 'login', 'email')
 
-        request = self._makeRequest()
-
-        validation.initiate_email_validation(user.email, user, request)
+        validation.initiate_email_validation(user.email, user, self.request)
         self.assertEqual(Stub.status, 'Email has been sended')
         self.assertIsNotNone(Stub.token)
 
@@ -156,10 +154,8 @@ class TestValidation(Base):
         origValidationTemplate = validation.ValidationTemplate
         user = CrowdUser('name', 'login', 'email')
 
-        request = self._makeRequest()
-
         template = validation.ValidationTemplate(
-            user, request, email = user.email, token = 'test-token')
+            user, self.request, email = user.email, token = 'test-token')
         template.update()
 
         res = template.render()
@@ -167,7 +163,7 @@ class TestValidation(Base):
         self.assertIn(
             "You're close to completing the registration process.", res)
         self.assertIn(
-            "http://localhost:8080/validateaccount.html?token=test-token", res)
+            "http://example.com/validateaccount.html?token=test-token", res)
 
     def test_validate(self):
         from ptah_crowd import validation
@@ -179,28 +175,26 @@ class TestValidation(Base):
 
         t = ptah.token.service.generate(validation.TOKEN_TYPE, user.uri)
 
-        request = DummyRequest()
-        self._setRequest(request)
-
         try:
-            validation.validate(request)
+            validation.validate(self.request)
         except:
             pass
         self.assertIn(
-            "Can't validate email address.", request.session['msgservice'][0])
+            "Can't validate email address.",
+            self.request.session['msgservice'][0])
 
         props = ptah_crowd.get_properties(user.uri)
         props.validated = False
-        request.GET['token'] = t
-        request.session.clear()
+        self.request.GET['token'] = t
+        self.request.session.clear()
 
         try:
-            validation.validate(request)
+            validation.validate(self.request)
         except:
             pass
         self.assertIn(
             "Account has been successfully validated.",
-            request.session['msgservice'][0])
+            self.request.session['msgservice'][0])
 
         props = ptah_crowd.get_properties(user.uri)
         self.assertTrue(props.validated)

@@ -1,11 +1,10 @@
 import datetime
 import transaction
 import ptah, ptah_crowd
+from ptah.testing import PtahTestCase
 
-from base import Base
 
-
-class TestMemberprops(Base):
+class TestMemberprops(PtahTestCase):
 
     def test_memberprops_get(self):
         from ptah_crowd.memberprops import Session, MemberProperties

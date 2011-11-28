@@ -1,14 +1,14 @@
 import transaction
 import ptah
 from ptah import config
+from ptah.testing import PtahTestCase
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPException, HTTPFound, HTTPForbidden
 
 import ptah_crowd
-from base import Base
 
 
-class TestCreateUser(Base):
+class TestCreateUser(PtahTestCase):
 
     def test_create_user_back(self):
         from ptah_crowd.module import CrowdModule
@@ -77,7 +77,7 @@ class TestCreateUser(Base):
         self.assertFalse(props.validated)
 
 
-class TestModifyUser(Base):
+class TestModifyUser(PtahTestCase):
 
     def _user(self):
         from ptah_crowd.provider import CrowdUser, Session
@@ -214,7 +214,7 @@ class TestModifyUser(Base):
         self.assertIsNone(user)
 
 
-class TestChangePassword(Base):
+class TestChangePassword(PtahTestCase):
 
     def _user(self):
         from ptah_crowd.provider import CrowdUser, Session

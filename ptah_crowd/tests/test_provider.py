@@ -2,11 +2,10 @@
 import transaction
 import ptah, ptah_crowd
 from ptah import config
+from ptah.testing import PtahTestCase
 
-from base import Base
 
-
-class TestProvider(Base):
+class TestProvider(PtahTestCase):
 
     def test_authenticate(self):
         from ptah_crowd.provider import CrowdProvider, CrowdUser, Session

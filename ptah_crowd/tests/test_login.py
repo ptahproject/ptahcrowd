@@ -1,14 +1,14 @@
 import transaction
 import ptah
 from ptah import config
+from ptah.testing import PtahTestCase
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPException, HTTPFound
 
 import ptah_crowd
-from base import Base
 
 
-class TestSuspended(Base):
+class TestSuspended(PtahTestCase):
 
     def test_suspended_anon(self):
         from ptah_crowd import login
@@ -57,7 +57,7 @@ class TestSuspended(Base):
         self.assertIn('Your account is suspended', res)
 
 
-class TestLogout(Base):
+class TestLogout(PtahTestCase):
 
     def test_logout_anon(self):
         from ptah_crowd import login
@@ -87,7 +87,7 @@ class TestLogout(Base):
         self.assertIsNone(ptah.authService.get_userid())
 
 
-class TestLogoutSuccess(Base):
+class TestLogoutSuccess(PtahTestCase):
 
     def test_login_success_anon(self):
         from ptah_crowd import login
@@ -118,7 +118,7 @@ class TestLogoutSuccess(Base):
         self.assertIn('You are now logged in', res)
 
 
-class TestLogin(Base):
+class TestLogin(PtahTestCase):
 
     def test_login_auth(self):
         from ptah_crowd import login

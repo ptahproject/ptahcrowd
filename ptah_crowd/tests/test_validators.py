@@ -1,12 +1,11 @@
 import transaction
 import ptah, ptah_crowd
 from ptah import form
+from ptah.testing import PtahTestCase
 from pyramid.testing import DummyRequest
 
-from base import Base
 
-
-class TestCheckLogin(Base):
+class TestCheckLogin(PtahTestCase):
 
     def test_check_login(self):
         from ptah_crowd import login
