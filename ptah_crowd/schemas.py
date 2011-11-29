@@ -1,4 +1,6 @@
 """ schemas """
+from pyramid.compat import string_types
+
 import ptah
 from ptah import form
 from ptah.password import passwordValidator
@@ -7,7 +9,7 @@ from settings import _
 
 
 def lower(s):
-    if isinstance(s, basestring):
+    if isinstance(s, string_types):
         return s.lower()
     return s
 
