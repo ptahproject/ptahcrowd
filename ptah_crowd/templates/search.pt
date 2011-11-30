@@ -20,11 +20,11 @@
 	</thead>
 	<tbody>
 	  <tr tal:repeat="user view.users">
-	    <td><input type="checkbox" name="uid" value="${user.uri}" 
-		       tal:attributes="checked str(user.uri) in uids" /></td>
+	    <td><input type="checkbox" name="uid" value="${user.__uri__}" 
+		       tal:attributes="checked str(user.__uri__) in uids" /></td>
 	    <td><a href="${url}/${user.pid}/">${user.name}</a></td>
 	    <td>${user.login}</td>
-	    <tal:block tal:define="props view.get_props(user.uri)">
+	    <tal:block tal:define="props view.get_props(user.__uri__)">
 	      <td tal:content="props.validated"></td>
 	      <td tal:content="props.suspended"></td>
 	      <td>${view.format.datetime(props.joined,'short')}</td>

@@ -55,28 +55,28 @@ class TestProvider(PtahTestCase):
         self.assertEqual(user.login, 'user-login')
         self.assertEqual(user.email, 'user-email')
         self.assertEqual(user.password, 'passwd')
-        self.assertTrue(user.uri.startswith('user-crowd'))
+        self.assertTrue(user.__uri__.startswith('user-crowd'))
         self.assertEqual(str(user), 'user-name')
-        self.assertEqual(repr(user), 'CrowdUser<%s:%s>'%(user.name, user.uri))
+        self.assertEqual(repr(user), 'CrowdUser<%s:%s>'%(user.name, user.__uri__))
 
     def test_crowd_user_get(self):
         from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('user-name', 'user-login', 'user-email', 'passwd')
-        uri = user.uri
+        uri = user.__uri__
 
         Session.add(user)
         Session.flush()
 
-        self.assertEqual(CrowdUser.get(user.pid).uri, uri)
-        self.assertEqual(CrowdUser.get_byuri(user.uri).uri, uri)
-        self.assertEqual(CrowdUser.get_bylogin(user.login).uri, uri)
+        self.assertEqual(CrowdUser.get(user.pid).__uri__, uri)
+        self.assertEqual(CrowdUser.get_byuri(user.__uri__).__uri__, uri)
+        self.assertEqual(CrowdUser.get_bylogin(user.login).__uri__, uri)
 
     def test_crowd_user_change_password(self):
         from ptah_crowd.provider import CrowdUser, change_pwd
 
         user = CrowdUser('user-name', 'user-login', 'user-email', 'passwd')
-        uri = user.uri
+        uri = user.__uri__
 
         change_pwd(user, '123456')
         self.assertEqual(user.password, '123456')
@@ -85,15 +85,15 @@ class TestProvider(PtahTestCase):
         from ptah_crowd.provider import Session, CrowdUser, search
 
         user = CrowdUser('user-name', 'user-login', 'user-email', 'passwd')
-        uri = user.uri
+        uri = user.__uri__
 
         Session.add(user)
         Session.flush()
 
         users = list(search('user'))
         self.assertEqual(len(users), 1)
-        self.assertEqual(users[0].uri, uri)
+        self.assertEqual(users[0].__uri__, uri)
 
         users = list(search('email'))
         self.assertEqual(len(users), 1)
-        self.assertEqual(users[0].uri, uri)
+        self.assertEqual(users[0].__uri__, uri)

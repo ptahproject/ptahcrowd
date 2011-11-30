@@ -22,7 +22,7 @@ class TestSuspended(PtahTestCase):
         from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('name', 'login', 'email')
-        uri = user.uri
+        uri = user.__uri__
         props = ptah_crowd.get_properties(uri)
         props.suspended = False
         transaction.commit()
@@ -44,12 +44,12 @@ class TestSuspended(PtahTestCase):
         Session.add(user)
         Session.flush()
 
-        uri = user.uri
+        uri = user.__uri__
 
         props = ptah_crowd.get_properties(uri)
         props.suspended = True
 
-        ptah.authService.set_userid(user.uri)
+        ptah.authService.set_userid(user.__uri__)
 
         request = DummyRequest()
         res = login.LoginSuspended.__view_renderer__(None, request, '')
@@ -70,7 +70,7 @@ class TestLogout(PtahTestCase):
         from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('name', 'login', 'email')
-        uri = user.uri
+        uri = user.__uri__
         Session.add(user)
         Session.flush()
         transaction.commit()
@@ -106,7 +106,7 @@ class TestLogoutSuccess(PtahTestCase):
         from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('name', 'login', 'email')
-        uri = user.uri
+        uri = user.__uri__
         Session.add(user)
         Session.flush()
         transaction.commit()
@@ -172,7 +172,7 @@ class TestLogin(PtahTestCase):
         from ptah_crowd.provider import CrowdUser, Session
         user = CrowdUser('name', 'login', 'email',
                          password = '{plain}12345')
-        uri = user.uri
+        uri = user.__uri__
         Session.add(user)
         Session.flush()
         transaction.commit()
@@ -208,7 +208,7 @@ class TestLogin(PtahTestCase):
         from ptah_crowd.provider import CrowdUser, Session
         user = CrowdUser('name', 'login', 'email',
                          password = '{plain}12345')
-        uri = user.uri
+        uri = user.__uri__
         Session.add(user)
         Session.flush()
         transaction.commit()
@@ -234,7 +234,7 @@ class TestLogin(PtahTestCase):
         from ptah_crowd.provider import CrowdUser, Session
         user = CrowdUser('name', 'login', 'email',
                          password = '{plain}12345')
-        uri = user.uri
+        uri = user.__uri__
         Session.add(user)
         Session.flush()
         transaction.commit()
@@ -254,7 +254,7 @@ class TestLogin(PtahTestCase):
         from ptah_crowd.provider import CrowdUser, Session
         user = CrowdUser('name', 'login', 'email',
                          password = '{plain}12345')
-        uri = user.uri
+        uri = user.__uri__
         Session.add(user)
         ptah_crowd.get_properties(uri).validated = False
         transaction.commit()
@@ -276,7 +276,7 @@ class TestLogin(PtahTestCase):
         from ptah_crowd.provider import CrowdUser, Session
         user = CrowdUser('name', 'login', 'email',
                          password = '{plain}12345')
-        uri = user.uri
+        uri = user.__uri__
         Session.add(user)
         ptah_crowd.get_properties(uri).suspended = True
         transaction.commit()

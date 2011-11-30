@@ -11,7 +11,7 @@ import ptah_crowd
 class Principal(object):
 
     def __init__(self, uri, name, login):
-        self.uri = uri
+        self.__uri__ = uri
         self.name = name
         self.login = login
 
@@ -23,7 +23,7 @@ class TestValidation(PtahTestCase):
 
         principal = Principal('1', 'user', 'user')
 
-        props = ptah_crowd.get_properties(principal.uri)
+        props = ptah_crowd.get_properties(principal.__uri__)
         props.validated = False
 
         # validation disabled
@@ -51,7 +51,7 @@ class TestValidation(PtahTestCase):
         transaction.commit()
 
         # validated
-        props = ptah_crowd.get_properties(principal.uri)
+        props = ptah_crowd.get_properties(principal.__uri__)
         props.validated = True
         transaction.commit()
 
@@ -65,7 +65,7 @@ class TestValidation(PtahTestCase):
 
         principal = Principal('2', 'user', 'user')
 
-        props = ptah_crowd.get_properties(principal.uri)
+        props = ptah_crowd.get_properties(principal.__uri__)
         props.validated = True
         props.suspended = False
 
@@ -87,7 +87,7 @@ class TestValidation(PtahTestCase):
         ptah_crowd.CONFIG['validation'] = True
         config.notify(ptah.events.PrincipalRegisteredEvent(user))
 
-        props = ptah_crowd.get_properties(user.uri)
+        props = ptah_crowd.get_properties(user.__uri__)
         self.assertFalse(props.validated)
 
     def test_validation_registered_no_validation(self):
@@ -98,7 +98,7 @@ class TestValidation(PtahTestCase):
         ptah_crowd.CONFIG['validation'] = False
         config.notify(ptah.events.PrincipalRegisteredEvent(user))
 
-        props = ptah_crowd.get_properties(user.uri)
+        props = ptah_crowd.get_properties(user.__uri__)
         self.assertTrue(props.validated)
 
     def test_validation_added(self):
@@ -109,14 +109,14 @@ class TestValidation(PtahTestCase):
         ptah_crowd.CONFIG['validation'] = False
         config.notify(ptah.events.PrincipalAddedEvent(user))
 
-        props = ptah_crowd.get_properties(user.uri)
+        props = ptah_crowd.get_properties(user.__uri__)
         self.assertTrue(props.validated)
 
         user = CrowdUser('name', 'login', 'email')
         ptah_crowd.CONFIG['validation'] = True
         config.notify(ptah.events.PrincipalAddedEvent(user))
 
-        props = ptah_crowd.get_properties(user.uri)
+        props = ptah_crowd.get_properties(user.__uri__)
         self.assertTrue(props.validated)
 
     def test_validation_initiate(self):
@@ -142,7 +142,7 @@ class TestValidation(PtahTestCase):
         self.assertEqual(Stub.status, 'Email has been sended')
         self.assertIsNotNone(Stub.token)
 
-        t = ptah.token.service.get_bydata(validation.TOKEN_TYPE, user.uri)
+        t = ptah.token.service.get_bydata(validation.TOKEN_TYPE, user.__uri__)
         self.assertEqual(Stub.token, t)
 
         validation.ValidationTemplate = origValidationTemplate
@@ -173,7 +173,7 @@ class TestValidation(PtahTestCase):
         Session.add(user)
         Session.flush()
 
-        t = ptah.token.service.generate(validation.TOKEN_TYPE, user.uri)
+        t = ptah.token.service.generate(validation.TOKEN_TYPE, user.__uri__)
 
         try:
             validation.validate(self.request)
@@ -183,7 +183,7 @@ class TestValidation(PtahTestCase):
             "Can't validate email address.",
             self.request.session['msgservice'][0])
 
-        props = ptah_crowd.get_properties(user.uri)
+        props = ptah_crowd.get_properties(user.__uri__)
         props.validated = False
         self.request.GET['token'] = t
         self.request.session.clear()
@@ -196,5 +196,5 @@ class TestValidation(PtahTestCase):
             "Account has been successfully validated.",
             self.request.session['msgservice'][0])
 
-        props = ptah_crowd.get_properties(user.uri)
+        props = ptah_crowd.get_properties(user.__uri__)
         self.assertTrue(props.validated)

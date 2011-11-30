@@ -1,5 +1,6 @@
 # ptah_crowd package
 
+from ptah_crowd.provider import enable_provider
 from ptah_crowd.provider import CrowdUser, Session
 
 from ptah_crowd.settings import CROWD as CONFIG

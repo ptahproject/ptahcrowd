@@ -65,7 +65,7 @@ class Registration(form.Form):
         info = ptah.authService.authenticate(
             {'login': user.login, 'password': user.password})
         if info.status:
-            headers = security.remember(self.request, user.uri)
+            headers = security.remember(self.request, info.__uri__)
             raise HTTPFound(
                 location='%s/login-success.html'%self.request.application_url,
                 headers = headers)

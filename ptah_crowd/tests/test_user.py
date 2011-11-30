@@ -72,7 +72,7 @@ class TestCreateUser(PtahTestCase):
         self.assertEqual(user.name, 'NKim')
         self.assertEqual(user.login, 'ptah@ptahproject.org')
 
-        props = ptah_crowd.query_properties(user.uri)
+        props = ptah_crowd.query_properties(user.__uri__)
         self.assertTrue(props.suspended)
         self.assertFalse(props.validated)
 
@@ -82,7 +82,6 @@ class TestModifyUser(PtahTestCase):
     def _user(self):
         from ptah_crowd.provider import CrowdUser, Session
         user = CrowdUser('name', 'ptah@local', 'ptah@local')
-        uri = user.uri
         Session.add(user)
         Session.flush()
         return user
@@ -210,7 +209,7 @@ class TestModifyUser(PtahTestCase):
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'], '..')
 
-        user = CrowdUser.get_byuri(user.uri)
+        user = CrowdUser.get_byuri(user.__uri__)
         self.assertIsNone(user)
 
 
@@ -219,7 +218,6 @@ class TestChangePassword(PtahTestCase):
     def _user(self):
         from ptah_crowd.provider import CrowdUser, Session
         user = CrowdUser('name', 'ptah@local', 'ptah@local')
-        uri = user.uri
         Session.add(user)
         Session.flush()
         return user

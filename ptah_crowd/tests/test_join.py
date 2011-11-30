@@ -40,7 +40,7 @@ class TestJoin(PtahTestCase):
         from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('name', 'login', 'email')
-        uri = user.uri
+        uri = user.__uri__
         Session.add(user)
         Session.flush()
 
@@ -77,7 +77,7 @@ class TestJoin(PtahTestCase):
         from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('name', 'login', 'email')
-        uri = user.uri
+        uri = user.__uri__
         Session.add(user)
         Session.flush()
 
@@ -116,7 +116,7 @@ class TestJoin(PtahTestCase):
         from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('name', 'login', 'email')
-        uri = user.uri
+        uri = user.__uri__
         Session.add(user)
         Session.flush()
 

@@ -29,7 +29,7 @@ class TestModule(PtahTestCase):
         from ptah_crowd.provider import CrowdUser, Session
 
         user = CrowdUser('name', 'login', 'email')
-        uri = user.uri
+        uri = user.__uri__
         Session.add(user)
         Session.flush()
 
@@ -40,7 +40,7 @@ class TestModule(PtahTestCase):
         wu = mod[str(user.pid)]
 
         self.assertIsInstance(wu, UserWrapper)
-        self.assertEqual(wu.user.uri, uri)
+        self.assertEqual(wu.user.__uri__, uri)
 
 
 class TestModuleView(PtahTestCase):
@@ -112,22 +112,22 @@ class TestModuleView(PtahTestCase):
                 session = {'ptah-search-term': 'email'},
                 params = MultiDict(), POST = MultiDict()))
 
-        self.assertIn('value="%s"'%user.uri, res.body)
+        self.assertIn('value="%s"'%user.__uri__, res.body)
 
         res = CrowdModuleView.__renderer__(mod, DummyRequest(
                 params = MultiDict(), POST = MultiDict()))
 
-        self.assertIn('value="%s"'%user.uri, res.body)
+        self.assertIn('value="%s"'%user.__uri__, res.body)
 
         res = CrowdModuleView.__renderer__(mod, DummyRequest(
                 params = MultiDict({'batch': 1}), POST = MultiDict()))
 
-        self.assertIn('value="%s"'%user.uri, res.body)
+        self.assertIn('value="%s"'%user.__uri__, res.body)
 
         res = CrowdModuleView.__renderer__(mod, DummyRequest(
                 params = MultiDict({'batch': 0}), POST = MultiDict()))
 
-        self.assertIn('value="%s"'%user.uri, res.body)
+        self.assertIn('value="%s"'%user.__uri__, res.body)
 
     def test_module_validate(self):
         from ptah_crowd.module import CrowdModuleView
@@ -135,7 +135,7 @@ class TestModuleView(PtahTestCase):
 
         mod = self._make_mod()
         user = self._make_user()
-        uri = user.uri
+        uri = user.__uri__
 
         props = ptah_crowd.get_properties(uri)
         props.validated = False
@@ -160,7 +160,7 @@ class TestModuleView(PtahTestCase):
 
         mod = self._make_mod()
         user = self._make_user()
-        uri = user.uri
+        uri = user.__uri__
 
         props = ptah_crowd.get_properties(uri)
         props.suspended = False
@@ -185,7 +185,7 @@ class TestModuleView(PtahTestCase):
 
         mod = self._make_mod()
         user = self._make_user()
-        uri = user.uri
+        uri = user.__uri__
 
         props = ptah_crowd.get_properties(uri)
         props.suspended = True

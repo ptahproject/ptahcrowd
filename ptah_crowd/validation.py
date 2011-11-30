@@ -16,14 +16,14 @@ TOKEN_TYPE = token.TokenType(
 
 def initiate_email_validation(email, principal, request):
     """ initiate principal email validation """
-    t = token.service.generate(TOKEN_TYPE, principal.uri)
+    t = token.service.generate(TOKEN_TYPE, principal.__uri__)
     template = ValidationTemplate(principal, request, email=email, token = t)
     template.send()
 
 
 @ptah.auth_checker
 def validationAndSuspendedChecker(info):
-    props = get_properties(info.principal.uri)
+    props = get_properties(info.__uri__)
     if props.suspended:
         info.message = u'Account is suspended.'
         info.arguments['suspended'] = True
@@ -45,7 +45,7 @@ def validationAndSuspendedChecker(info):
 
 @config.subscriber(ptah.events.PrincipalRegisteredEvent)
 def principalRegistered(ev):
-    props = get_properties(ev.principal.uri)
+    props = get_properties(ev.principal.__uri__)
     props.joined = datetime.now()
 
     if not CROWD['validation']:
@@ -54,7 +54,7 @@ def principalRegistered(ev):
 
 @config.subscriber(ptah.events.PrincipalAddedEvent)
 def principalAdded(ev):
-    props = get_properties(ev.principal.uri)
+    props = get_properties(ev.principal.__uri__)
     props.joined = datetime.now()
     props.validated = True
 

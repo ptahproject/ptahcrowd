@@ -9,10 +9,14 @@ from ptah import MAIL
 from settings import _, CROWD
 from memberprops import get_properties
 
-view.register_route('ptah-login', '/login.html')
-view.register_route('ptah-logout', '/logout.html')
-view.register_route('ptah-login-success', '/login-success.html')
-view.register_route('ptah-login-suspended', '/login-suspended.html')
+view.register_route(
+    'ptah-login', '/login.html', use_global_views=True)
+view.register_route(
+    'ptah-logout', '/logout.html', use_global_views=True)
+view.register_route(
+    'ptah-login-success', '/login-success.html', use_global_views=True)
+view.register_route(
+    'ptah-login-suspended', '/login-suspended.html', use_global_views=True)
 
 
 class LoginForm(form.Form):
@@ -62,7 +66,8 @@ class LoginForm(form.Form):
             else:
                 location = '%s/login-success.html'%location
 
-            headers = security.remember(request, info.principal.uri)
+            print info.principal, info.__uri__
+            headers = security.remember(request, info.__uri__)
             raise HTTPFound(headers = headers, location = location)
 
         if info.principal is not None:

@@ -41,7 +41,7 @@ class CreateUserForm(form.Form):
 
         self.request.registry.notify(PrincipalAddedEvent(user))
 
-        props = get_properties(user.uri)
+        props = get_properties(user.__uri__)
         props.validated = data['validated']
         props.suspended = data['suspended']
 
@@ -64,7 +64,7 @@ class ModifyUserForm(form.Form):
 
     def form_content(self):
         user = self.context.user
-        props = get_properties(user.uri)
+        props = get_properties(user.__uri__)
 
         return {'name': user.name,
                 'login': user.login,
@@ -87,7 +87,7 @@ class ModifyUserForm(form.Form):
         user.email = data['login']
         user.password = ptah.pwd_tool.encode(data['password'])
 
-        props = get_properties(user.uri)
+        props = get_properties(user.__uri__)
         props.validated = data['validated']
         props.suspended = data['suspended']
 

@@ -114,7 +114,7 @@ class ResetPasswordForm(form.Form):
 
             headers = []
             if info.status:
-                headers = security.remember(self.request, self.principal.uri)
+                headers = security.remember(self.request, info.__uri__)
 
             self.message(
                 _('You have successfully changed your password.'), 'success')
