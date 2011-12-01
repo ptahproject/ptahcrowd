@@ -7,13 +7,13 @@ import ptah
 from ptah.password import PasswordSchema
 from ptah.events import PrincipalRegisteredEvent
 
+from provider import factory
 from settings import _, CROWD
 from schemas import RegistrationSchema
-from provider import Session, CrowdUser
 from validation import initiate_email_validation
 
 
-view.register_route('ptah-join', '/join.html')
+view.register_route('ptah-join', '/join.html', use_global_views=True)
 
 
 class Registration(form.Form):
@@ -24,23 +24,29 @@ class Registration(form.Form):
     autocomplete = 'off'
 
     def update(self):
-        uri = ptah.authService.get_userid()
+        uri = ptah.auth_service.get_userid()
         if uri is not None:
             raise HTTPFound(location = self.request.application_url)
 
-        if not CROWD.join:
+        if not CROWD.join or not CROWD.type:
             raise HTTPForbidden('Site registraion is disabled.')
 
         super(Registration, self).update()
 
     def create(self, data):
+        tp = CROWD.type
+        if not tp.startswith('cms-type:'):
+            tp = 'cms-type:{0}'.format(tp)
+
+        tinfo = ptah.resolve(tp)
+
         # create user
-        user = CrowdUser(data['name'], data['login'], data['login'])
+        user = tinfo.create(
+            title=data['name'], login=data['login'], email=data['login'])
 
         # set password
         user.password = ptah.pwd_tool.encode(data['password'])
-        Session.add(user)
-        Session.flush()
+        factory().add(user)
 
         return user
 
@@ -62,7 +68,7 @@ class Registration(form.Form):
                 raise HTTPFound(location=self.request.application_url)
 
         # authenticate
-        info = ptah.authService.authenticate(
+        info = ptah.auth_service.authenticate(
             {'login': user.login, 'password': user.password})
         if info.status:
             headers = security.remember(self.request, info.__uri__)

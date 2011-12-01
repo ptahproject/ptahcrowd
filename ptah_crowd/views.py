@@ -1,46 +1,16 @@
-""" introspect module """
-import ptah
 import sqlalchemy as sqla
-from zope import interface
 from pyramid.httpexceptions import HTTPFound
-from ptah import view, form, config, manage
 
-from settings import _
-from provider import CrowdUser
-from memberprops import get_properties, MemberProperties
-
-
-@manage.module('crowd')
-class CrowdModule(manage.PtahModule):
-    __doc__ = u'Default user management. Create, edit, and activate users.'
-
-    title = 'User management'
-
-    def __getitem__(self, key):
-        if key:
-            user = CrowdUser.get(key)
-            if user is not None:
-                return UserWrapper(user, self)
-
-        raise KeyError(key)
-
-
-class UserWrapper(object):
-
-    def __init__(self, user, parent):
-        self.user = user
-        self.__name__ = str(user.pid)
-        self.__parent__ = parent
-
-
-view.register_snippet(
-    'ptah-module-actions', CrowdModule,
-    template = view.template('ptah_crowd:templates/ptah-actions.pt'))
+import ptah
+from ptah import form, view
+from ptah_crowd.settings import _
+from ptah_crowd.provider import factory, CrowdUser, CrowdAuthApplication
 
 
 class CrowdModuleView(form.Form):
     view.pview(
-        context = CrowdModule,
+        route = ptah.manage.MANAGE_APP_ROUTE,
+        context = CrowdAuthApplication,
         template = view.template('ptah_crowd:templates/search.pt'))
 
     __doc__ = 'List/search users view'
@@ -62,9 +32,6 @@ class CrowdModuleView(form.Form):
     def form_content(self):
         return {'term': self.request.session.get('ptah-search-term', '')}
 
-    def get_props(self, uri):
-        return get_properties(uri)
-
     def update(self):
         super(CrowdModuleView, self).update()
 
@@ -72,30 +39,39 @@ class CrowdModuleView(form.Form):
         uids = request.POST.getall('uid')
 
         if 'activate' in request.POST and uids:
-            Session.query(MemberProperties)\
-                .filter(MemberProperties.uri.in_(uids))\
-                .update({'suspended': False}, False)
+            for user in ptah.Session.query(CrowdUser) \
+                    .filter(CrowdUser.__uri__.in_(uids)):
+                user.suspended = False
             self.message("Selected accounts have been activated.", 'info')
 
         if 'suspend' in request.POST and uids:
-            Session.query(MemberProperties).filter(
-                MemberProperties.uri.in_(uids))\
-                .update({'suspended': True}, False)
+            for user in ptah.Session.query(CrowdUser) \
+                    .filter(CrowdUser.__uri__.in_(uids)):
+                user.suspended = True
             self.message("Selected accounts have been suspended.", 'info')
 
         if 'validate' in request.POST and uids:
-            Session.query(MemberProperties).filter(
-                MemberProperties.uri.in_(uids))\
-                .update({'validated': True}, False)
+            for user in ptah.Session.query(CrowdUser).filter(
+                CrowdUser.__uri__.in_(uids)):
+                user.validated = True
             self.message("Selected accounts have been validated.", 'info')
+
+        if 'remove' in request.POST and uids:
+            app = factory()
+            for user in ptah.Session.query(CrowdUser).filter(
+                CrowdUser.__uri__.in_(uids)):
+                del app[user.__name__]
+            self.message("Selected accounts have been removed.", 'info')
 
         term = request.session.get('ptah-search-term', '')
         if term:
-            self.users = Session.query(CrowdUser) \
-                .filter(CrowdUser.email.contains('%%%s%%'%term))\
+            self.users = ptah.Session.query(CrowdUser) \
+                .filter(sqla.sql.or_(
+                    CrowdUser.email.contains('%%%s%%'%term),
+                    CrowdUser.title.contains('%%%s%%'%term)))\
                 .order_by(sqla.sql.asc('name')).all()
         else:
-            self.size = Session.query(CrowdUser).count()
+            self.size = ptah.Session.query(CrowdUser).count()
 
             try:
                 current = int(request.params.get('batch', None))
@@ -113,7 +89,7 @@ class CrowdModuleView(form.Form):
             self.pages, self.prev, self.next = self.page(self.size,self.current)
 
             offset, limit = self.page.offset(current)
-            self.users = Session.query(CrowdUser)\
+            self.users = ptah.Session.query(CrowdUser)\
                     .offset(offset).limit(limit).all()
 
     @form.button(_('Search'), actype=form.AC_PRIMARY)

@@ -1,5 +1,5 @@
 <tal:block tal:condition="view.users" 
-	   tal:define="url context.url()">
+	   tal:define="url request.resource_url(context)">
   <div class="page-header">
     <h2>Users</h2>
   </div>
@@ -22,13 +22,11 @@
 	  <tr tal:repeat="user view.users">
 	    <td><input type="checkbox" name="uid" value="${user.__uri__}" 
 		       tal:attributes="checked str(user.__uri__) in uids" /></td>
-	    <td><a href="${url}/${user.pid}/">${user.name}</a></td>
+	    <td><a href="${url}/${user.__name__}/">${user.name}</a></td>
 	    <td>${user.login}</td>
-	    <tal:block tal:define="props view.get_props(user.__uri__)">
-	      <td tal:content="props.validated"></td>
-	      <td tal:content="props.suspended"></td>
-	      <td>${view.format.datetime(props.joined,'short')}</td>
-	    </tal:block>
+	    <td tal:content="user.validated"></td>
+	    <td tal:content="user.suspended"></td>
+	    <td>${view.format.datetime(user.created,'short')}</td>
 	  </tr>
 	</tbody>
       </table>
@@ -36,7 +34,7 @@
 	<input type="submit" class="btn" value="Activate" name="activate" />
 	<input type="submit" class="btn" value="Suspend" name="suspend" />
 	<input type="submit" class="btn" value="Validate" name="validate" />
-	<input type="submit" class="btn danger" value="Remove" />
+	<input type="submit" class="btn danger" value="Remove" name="remove" />
       </div>
     </form>
   </div>

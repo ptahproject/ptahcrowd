@@ -14,7 +14,7 @@ class TestJoin(PtahTestCase):
         from ptah_crowd.registration import Registration
 
         request = DummyRequest()
-        ptah.authService.set_userid('test')
+        ptah.auth_service.set_userid('test')
 
         form = Registration(None, request)
         try:
@@ -107,7 +107,7 @@ class TestJoin(PtahTestCase):
         self.assertEqual(res.headers['location'],
                          'http://example.com/login-success.html')
 
-        user = ptah.authService.get_principal_bylogin('test@example.com')
+        user = ptah.auth_service.get_principal_bylogin('test@example.com')
         self.assertIsInstance(user, CrowdUser)
         self.assertEqual(user.name, 'Test user')
 
@@ -147,7 +147,7 @@ class TestJoin(PtahTestCase):
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'], 'http://example.com')
 
-        user = ptah.authService.get_principal_bylogin('test@example.com')
+        user = ptah.auth_service.get_principal_bylogin('test@example.com')
         self.assertIsInstance(user, CrowdUser)
         self.assertEqual(user.name, 'Test user')
 

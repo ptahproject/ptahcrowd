@@ -1,19 +1,21 @@
 import colander
 import translationstring
-from ptah import config, view
+from ptah import config
 
 _ = translationstring.TranslationStringFactory('ptah_crowd')
 
 
+CROWD_CFG_ID = 'ptah-crowd'
+
 CROWD = config.register_settings(
-    'ptah-crowd',
+    CROWD_CFG_ID,
 
     config.SchemaNode(
-        colander.Bool(),
-        name = 'provider',
-        title = 'Default user provider',
-        description = 'Enable/Disable default provider',
-        default = True),
+        colander.Str(),
+        name = 'type',
+        title = 'User content type',
+        description = 'User content type for crowd user provider',
+        default = ''),
 
     config.SchemaNode(
         colander.Bool(),

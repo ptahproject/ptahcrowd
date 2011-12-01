@@ -18,7 +18,7 @@ def checkLoginValidator(node, login):
     if getattr(node, 'content', None) == login:
         return
 
-    if ptah.authService.get_principal_bylogin(login) is not None:
+    if ptah.auth_service.get_principal_bylogin(login) is not None:
         raise form.Invalid(node, _('Login already is in use.'))
 
 

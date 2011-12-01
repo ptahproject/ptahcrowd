@@ -28,7 +28,7 @@ class TestSuspended(PtahTestCase):
         transaction.commit()
 
         request = DummyRequest()
-        ptah.authService.set_userid(uri)
+        ptah.auth_service.set_userid(uri)
 
         try:
             login.LoginSuspended.__view_renderer__(None, request, '')
@@ -49,7 +49,7 @@ class TestSuspended(PtahTestCase):
         props = ptah_crowd.get_properties(uri)
         props.suspended = True
 
-        ptah.authService.set_userid(user.__uri__)
+        ptah.auth_service.set_userid(user.__uri__)
 
         request = DummyRequest()
         res = login.LoginSuspended.__view_renderer__(None, request, '')
@@ -76,7 +76,7 @@ class TestLogout(PtahTestCase):
         transaction.commit()
 
         request = DummyRequest()
-        ptah.authService.set_userid(uri)
+        ptah.auth_service.set_userid(uri)
 
         try:
             login.logout(request)
@@ -84,7 +84,7 @@ class TestLogout(PtahTestCase):
             pass
 
         self.assertIsInstance(res, HTTPFound)
-        self.assertIsNone(ptah.authService.get_userid())
+        self.assertIsNone(ptah.auth_service.get_userid())
 
 
 class TestLogoutSuccess(PtahTestCase):
@@ -112,7 +112,7 @@ class TestLogoutSuccess(PtahTestCase):
         transaction.commit()
 
         request = DummyRequest()
-        ptah.authService.set_userid(uri)
+        ptah.auth_service.set_userid(uri)
 
         res = login.LoginSuccess.__view_renderer__(None, request, '')
         self.assertIn('You are now logged in', res)
@@ -125,7 +125,7 @@ class TestLogin(PtahTestCase):
 
         request = DummyRequest()
 
-        ptah.authService.set_userid('test')
+        ptah.auth_service.set_userid('test')
         try:
             login.LoginForm.__view_renderer__(None, request, None)
         except HTTPException, res:

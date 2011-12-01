@@ -6,7 +6,7 @@ from pyramid.httpexceptions import HTTPFound
 
 import ptah
 from ptah import mail
-from ptah import authService
+from ptah import auth_service
 from ptah import pwd_tool
 from ptah.password import PasswordSchema
 from ptah.events import ResetPasswordInitiatedEvent
@@ -49,7 +49,7 @@ class ResetPassword(form.Form):
 
         login = data.get('login')
         if login:
-            principal = authService.get_principal_bylogin(login)
+            principal = auth_service.get_principal_bylogin(login)
 
             if principal is not None and pwd_tool.can_change_password(principal):
                 passcode = pwd_tool.generate_passcode(principal)
@@ -110,7 +110,7 @@ class ResetPasswordForm(form.Form):
                 PrincipalPasswordChangedEvent(principal))
 
             # check if principal can be authenticated
-            info = authService.authenticate_principal(principal)
+            info = auth_service.authenticate_principal(principal)
 
             headers = []
             if info.status:

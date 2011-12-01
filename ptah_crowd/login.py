@@ -52,7 +52,7 @@ class LoginForm(form.Form):
             self.message(errors, 'form-error')
             return
 
-        info = ptah.authService.authenticate(data)
+        info = ptah.auth_service.authenticate(data)
 
         if info.status:
             request.registry.notify(
@@ -92,7 +92,7 @@ class LoginForm(form.Form):
         else:
             self.joinurl = '%s/join.html'%self.app_url
 
-        if ptah.authService.get_userid():
+        if ptah.auth_service.get_userid():
             raise HTTPFound(location = '%s/login-success.html'%self.app_url)
 
         super(LoginForm, self).update()
@@ -106,7 +106,7 @@ class LoginSuccess(view.View):
         template = view.template("ptah_crowd:templates/login-success.pt"))
 
     def update(self):
-        user = ptah.authService.get_current_principal()
+        user = ptah.auth_service.get_current_principal()
         if user is None:
             request = self.request
             headers = security.forget(request)
@@ -126,7 +126,7 @@ class LoginSuspended(view.View):
         template = view.template("ptah_crowd:templates/login-suspended.pt"))
 
     def update(self):
-        uid = ptah.authService.get_userid()
+        uid = ptah.auth_service.get_userid()
         if not uid:
             raise HTTPFound(location=self.request.application_url)
 
@@ -143,10 +143,10 @@ class LoginSuspended(view.View):
 @view.pview(route='ptah-logout')
 def logout(request):
     """Logout action"""
-    uid = ptah.authService.get_userid()
+    uid = ptah.auth_service.get_userid()
 
     if uid is not None:
-        ptah.authService.set_userid(None)
+        ptah.auth_service.set_userid(None)
         request.registry.notify(
             ptah.events.LoggedOutEvent(ptah.resolve(uid)))
 

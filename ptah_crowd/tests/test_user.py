@@ -68,7 +68,7 @@ class TestCreateUser(PtahTestCase):
             'User has been created.',
             request.session['msgservice'][0])
 
-        user = ptah.authService.get_principal_bylogin('ptah@ptahproject.org')
+        user = ptah.auth_service.get_principal_bylogin('ptah@ptahproject.org')
         self.assertEqual(user.name, 'NKim')
         self.assertEqual(user.login, 'ptah@ptahproject.org')
 
