@@ -2,6 +2,10 @@ import sqlalchemy as sqla
 
 import ptah
 from ptah_crowd.settings import CROWD
+from ptah_crowd.memberprops import get_properties
+
+
+CROWD_APP_ID = 'ptah-crowd'
 
 
 class CrowdUser(ptah.cms.BaseContent):
@@ -14,13 +18,14 @@ class CrowdUser(ptah.cms.BaseContent):
     login = sqla.Column(sqla.Unicode(255), unique=True)
     email = sqla.Column(sqla.Unicode(255), unique=True)
     password = sqla.Column(sqla.Unicode(255))
-    validated = sqla.Column(sqla.Boolean(), default=False)
-    suspended = sqla.Column(sqla.Boolean(), default=False)
-    keywords = sqla.Column('keywords', ptah.JsonDictType(), default={})
 
     @property
     def name(self):
         return self.title
+
+    @property
+    def properties(self):
+        return get_properties(self.__uri__)
 
     def __str__(self):
         return self.name
@@ -33,7 +38,7 @@ def get_allowed_content_types(context):
     return (CROWD['type'],)
 
 
-class CrowdAuthApplication(ptah.cms.BaseApplicationRoot,ptah.cms.BaseContainer):
+class CrowdApplication(ptah.cms.BaseApplicationRoot,ptah.cms.BaseContainer):
 
     __type__ = ptah.cms.Type('ptah-crowd-provider',
                              'Ptah user management',
@@ -44,7 +49,7 @@ class CrowdAuthApplication(ptah.cms.BaseApplicationRoot,ptah.cms.BaseContainer):
         ptah.cms.Session.add(user)
         ptah.cms.Session.flush()
 
-        user.__name__ = str(user.__id__)
+        self[str(user.__id__)] = user
 
 
 @ptah.auth_provider('ptah-crowd-auth')
@@ -81,4 +86,6 @@ class CrowdAuthProvider(object):
 
 
 factory = ptah.cms.ApplicationFactory(
-    CrowdAuthApplication, name = 'ptah-crowd', title = 'Ptah user management')
+    CrowdApplication,
+    name = CROWD_APP_ID,
+    title = 'Ptah user management')

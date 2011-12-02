@@ -29,7 +29,7 @@ class MemberProperties(Base):
     joined = sqla.Column(sqla.DateTime())
     validated = sqla.Column(sqla.Boolean, default=False)
     suspended = sqla.Column(sqla.Boolean(), default=False)
-    keywords = sqla.Column('keywords', ptah.JsonDictType(), default={})
+    data = sqla.Column(ptah.JsonDictType(), default={})
 
     def __init__(self, uri):
         super(MemberProperties, self).__init__()

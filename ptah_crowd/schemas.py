@@ -15,7 +15,7 @@ def lower(s):
 
 
 def checkLoginValidator(node, login):
-    if getattr(node, 'content', None) == login:
+    if getattr(node, 'value', None) == login:
         return
 
     if ptah.auth_service.get_principal_bylogin(login) is not None:

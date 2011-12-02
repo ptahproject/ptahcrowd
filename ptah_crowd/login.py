@@ -66,7 +66,6 @@ class LoginForm(form.Form):
             else:
                 location = '%s/login-success.html'%location
 
-            print info.principal, info.__uri__
             headers = security.remember(request, info.__uri__)
             raise HTTPFound(headers = headers, location = location)
 

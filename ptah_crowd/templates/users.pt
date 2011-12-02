@@ -5,7 +5,7 @@
   </div>
 
   <div class="content">
-    <form method="post" action="${url}/">
+    <form method="post" action="${url}">
       <table class="common-table zebra-striped"
 	     tal:define="uids request.params.getall('uid')">
 	<thead>
@@ -22,11 +22,13 @@
 	  <tr tal:repeat="user view.users">
 	    <td><input type="checkbox" name="uid" value="${user.__uri__}" 
 		       tal:attributes="checked str(user.__uri__) in uids" /></td>
-	    <td><a href="${url}/${user.__name__}/">${user.name}</a></td>
+	    <td><a href="${url}${user.__name__}/">${user.name}</a></td>
 	    <td>${user.login}</td>
-	    <td tal:content="user.validated"></td>
-	    <td tal:content="user.suspended"></td>
-	    <td>${view.format.datetime(user.created,'short')}</td>
+	    <tal:block define="props user.properties">
+	      <td tal:content="props.validated"></td>
+	      <td tal:content="props.suspended"></td>
+	    </tal:block>
+	      <td>${view.format.datetime(user.created,'short')}</td>
 	  </tr>
 	</tbody>
       </table>

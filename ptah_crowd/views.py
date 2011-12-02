@@ -4,14 +4,14 @@ from pyramid.httpexceptions import HTTPFound
 import ptah
 from ptah import form, view
 from ptah_crowd.settings import _
-from ptah_crowd.provider import factory, CrowdUser, CrowdAuthApplication
+from ptah_crowd.provider import factory, CrowdUser, CrowdApplication
 
 
-class CrowdModuleView(form.Form):
+class CrowdApplicationView(form.Form):
     view.pview(
         route = ptah.manage.MANAGE_APP_ROUTE,
-        context = CrowdAuthApplication,
-        template = view.template('ptah_crowd:templates/search.pt'))
+        context = CrowdApplication,
+        template = view.template('ptah_crowd:templates/users.pt'))
 
     __doc__ = 'List/search users view'
     __intr_path__ = '/ptah-manage/crowd/'
@@ -33,34 +33,35 @@ class CrowdModuleView(form.Form):
         return {'term': self.request.session.get('ptah-search-term', '')}
 
     def update(self):
-        super(CrowdModuleView, self).update()
+        super(CrowdApplicationView, self).update()
 
         request = self.request
         uids = request.POST.getall('uid')
 
         if 'activate' in request.POST and uids:
-            for user in ptah.Session.query(CrowdUser) \
-                    .filter(CrowdUser.__uri__.in_(uids)):
-                user.suspended = False
+            Session.query(MemberProperties)\
+                .filter(MemberProperties.uri.in_(uids))\
+                .update({'suspended': False}, False)
             self.message("Selected accounts have been activated.", 'info')
 
         if 'suspend' in request.POST and uids:
-            for user in ptah.Session.query(CrowdUser) \
-                    .filter(CrowdUser.__uri__.in_(uids)):
-                user.suspended = True
+            Session.query(MemberProperties).filter(
+                MemberProperties.uri.in_(uids))\
+                .update({'suspended': True}, False)
             self.message("Selected accounts have been suspended.", 'info')
 
         if 'validate' in request.POST and uids:
-            for user in ptah.Session.query(CrowdUser).filter(
-                CrowdUser.__uri__.in_(uids)):
-                user.validated = True
+            Session.query(MemberProperties).filter(
+                MemberProperties.uri.in_(uids))\
+                .update({'validated': True}, False)
             self.message("Selected accounts have been validated.", 'info')
 
         if 'remove' in request.POST and uids:
-            app = factory()
+            Session.query(MemberProperties).filter(
+                MemberProperties.uri.in_(uids)).delete()
             for user in ptah.Session.query(CrowdUser).filter(
                 CrowdUser.__uri__.in_(uids)):
-                del app[user.__name__]
+                del self.context[user.__name__]
             self.message("Selected accounts have been removed.", 'info')
 
         term = request.session.get('ptah-search-term', '')
