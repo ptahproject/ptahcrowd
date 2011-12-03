@@ -1,5 +1,6 @@
-import colander
 import translationstring
+
+import ptah
 from ptah import config
 
 _ = translationstring.TranslationStringFactory('ptah_crowd')
@@ -7,46 +8,40 @@ _ = translationstring.TranslationStringFactory('ptah_crowd')
 
 CROWD_CFG_ID = 'ptah-crowd'
 
-CROWD = config.register_settings(
+CROWD = ptah.register_settings(
     CROWD_CFG_ID,
 
-    config.SchemaNode(
-        colander.Str(),
-        name = 'type',
+    ptah.form.TextField(
+        'type',
         title = 'User content type',
         description = 'User content type for crowd user provider',
         default = ''),
 
-    config.SchemaNode(
-        colander.Bool(),
-        name = 'join',
+    ptah.form.BoolField(
+        'join',
         title = 'Site registration',
         description = 'Enable/Disable site registration',
         default = True),
 
-    config.SchemaNode(
-        colander.Str(),
-        name = 'joinurl',
+    ptah.form.TextField(
+        'joinurl',
         title = 'Join form url',
         default = ''),
 
-    config.SchemaNode(
-        colander.Bool(),
-        name = 'password',
+    ptah.form.BoolField(
+        'password',
         title = 'User password',
         description = 'Allow use to select password during registration',
         default = False),
 
-    config.SchemaNode(
-        colander.Bool(),
-        name = 'validation',
+    ptah.form.BoolField(
+        'validation',
         title = 'Email validation',
         description = 'Validate user account by email.',
         default = True),
 
-    config.SchemaNode(
-        colander.Bool(),
-        name = 'allow-unvalidated',
+    ptah.form.BoolField(
+        'allow-unvalidated',
         title = 'Allow un validation',
         description = 'Allow login for un Validated users.',
         default = True),

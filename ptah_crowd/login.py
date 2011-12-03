@@ -4,7 +4,6 @@ from pyramid import security
 from pyramid.httpexceptions import HTTPFound
 
 import ptah
-from ptah import MAIL
 
 from settings import _, CROWD
 from memberprops import get_properties
@@ -133,6 +132,7 @@ class LoginSuspended(view.View):
         if not props.suspended:
             raise HTTPFound(location=self.request.application_url)
 
+        MAIL = ptah.get_settings(ptah.CFG_ID_MAIL)
         self.from_name = MAIL.from_name
         self.from_address = MAIL.from_address
         self.full_address = ptah.mail.formataddr(

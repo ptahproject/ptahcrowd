@@ -36,8 +36,9 @@ class ResetPassword(form.Form):
         return {'login': self.request.params.get('login', '')}
 
     def update(self):
-        self.from_name = ptah.MAIL.from_name
-        self.from_address = ptah.MAIL.from_address
+        MAIL = ptah.get_settings(CFG_ID_MAIL)
+        self.from_name = MAIL.from_name
+        self.from_address = MAIL.from_address
 
         super(ResetPassword, self).update()
 
