@@ -1,12 +1,11 @@
 """ login form """
+import ptah
 from ptah import view, form
 from pyramid import security
 from pyramid.httpexceptions import HTTPFound
 
-import ptah
-
-from settings import _, CROWD
-from memberprops import get_properties
+from ptah_crowd.settings import _, CFG_ID_CROWD
+from ptah_crowd.memberprops import get_properties
 
 view.register_route(
     'ptah-login', '/login.html', use_global_views=True)
@@ -29,20 +28,20 @@ class LoginForm(form.Form):
     fields = form.Fieldset(
         form.fields.TextField(
             'login',
-            title = _(u'Login Name'),
+            title = _('Login Name'),
             description = _('Login names are case sensitive, '\
                                 'make sure the caps lock key is not enabled.'),
-            default = u''),
+            default = ''),
 
         form.fields.PasswordField(
             'password',
-            title = _(u'Password'),
+            title = _('Password'),
             description = _('Case sensitive, make sure caps '\
                                 'lock is not enabled.'),
-            default = u''),
+            default = ''),
         )
 
-    @form.button(_(u"Log in"), name=u'login', actype=form.AC_PRIMARY)
+    @form.button(_("Log in"), name='login', actype=form.AC_PRIMARY)
     def handleLogin(self):
         request = self.request
 
@@ -84,9 +83,10 @@ class LoginForm(form.Form):
 
     def update(self):
         self.app_url = self.request.application_url
-        self.join = CROWD.join
-        if CROWD.joinurl:
-            self.joinurl = CROWD.joinurl
+        cfg = ptah.get_settings(CFG_ID_CROWD, self.request.registry)
+        self.join = cfg['join']
+        if cfg['joinurl']:
+            self.joinurl = cfg['joinurl']
         else:
             self.joinurl = '%s/join.html'%self.app_url
 

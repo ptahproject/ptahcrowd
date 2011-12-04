@@ -5,7 +5,7 @@ import ptah
 from ptah import form
 from ptah.password import passwordValidator
 
-from settings import _
+from ptah_crowd.settings import _
 
 
 def lower(s):
@@ -27,14 +27,14 @@ RegistrationSchema = form.Fieldset(
     form.TextField(
         'name',
         title=_('Full Name'),
-        description=_(u"e.g. John Smith. This is how users "
-                      u"on the site will identify you."),
+        description=_("e.g. John Smith. This is how users "
+                      "on the site will identify you."),
         ),
 
     form.TextField(
         'login',
-        title = _(u'E-mail/Login'),
-        description = _(u'This is the username you will use to log in. '
+        title = _('E-mail/Login'),
+        description = _('This is the username you will use to log in. '
                         'It must be an email address. <br /> Your email address '
                         'will not be displayed to any user or be shared with '
                         'anyone else.'),
@@ -48,10 +48,10 @@ ResetPasswordSchema = form.Fieldset(
 
     form.TextField(
         'login',
-        title = _(u'Login Name'),
+        title = _('Login Name'),
         description = _('Login names are not case sensitive.'),
-        missing = u'',
-        default = u'')
+        missing = '',
+        default = '')
     )
 
 
@@ -60,38 +60,38 @@ UserSchema = form.Fieldset(
     form.fields.TextField(
         'name',
         title=_('Full Name'),
-        description=_(u"e.g. John Smith. This is how users "
-                      u"on the site will identify you."),
+        description=_("e.g. John Smith. This is how users "
+                      "on the site will identify you."),
         ),
 
     form.fields.TextField(
         'login',
-        title = _(u'E-mail/Login'),
-        description = _(u'This is the username you will use to log in. '
-                        'It must be an email address. <br /> Your email address '
-                        'will not be displayed to any user or be shared with '
-                        'anyone else.'),
+        title = _('E-mail/Login'),
+        description=_('This is the username you will use to log in. '
+                      'It must be an email address. <br /> Your email address '
+                      'will not be displayed to any user or be shared with '
+                      'anyone else.'),
         preparer = lower,
         validator = form.All(form.Email(), checkLoginValidator),
         ),
 
     form.fields.TextField(
         'password',
-        title = _(u'Password'),
-        description = _(u'Enter password. '\
-                        u'No spaces or special characters, should contain '\
-                        u'digits and letters in mixed case.'),
+        title = _('Password'),
+        description = _('Enter password. '\
+                        'No spaces or special characters, should contain '\
+                        'digits and letters in mixed case.'),
         validator = passwordValidator),
 
     form.fields.BoolField(
         'validated',
-        title = _(u'Validated'),
+        title = _('Validated'),
         default = True,
         ),
 
     form.fields.BoolField(
         'suspended',
-        title = _(u'Suspended'),
+        title = _('Suspended'),
         default = False,
         ),
 
@@ -102,9 +102,9 @@ ManagerChangePasswordSchema = form.Fieldset(
 
     form.PasswordField(
         'password',
-        title = _(u'New password'),
-        description = _(u'Enter new password. '\
-                        u'No spaces or special characters, should contain '\
-                        u'digits and letters in mixed case.'),
+        title = _('New password'),
+        description = _('Enter new password. '\
+                        'No spaces or special characters, should contain '\
+                        'digits and letters in mixed case.'),
         validator = passwordValidator)
     )

@@ -1,16 +1,16 @@
 """ user registration form """
-from ptah import config, view, form
 from pyramid import security
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 
 import ptah
+from ptah import config, view, form
 from ptah.password import PasswordSchema
 from ptah.events import PrincipalRegisteredEvent
 
-from provider import factory
-from settings import _, CROWD
-from schemas import RegistrationSchema
-from validation import initiate_email_validation
+from ptah_crowd.provider import factory
+from ptah_crowd.settings import _, CFG_ID_CROWD
+from ptah_crowd.schemas import RegistrationSchema
+from ptah_crowd.validation import initiate_email_validation
 
 
 view.register_route('ptah-join', '/join.html', use_global_views=True)
@@ -28,13 +28,14 @@ class Registration(form.Form):
         if uri is not None:
             raise HTTPFound(location = self.request.application_url)
 
-        if not CROWD.join or not CROWD.type:
+        self.cfg = ptah.get_settings(CFG_ID_CROWD, self.request.registry)
+        if not self.cfg['join'] or not self.cfg['type']:
             raise HTTPForbidden('Site registraion is disabled.')
 
         super(Registration, self).update()
 
     def create(self, data):
-        tp = CROWD.type
+        tp = self.cfg['type']
         if not tp.startswith('cms-type:'):
             tp = 'cms-type:{0}'.format(tp)
 
@@ -50,7 +51,7 @@ class Registration(form.Form):
 
         return user
 
-    @form.button(_(u"Register"), actype=form.AC_PRIMARY)
+    @form.button(_("Register"), actype=form.AC_PRIMARY)
     def register_handler(self):
         data, errors = self.extract()
         if errors:
@@ -61,10 +62,10 @@ class Registration(form.Form):
         config.notify(PrincipalRegisteredEvent(user))
 
         # validation
-        if CROWD.validation:
+        if self.cfg['validation']:
             initiate_email_validation(user.email, user, self.request)
             self.message('Validation email has been sent.')
-            if not CROWD['allow-unvalidated']:
+            if not self.cfg['allow-unvalidated']:
                 raise HTTPFound(location=self.request.application_url)
 
         # authenticate

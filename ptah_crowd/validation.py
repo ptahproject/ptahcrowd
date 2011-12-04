@@ -1,14 +1,15 @@
 """ account validation/suspending """
 from datetime import timedelta, datetime
 from ptah import view, config
+from pyramid.compat import text_type
 from pyramid.security import remember
 from pyramid.httpexceptions import HTTPFound
 
 import ptah
 from ptah import token, mail
 
-from settings import CROWD
-from memberprops import get_properties, query_properties
+from ptah_crowd.settings import CROWD
+from ptah_crowd.memberprops import get_properties, query_properties
 
 TOKEN_TYPE = token.TokenType(
     'cd51f14e9b2842608ccadf1a240046c1', timedelta(hours=24))
@@ -25,7 +26,7 @@ def initiate_email_validation(email, principal, request):
 def validationAndSuspendedChecker(info):
     props = get_properties(info.__uri__)
     if props.suspended:
-        info.message = u'Account is suspended.'
+        info.message = 'Account is suspended.'
         info.arguments['suspended'] = True
         return False
 
@@ -38,7 +39,7 @@ def validationAndSuspendedChecker(info):
     if CROWD['allow-unvalidated'] or props.validated:
         return True
 
-    info.message = u'Account is not validated.'
+    info.message = 'Account is not validated.'
     info.arguments['validation'] = False
     return False
 
@@ -87,7 +88,7 @@ def validate(request):
         if props is not None:
             props.validated = True
             token.service.remove(t)
-            view.add_message(request, "Account has been successfully validated.")
+            view.add_message(request,"Account has been successfully validated.")
 
             config.notify(
                 ptah.events.PrincipalValidatedEvent(ptah.resolve(props.uri)))

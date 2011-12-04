@@ -6,10 +6,10 @@ from ptah import config
 _ = translationstring.TranslationStringFactory('ptah_crowd')
 
 
-CROWD_CFG_ID = 'ptah-crowd'
+CFG_ID_CROWD = 'ptah-crowd'
 
 CROWD = ptah.register_settings(
-    CROWD_CFG_ID,
+    CFG_ID_CROWD,
 
     ptah.form.TextField(
         'type',

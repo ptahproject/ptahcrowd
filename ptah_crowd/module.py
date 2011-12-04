@@ -1,18 +1,19 @@
 """ introspect module """
-import ptah
 import sqlalchemy as sqla
 from zope import interface
 from pyramid.httpexceptions import HTTPFound
+
+import ptah
 from ptah import view, form, config, manage
 
-from settings import _
-from provider import CrowdUser
-from memberprops import get_properties, MemberProperties
+from ptah_crowd.settings import _
+from ptah_crowd.provider import CrowdUser
+from ptah_crowd.memberprops import get_properties, MemberProperties
 
 
 @manage.module('crowd')
 class CrowdModule(manage.PtahModule):
-    __doc__ = u'Default user management. Create, edit, and activate users.'
+    __doc__ = 'Default user management. Create, edit, and activate users.'
 
     title = 'User management'
 

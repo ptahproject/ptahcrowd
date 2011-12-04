@@ -20,10 +20,10 @@ class CrowdApplicationView(form.Form):
     fields = form.Fieldset(
         form.TextField(
             'term',
-            title = _(u'Search term'),
+            title = _('Search term'),
             description = _('Ptah searches users by login and email'),
-            missing = u'',
-            default = u'')
+            missing = '',
+            default = '')
         )
 
     users = None

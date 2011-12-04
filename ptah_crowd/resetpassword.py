@@ -12,7 +12,7 @@ from ptah.password import PasswordSchema
 from ptah.events import ResetPasswordInitiatedEvent
 from ptah.events import PrincipalPasswordChangedEvent
 
-from settings import _
+from ptah_crowd.settings import _
 
 view.register_route('ptah-resetpassword', '/resetpassword.html')
 view.register_route('ptah-resetpassword-form', '/resetpassword.html/*subpath')
@@ -27,10 +27,10 @@ class ResetPassword(form.Form):
         form.FieldFactory(
             'text',
             'login',
-            title = _(u'Login Name'),
+            title = _('Login Name'),
             description = _('Login names are not case sensitive.'),
-            missing = u'',
-            default = u''))
+            missing = '',
+            default = ''))
 
     def form_content(self):
         return {'login': self.request.params.get('login', '')}
@@ -66,7 +66,7 @@ class ResetPassword(form.Form):
                                'Check your email for futher instructions.'))
                 raise HTTPFound(location=request.application_url)
 
-        self.message(_(u"System can't restore password for this user."))
+        self.message(_("System can't restore password for this user."))
 
     @form.button(_('Cancel'))
     def cancel(self):

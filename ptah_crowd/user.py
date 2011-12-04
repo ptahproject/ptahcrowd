@@ -4,16 +4,15 @@ from ptah import config, view, form
 from pyramid.httpexceptions import HTTPFound
 
 import ptah
+from ptah.cms import Session
 from ptah.events import PrincipalAddedEvent
 
-from ptah.cms import Session
-
-from settings import _
-from module import CrowdModule
-from provider import CrowdUser
-from schemas import UserSchema, ManagerChangePasswordSchema
-from module import UserWrapper
-from memberprops import get_properties
+from ptah_crowd.settings import _
+from ptah_crowd.module import CrowdModule
+from ptah_crowd.provider import CrowdUser
+from ptah_crowd.schemas import UserSchema, ManagerChangePasswordSchema
+from ptah_crowd.module import UserWrapper
+from ptah_crowd.memberprops import get_properties
 
 
 class CreateUserForm(form.Form):
