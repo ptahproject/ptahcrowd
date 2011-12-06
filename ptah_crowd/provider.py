@@ -1,18 +1,18 @@
 import sqlalchemy as sqla
 
 import ptah
-from ptah_crowd.settings import CROWD
+from ptah_crowd.settings import CFG_ID_CROWD
 from ptah_crowd.memberprops import get_properties
 
 
-CROWD_APP_ID = 'ptah-crowd'
+APP_ID_CROWD = 'ptah-crowd'
 
 
 class CrowdUser(ptah.cms.BaseContent):
 
     __tablename__ = 'ptah_crowd'
 
-    __type__ = ptah.cms.Type('ptah-crowd', 'Crowd user',
+    __type__ = ptah.cms.Type('ptah-crowd-user', 'Crowd user',
                              global_allow = False)
 
     login = sqla.Column(sqla.Unicode(255), unique=True)
@@ -35,6 +35,7 @@ class CrowdUser(ptah.cms.BaseContent):
 
 
 def get_allowed_content_types(context):
+    CROWD = ptah.get_settings(CFG_ID_CROWD)
     return (CROWD['type'],)
 
 
@@ -85,7 +86,7 @@ class CrowdAuthProvider(object):
         principal.password = password
 
 
-factory = ptah.cms.ApplicationFactory(
+CrowdFactory = ptah.cms.ApplicationFactory(
     CrowdApplication,
-    name = CROWD_APP_ID,
+    name = APP_ID_CROWD,
     title = 'Ptah user management')

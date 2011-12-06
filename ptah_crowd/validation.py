@@ -8,7 +8,7 @@ from pyramid.httpexceptions import HTTPFound
 import ptah
 from ptah import token, mail
 
-from ptah_crowd.settings import CROWD
+from ptah_crowd.settings import CFG_ID_CROWD
 from ptah_crowd.memberprops import get_properties, query_properties
 
 TOKEN_TYPE = token.TokenType(
@@ -33,6 +33,7 @@ def validationAndSuspendedChecker(info):
     if props.validated:
         return True
 
+    CROWD = ptah.get_settings(CFG_ID_CROWD)
     if not CROWD['validation']:
         return True
 

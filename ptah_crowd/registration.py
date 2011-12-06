@@ -7,7 +7,7 @@ from ptah import config, view, form
 from ptah.password import PasswordSchema
 from ptah.events import PrincipalRegisteredEvent
 
-from ptah_crowd.provider import factory
+from ptah_crowd.provider import CrowdFactory
 from ptah_crowd.settings import _, CFG_ID_CROWD
 from ptah_crowd.schemas import RegistrationSchema
 from ptah_crowd.validation import initiate_email_validation
@@ -47,7 +47,7 @@ class Registration(form.Form):
 
         # set password
         user.password = ptah.pwd_tool.encode(data['password'])
-        factory().add(user)
+        CrowdFactory().add(user)
 
         return user
 

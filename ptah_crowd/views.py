@@ -4,7 +4,7 @@ from pyramid.httpexceptions import HTTPFound
 import ptah
 from ptah import form, view
 from ptah_crowd.settings import _
-from ptah_crowd.provider import factory, CrowdUser, CrowdApplication
+from ptah_crowd.provider import CrowdUser, CrowdApplication
 
 
 class CrowdApplicationView(form.Form):

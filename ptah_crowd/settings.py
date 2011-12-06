@@ -8,7 +8,7 @@ _ = translationstring.TranslationStringFactory('ptah_crowd')
 
 CFG_ID_CROWD = 'ptah-crowd'
 
-CROWD = ptah.register_settings(
+ptah.register_settings(
     CFG_ID_CROWD,
 
     ptah.form.TextField(
