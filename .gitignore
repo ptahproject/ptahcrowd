@@ -10,6 +10,7 @@ develop-eggs
 var/*
 *.egg-info
 *.pyc
+*.pyo
 *.pt.py
 *.pt.pyc
 *.bak
