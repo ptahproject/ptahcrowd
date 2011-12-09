@@ -2,6 +2,7 @@
 from datetime import datetime
 from ptah import config, form, view
 from pyramid import security
+from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
 import ptah
@@ -14,14 +15,13 @@ from ptah.events import PrincipalPasswordChangedEvent
 
 from ptah_crowd.settings import _
 
-view.register_route('ptah-resetpassword', '/resetpassword.html')
-view.register_route('ptah-resetpassword-form', '/resetpassword.html/*subpath')
 
+@view_config(
+    route_name='ptah-resetpassword', 
+    wrapper=ptah.wrap_layout('ptah-page'),
+    renderer='ptah_crowd:templates/resetpassword.pt')
 
 class ResetPassword(form.Form):
-    view.pview(
-        route = 'ptah-resetpassword', layout='ptah-page',
-        template = view.template('ptah_crowd:templates/resetpassword.pt'))
 
     fields = form.Fieldset(
         form.FieldFactory(
@@ -73,10 +73,12 @@ class ResetPassword(form.Form):
         raise HTTPFound(location=self.request.application_url)
 
 
+@view_config(
+    route_name='ptah-resetpassword-form', 
+    wrapper=ptah.wrap_layout('ptah-page'),
+    renderer='ptah_crowd:templates/resetpasswordform.pt')
+
 class ResetPasswordForm(form.Form):
-    view.pview(
-        route = 'ptah-resetpassword-form', layout='ptah-page',
-        template=view.template('ptah_crowd:templates/resetpasswordform.pt'))
 
     fields = PasswordSchema
 

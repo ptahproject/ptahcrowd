@@ -1,6 +1,7 @@
 """ account validation/suspending """
 from datetime import timedelta, datetime
 from ptah import view, config
+from pyramid.view import view_config
 from pyramid.compat import text_type
 from pyramid.security import remember
 from pyramid.httpexceptions import HTTPFound
@@ -76,9 +77,7 @@ class ValidationTemplate(mail.MailTemplate):
         self.to_address = mail.formataddr((principal.name, self.email))
 
 
-view.register_route('ptah-principal-validate', '/validateaccount.html')
-
-@view.pview(route='ptah-principal-validate')
+@view_config(route_name='ptah-principal-validate')
 def validate(request):
     """Validate account"""
     t = request.GET.get('token')

@@ -1,6 +1,7 @@
 """ add/edit user """
 from zope import interface
 from ptah import config, view, form
+from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
 import ptah
@@ -15,8 +16,9 @@ from ptah_crowd.module import UserWrapper
 from ptah_crowd.memberprops import get_properties
 
 
+#view.pview('create.html', CrowdModule)
+
 class CreateUserForm(form.Form):
-    view.pview('create.html', CrowdModule)
 
     __intr_path__ = '/ptah-manage/crowd/create.html'
 
@@ -54,8 +56,9 @@ class CreateUserForm(form.Form):
         raise HTTPFound(location='.')
 
 
+#view.pview(context=UserWrapper)
+
 class ModifyUserForm(form.Form):
-    view.pview(context=UserWrapper)
 
     __intr_path__ = '/ptah-manage/crowd/${user}/'
 
@@ -115,7 +118,7 @@ class ModifyUserForm(form.Form):
 
 
 class ChangePasswordForm(form.Form):
-    view.pview('password.html', UserWrapper)
+    #view.pview('password.html', UserWrapper)
 
     __intr_path__ = '/ptah-manage/crowd/${user}/password.html'
 

@@ -1,5 +1,6 @@
 """ user registration form """
 from pyramid import security
+from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 
 import ptah
@@ -13,11 +14,11 @@ from ptah_crowd.schemas import RegistrationSchema
 from ptah_crowd.validation import initiate_email_validation
 
 
-view.register_route('ptah-join', '/join.html', use_global_views=True)
-
+@view_config(
+    route_name='ptah-join', 
+    wrapper=ptah.wrap_layout('ptah-page'))
 
 class Registration(form.Form):
-    view.pview(route = 'ptah-join', layout='ptah-page')
 
     label = _("Registration")
     fields = form.Fieldset(RegistrationSchema, PasswordSchema)

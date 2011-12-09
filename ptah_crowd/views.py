@@ -1,4 +1,5 @@
 import sqlalchemy as sqla
+from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
 import ptah
@@ -7,14 +8,13 @@ from ptah_crowd.settings import _
 from ptah_crowd.provider import CrowdUser, CrowdApplication
 
 
-class CrowdApplicationView(form.Form):
-    view.pview(
-        route = ptah.manage.MANAGE_APP_ROUTE,
-        context = CrowdApplication,
-        template = view.template('ptah_crowd:templates/users.pt'))
+@view_config(
+    route_name=ptah.manage.MANAGE_APP_ROUTE,
+    context=CrowdApplication, wrapper=ptah.wrap_layout(),
+    renderer='ptah_crowd:templates/users.pt')
 
+class CrowdApplicationView(form.Form):
     __doc__ = 'List/search users view'
-    __intr_path__ = '/ptah-manage/crowd/'
 
     csrf = True
     fields = form.Fieldset(

@@ -12,3 +12,29 @@ from ptah_crowd.validation import initiate_email_validation
 
 from ptah_crowd.schemas import UserSchema
 from ptah_crowd.schemas import checkLoginValidator
+
+
+# ptah_crowd include
+def includeme(config):
+    config.add_route(
+        'ptah-principal-validate', '/validateaccount.html')
+
+    # login routes
+    config.add_route(
+        'ptah-login', '/login.html', use_global_views=True)
+    config.add_route(
+        'ptah-logout', '/logout.html', use_global_views=True)
+    config.add_route(
+        'ptah-login-success', '/login-success.html', use_global_views=True)
+    config.add_route(
+        'ptah-login-suspended', '/login-suspended.html', use_global_views=True)
+
+    # reset password
+    config.add_route(
+        'ptah-resetpassword', '/resetpassword.html')
+    config.add_route(
+        'ptah-resetpassword-form', '/resetpassword.html/*subpath')
+
+    # registration
+    config.add_route(
+        'ptah-join', '/join.html', use_global_views=True)

@@ -2,25 +2,20 @@
 import ptah
 from ptah import view, form
 from pyramid import security
+from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
 from ptah_crowd.settings import _, CFG_ID_CROWD
 from ptah_crowd.memberprops import get_properties
 
-view.register_route(
-    'ptah-login', '/login.html', use_global_views=True)
-view.register_route(
-    'ptah-logout', '/logout.html', use_global_views=True)
-view.register_route(
-    'ptah-login-success', '/login-success.html', use_global_views=True)
-view.register_route(
-    'ptah-login-suspended', '/login-suspended.html', use_global_views=True)
 
+@view_config(
+    route_name='ptah-login', 
+    wrapper=ptah.wrap_layout('ptah-page'),
+    renderer="ptah_crowd:templates/login.pt")
 
 class LoginForm(form.Form):
-    view.pview(
-        route='ptah-login', layout='ptah-page',
-        template = view.template("ptah_crowd:templates/login.pt"))
+    """ Login form """
 
     id = 'login-form'
     title = _('Login')
@@ -96,12 +91,12 @@ class LoginForm(form.Form):
         super(LoginForm, self).update()
 
 
-class LoginSuccess(view.View):
-    """ Login successful information page. """
+@view_config(
+    route_name='ptah-login-success', wrapper=ptah.wrap_layout('ptah-page'),
+    renderer='ptah_crowd:templates/login-success.pt')
 
-    view.pview(
-        route = 'ptah-login-success', layout='ptah-page',
-        template = view.template("ptah_crowd:templates/login-success.pt"))
+class LoginSuccess(ptah.View):
+    """ Login successful information page. """
 
     def update(self):
         user = ptah.auth_service.get_current_principal()
@@ -116,12 +111,12 @@ class LoginSuccess(view.View):
             self.user = user.name or user.login
 
 
-class LoginSuspended(view.View):
-    """ Suspended account information page. """
+@view_config(
+    route_name='ptah-login-suspended', wrapper=ptah.wrap_layout('ptah-page'),
+    renderer="ptah_crowd:templates/login-suspended.pt")
 
-    view.pview(
-        route = 'ptah-login-suspended', layout='ptah-page',
-        template = view.template("ptah_crowd:templates/login-suspended.pt"))
+class LoginSuspended(ptah.View):
+    """ Suspended account information page. """
 
     def update(self):
         uid = ptah.auth_service.get_userid()
@@ -139,7 +134,7 @@ class LoginSuspended(view.View):
             (MAIL.from_name, MAIL.from_address))
 
 
-@view.pview(route='ptah-logout')
+@view_config(route_name='ptah-logout')
 def logout(request):
     """Logout action"""
     uid = ptah.auth_service.get_userid()
