@@ -129,7 +129,7 @@ class ResetPasswordForm(form.Form):
 class ResetPasswordTemplate(mail.MailTemplate):
 
     subject = 'Password Reset Confirmation'
-    template = view.template('ptah_crowd:templates/resetpasswordmail.pt')
+    template = 'ptah_crowd:templates/resetpasswordmail.pt'
 
     def update(self):
         super(ResetPasswordTemplate, self).update()
