@@ -38,3 +38,6 @@ def includeme(config):
     # registration
     config.add_route(
         'ptah-join', '/join.html', use_global_views=True)
+
+    # scan
+    config.scan('ptah_crowd')
