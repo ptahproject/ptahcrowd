@@ -1,50 +1,54 @@
-<tal:block tal:condition="view.users">
-  <div class="page-header">
-    <h2>Users</h2>
-  </div>
+<div class="page-header">
+  <h2>Users</h2>
+</div>
 
-  <div class="content">
-    <form method="post" action="${view.manage_url}/crowd/">
-      <table class="common-table zebra-striped"
-	     tal:define="uids request.params.getall('uid')">
-	<thead>
-	  <tr>
-	    <th>&nbsp; </th>
-	    <th>Name</th>
-	    <th>Login/Email</th>
-	    <th>Validated</th>
-	    <th>Suspended</th>
-	    <th>Joined</th>
-	  </tr>
-	</thead>
-	<tbody>
-	  <tr tal:repeat="user view.users">
-	    <td><input type="checkbox" name="uid" value="${user.__uri__}" 
-		       tal:attributes="checked str(user.__uri__) in uids" /></td>
-	    <td>
-	      <a href="${view.manage_url}/crowd/${user.__name__}/">
-		${user.name}</a>
-	    </td>
-	    <td>${user.login}</td>
-	    <tal:block define="props user.properties">
-	      <td tal:content="props.validated"></td>
-	      <td tal:content="props.suspended"></td>
-	    </tal:block>
-	      <td>${view.format.datetime(user.created,'short')}</td>
-	  </tr>
-	</tbody>
-      </table>
-      <div class="actions">
-	<input type="submit" class="btn" value="Activate" name="activate" />
-	<input type="submit" class="btn" value="Suspend" name="suspend" />
-	<input type="submit" class="btn" value="Validate" name="validate" />
-	<input type="submit" class="btn danger" value="Remove" name="remove" />
-	
-	<a href="create.html" class="btn info">Create</a>
-      </div>
-    </form>
-  </div>
-</tal:block>
+<div class="content">
+  <form method="post" action="${view.manage_url}/crowd/">
+    <table class="common-table zebra-striped"
+           tal:define="uids request.params.getall('uid')">
+      <thead tal:condition="view.users">
+        <tr>
+          <th>&nbsp; </th>
+          <th>Name</th>
+          <th>Login/Email</th>
+          <th>Validated</th>
+          <th>Suspended</th>
+          <th>Joined</th>
+        </tr>
+      </thead>
+      <tbody tal:condition="not: view.users">
+        <tr>
+          <td>No users found.</td>
+        </tr>
+      </tbody>
+      <tbody tal:condition="view.users">
+        <tr tal:repeat="user view.users">
+          <td><input type="checkbox" name="uid" value="${user.__uri__}" 
+               tal:attributes="checked str(user.__uri__) in uids" /></td>
+          <td>
+            <a href="${view.manage_url}/crowd/${user.__name__}/">
+        ${user.name}</a>
+          </td>
+          <td>${user.login}</td>
+          <tal:block define="props user.properties">
+            <td tal:content="props.validated"></td>
+            <td tal:content="props.suspended"></td>
+          </tal:block>
+            <td>${view.format.datetime(user.created,'short')}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="actions">
+      <tal:block condition="view.users">
+        <input type="submit" class="btn" value="Activate" name="activate" />
+        <input type="submit" class="btn" value="Suspend" name="suspend" />
+        <input type="submit" class="btn" value="Validate" name="validate" />
+        <input type="submit" class="btn danger" value="Remove" name="remove" />
+      </tal:block>     
+     <a href="create.html" class="btn info">Create</a>
+    </div>
+  </form>
+</div>
 
 <div class="page-header">
   <h3>Search users</h3>
