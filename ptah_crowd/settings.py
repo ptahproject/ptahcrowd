@@ -13,7 +13,7 @@ ptah.register_settings(
         'type',
         title = 'User content type',
         description = 'User content type for crowd user provider',
-        default = ''),
+        default = 'ptah-crowd-user'),
 
     ptah.form.BoolField(
         'join',
@@ -45,4 +45,6 @@ ptah.register_settings(
         default = True),
 
     title = 'Ptah crowd settings',
+    ttw = True,
+    ttw_skip_fields = ('type',),
     )

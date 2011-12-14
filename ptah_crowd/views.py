@@ -7,6 +7,7 @@ from ptah import form
 from ptah_crowd.settings import _
 from ptah_crowd.module import CrowdModule
 from ptah_crowd.provider import CrowdUser
+from ptah_crowd.memberprops import MemberProperties
 
 
 @view_config(
@@ -42,25 +43,25 @@ class CrowdApplicationView(form.Form):
         uids = request.POST.getall('uid')
 
         if 'activate' in request.POST and uids:
-            Session.query(MemberProperties)\
+            ptah.Session.query(MemberProperties)\
                 .filter(MemberProperties.uri.in_(uids))\
                 .update({'suspended': False}, False)
             self.message("Selected accounts have been activated.", 'info')
 
         if 'suspend' in request.POST and uids:
-            Session.query(MemberProperties).filter(
+            ptah.Session.query(MemberProperties).filter(
                 MemberProperties.uri.in_(uids))\
                 .update({'suspended': True}, False)
             self.message("Selected accounts have been suspended.", 'info')
 
         if 'validate' in request.POST and uids:
-            Session.query(MemberProperties).filter(
+            ptah.Session.query(MemberProperties).filter(
                 MemberProperties.uri.in_(uids))\
                 .update({'validated': True}, False)
             self.message("Selected accounts have been validated.", 'info')
 
         if 'remove' in request.POST and uids:
-            Session.query(MemberProperties).filter(
+            ptah.Session.query(MemberProperties).filter(
                 MemberProperties.uri.in_(uids)).delete()
             for user in ptah.Session.query(CrowdUser).filter(
                 CrowdUser.__uri__.in_(uids)):
@@ -102,9 +103,12 @@ class CrowdApplicationView(form.Form):
 
         if not data['term']:
             self.message('Please specify search term', 'warning')
-            return
+
+            # fixme: just return cause problem
+            raise HTTPFound(location='.')
 
         self.request.session['ptah-search-term'] = data['term']
+        return HTTPFound(location='.')
 
     @form.button(_('Clear term'), name='clear')
     def clear(self):

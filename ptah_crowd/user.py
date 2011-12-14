@@ -31,10 +31,15 @@ class CreateUserForm(form.Form):
             return
 
         # create user
-        user = CrowdUser(
-            title=data['name'],
-            login=data['login'],
-            email=data['login'])
+        cfg = ptah.get_settings(ptah_crowd.CFG_ID_CROWD, self.request.registry)
+        tp = cfg['type']
+        if not tp.startswith('cms-type:'):
+            tp = 'cms-type:{0}'.format(tp)
+
+        tinfo = ptah.resolve(tp)
+
+        user = tinfo.create(
+            title=data['name'], login=data['login'], email=data['login'])
         user.password = ptah.pwd_tool.encode(data['password'])
 
         crowd = CrowdFactory()

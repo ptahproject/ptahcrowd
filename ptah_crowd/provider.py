@@ -11,8 +11,8 @@ class CrowdUser(ptah.cms.BaseContent):
 
     __tablename__ = 'ptah_crowd'
 
-    __type__ = ptah.cms.Type('ptah-crowd-user', 'Crowd user',
-                             global_allow = False)
+    __type__ = ptah.cms.Type(
+        'ptah-crowd-user', 'Crowd user', global_allow = False)
 
     login = sqla.Column(sqla.Unicode(255), unique=True)
     email = sqla.Column(sqla.Unicode(255), unique=True)
