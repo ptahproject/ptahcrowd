@@ -3,10 +3,11 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
 import ptah
+import ptah_crowd
 from ptah import form
 from ptah_crowd.settings import _
 from ptah_crowd.module import CrowdModule
-from ptah_crowd.provider import CrowdUser
+from ptah_crowd.provider import CrowdUser, CrowdFactory
 from ptah_crowd.memberprops import MemberProperties
 
 
@@ -61,11 +62,11 @@ class CrowdApplicationView(form.Form):
             self.message("Selected accounts have been validated.", 'info')
 
         if 'remove' in request.POST and uids:
-            ptah.Session.query(MemberProperties).filter(
-                MemberProperties.uri.in_(uids)).delete()
+            crowd = CrowdFactory()
             for user in ptah.Session.query(CrowdUser).filter(
                 CrowdUser.__uri__.in_(uids)):
-                del self.context[user.__name__]
+                ptah.Session.delete(ptah_crowd.get_properties(user.__uri__))
+                del crowd[user.__name__]
             self.message("Selected accounts have been removed.", 'info')
 
         term = request.session.get('ptah-search-term', '')
@@ -103,12 +104,9 @@ class CrowdApplicationView(form.Form):
 
         if not data['term']:
             self.message('Please specify search term', 'warning')
-
-            # fixme: just return cause problem
-            raise HTTPFound(location='.')
+            return
 
         self.request.session['ptah-search-term'] = data['term']
-        return HTTPFound(location='.')
 
     @form.button(_('Clear term'), name='clear')
     def clear(self):
