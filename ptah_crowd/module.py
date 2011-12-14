@@ -1,34 +1,27 @@
-""" introspect module """
-import sqlalchemy as sqla
-from zope import interface
-from pyramid.httpexceptions import HTTPFound
+""" crowd module """
+from pyramid.interfaces import IRequest, IRouteRequest
 
 import ptah
-from ptah import view, form, config, manage
-
-from ptah_crowd.settings import _
-from ptah_crowd.provider import CrowdUser
-from ptah_crowd.memberprops import get_properties, MemberProperties
+import ptah_crowd
 
 
-@manage.module('crowd')
-class CrowdModule(manage.PtahModule):
+@ptah.manage.module('crowd')
+class CrowdModule(ptah.manage.PtahModule):
     __doc__ = 'Default user management. Create, edit, and activate users.'
 
     title = 'User management'
 
     def __getitem__(self, key):
-        if key:
-            user = CrowdUser.get(key)
-            if user is not None:
-                return UserWrapper(user, self)
+        crowd = ptah_crowd.CrowdFactory()
+        user = crowd.get(key)
+        if user is not None:
+            user.__parent__ = self
+            user.__resource_url__ = None
+
+            request = self.request
+            request.request_iface = request.registry.getUtility(
+                IRouteRequest, name=ptah_crowd.CROWD_APP_ID)
+
+            return user
 
         raise KeyError(key)
-
-
-class UserWrapper(object):
-
-    def __init__(self, user, parent):
-        self.user = user
-        self.__name__ = str(user.pid)
-        self.__parent__ = parent

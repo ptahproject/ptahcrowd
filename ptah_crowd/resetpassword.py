@@ -17,7 +17,7 @@ from ptah_crowd.settings import _
 
 
 @view_config(
-    route_name='ptah-resetpassword', 
+    route_name='ptah-resetpassword',
     wrapper=ptah.wrap_layout('ptah-page'),
     renderer='ptah_crowd:templates/resetpassword.pt')
 
@@ -74,7 +74,7 @@ class ResetPassword(form.Form):
 
 
 @view_config(
-    route_name='ptah-resetpassword-form', 
+    route_name='ptah-resetpassword-form',
     wrapper=ptah.wrap_layout('ptah-page'),
     renderer='ptah_crowd:templates/resetpasswordform.pt')
 

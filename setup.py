@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 version='0.1-dev'
 
 install_requires = ['setuptools',
-                    'ptah',
+                    'ptah >= 0.2dev',
                     ]
 tests_require = ['nose']
 
@@ -28,7 +28,4 @@ setup(name='ptah_crowd',
       test_suite = 'nose.collector',
       include_package_data = True,
       zip_safe = False,
-      entry_points = {
-        'ptah': ['package = ptah_crowd'],
-        },
       )

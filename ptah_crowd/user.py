@@ -5,22 +5,18 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
 import ptah
-from ptah.cms import Session
-from ptah.events import PrincipalAddedEvent
-
+import ptah_crowd
 from ptah_crowd.settings import _
 from ptah_crowd.module import CrowdModule
-from ptah_crowd.provider import CrowdUser
+from ptah_crowd.provider import CrowdUser, CrowdFactory
 from ptah_crowd.schemas import UserSchema, ManagerChangePasswordSchema
-from ptah_crowd.module import UserWrapper
-from ptah_crowd.memberprops import get_properties
 
 
-#view.pview('create.html', CrowdModule)
+@view_config('create.html',
+             context=CrowdModule,
+             wrapper=ptah.wrap_layout())
 
 class CreateUserForm(form.Form):
-
-    __intr_path__ = '/ptah-manage/crowd/create.html'
 
     csrf = True
     label = _('Create new user')
@@ -35,16 +31,20 @@ class CreateUserForm(form.Form):
             return
 
         # create user
-        user = CrowdUser(data['name'], data['login'], data['login'])
-
-        # set password
+        user = CrowdUser(
+            title=data['name'],
+            login=data['login'],
+            email=data['login'])
         user.password = ptah.pwd_tool.encode(data['password'])
-        Session.add(user)
-        Session.flush()
 
-        self.request.registry.notify(PrincipalAddedEvent(user))
+        crowd = CrowdFactory()
+        crowd.add(user)
 
-        props = get_properties(user.__uri__)
+        # notify system
+        self.request.registry.notify(ptah.events.PrincipalAddedEvent(user))
+
+        # set props
+        props = ptah_crowd.get_properties(user.__uri__)
         props.validated = data['validated']
         props.suspended = data['suspended']
 
@@ -53,22 +53,22 @@ class CreateUserForm(form.Form):
 
     @form.button(_('Back'))
     def back(self):
-        raise HTTPFound(location='.')
+        return HTTPFound(location='.')
 
 
-#view.pview(context=UserWrapper)
+@view_config(context=CrowdUser,
+             wrapper=ptah.wrap_layout(),
+             route_name=ptah_crowd.CROWD_APP_ID)
 
 class ModifyUserForm(form.Form):
-
-    __intr_path__ = '/ptah-manage/crowd/${user}/'
 
     csrf = True
     label = 'Update user'
     fields = form.Fieldset(UserSchema)
 
     def form_content(self):
-        user = self.context.user
-        props = get_properties(user.__uri__)
+        user = self.context
+        props = ptah_crowd.get_properties(user.__uri__)
 
         return {'name': user.name,
                 'login': user.login,
@@ -84,14 +84,16 @@ class ModifyUserForm(form.Form):
             self.message(errors, 'form-error')
             return
 
-        user = self.context.user
+        user = self.context
 
+        # update attrs
         user.name = data['name']
         user.login = data['login']
         user.email = data['login']
         user.password = ptah.pwd_tool.encode(data['password'])
 
-        props = get_properties(user.__uri__)
+        # update props
+        props = ptah_crowd.get_properties(user.__uri__)
         props.validated = data['validated']
         props.suspended = data['suspended']
 
@@ -117,10 +119,12 @@ class ModifyUserForm(form.Form):
         raise HTTPFound(location='..')
 
 
-class ChangePasswordForm(form.Form):
-    #view.pview('password.html', UserWrapper)
+@view_config('password.html',
+             context=CrowdUser,
+             wrapper=ptah.wrap_layout(),
+             route_name=ptah_crowd.CROWD_APP_ID)
 
-    __intr_path__ = '/ptah-manage/crowd/${user}/password.html'
+class ChangePasswordForm(form.Form):
 
     csrf = True
     fields = form.Fieldset(ManagerChangePasswordSchema)
@@ -145,4 +149,4 @@ class ChangePasswordForm(form.Form):
 
     @form.button(_('Back'))
     def back(self):
-        raise HTTPFound(location='..')
+        return HTTPFound(location='..')

@@ -1,7 +1,5 @@
-import translationstring
-
 import ptah
-from ptah import config
+import translationstring
 
 _ = translationstring.TranslationStringFactory('ptah_crowd')
 

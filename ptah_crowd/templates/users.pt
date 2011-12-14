@@ -1,11 +1,10 @@
-<tal:block tal:condition="view.users" 
-	   tal:define="url request.resource_url(context)">
+<tal:block tal:condition="view.users">
   <div class="page-header">
     <h2>Users</h2>
   </div>
 
   <div class="content">
-    <form method="post" action="${url}">
+    <form method="post" action="${view.manage_url}/crowd/">
       <table class="common-table zebra-striped"
 	     tal:define="uids request.params.getall('uid')">
 	<thead>
@@ -22,7 +21,10 @@
 	  <tr tal:repeat="user view.users">
 	    <td><input type="checkbox" name="uid" value="${user.__uri__}" 
 		       tal:attributes="checked str(user.__uri__) in uids" /></td>
-	    <td><a href="${url}${user.__name__}/">${user.name}</a></td>
+	    <td>
+	      <a href="${view.manage_url}/crowd/${user.__name__}/">
+		${user.name}</a>
+	    </td>
 	    <td>${user.login}</td>
 	    <tal:block define="props user.properties">
 	      <td tal:content="props.validated"></td>
@@ -37,6 +39,8 @@
 	<input type="submit" class="btn" value="Suspend" name="suspend" />
 	<input type="submit" class="btn" value="Validate" name="validate" />
 	<input type="submit" class="btn danger" value="Remove" name="remove" />
+	
+	<a href="create.html" class="btn info">Create</a>
       </div>
     </form>
   </div>

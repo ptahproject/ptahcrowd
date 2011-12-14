@@ -3,14 +3,15 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
 import ptah
-from ptah import form, view
+from ptah import form
 from ptah_crowd.settings import _
-from ptah_crowd.provider import CrowdUser, CrowdApplication
+from ptah_crowd.module import CrowdModule
+from ptah_crowd.provider import CrowdUser
 
 
 @view_config(
-    route_name=ptah.manage.MANAGE_APP_ROUTE,
-    context=CrowdApplication, wrapper=ptah.wrap_layout(),
+    context=CrowdModule,
+    wrapper=ptah.wrap_layout(),
     renderer='ptah_crowd:templates/users.pt')
 
 class CrowdApplicationView(form.Form):
@@ -36,6 +37,8 @@ class CrowdApplicationView(form.Form):
         super(CrowdApplicationView, self).update()
 
         request = self.request
+        self.manage_url = ptah.manage.get_manage_url(self.request)
+
         uids = request.POST.getall('uid')
 
         if 'activate' in request.POST and uids:
@@ -102,7 +105,6 @@ class CrowdApplicationView(form.Form):
             return
 
         self.request.session['ptah-search-term'] = data['term']
-        raise HTTPFound(location = self.request.url)
 
     @form.button(_('Clear term'), name='clear')
     def clear(self):

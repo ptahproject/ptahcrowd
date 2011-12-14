@@ -4,7 +4,7 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 
 import ptah
-from ptah import config, view, form
+from ptah import config, form
 from ptah.password import PasswordSchema
 from ptah.events import PrincipalRegisteredEvent
 
@@ -15,10 +15,11 @@ from ptah_crowd.validation import initiate_email_validation
 
 
 @view_config(
-    route_name='ptah-join', 
+    route_name='ptah-join',
     wrapper=ptah.wrap_layout('ptah-page'))
 
 class Registration(form.Form):
+    """ Ptah crowd registration form """
 
     label = _("Registration")
     fields = form.Fieldset(RegistrationSchema, PasswordSchema)

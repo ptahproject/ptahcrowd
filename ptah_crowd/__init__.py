@@ -3,7 +3,7 @@
 from ptah_crowd.provider import CrowdUser
 from ptah_crowd.provider import CrowdApplication
 from ptah_crowd.provider import CrowdFactory
-from ptah_crowd.provider import APP_ID_CROWD
+from ptah_crowd.provider import CROWD_APP_ID
 
 from ptah_crowd.settings import CFG_ID_CROWD
 from ptah_crowd.memberprops import get_properties
@@ -38,6 +38,10 @@ def includeme(config):
     # registration
     config.add_route(
         'ptah-join', '/join.html', use_global_views=True)
+
+    # for management module
+    config.add_route(
+        CROWD_APP_ID, '# {0}'.format(CROWD_APP_ID), use_global_views=True)
 
     # scan
     config.scan('ptah_crowd')

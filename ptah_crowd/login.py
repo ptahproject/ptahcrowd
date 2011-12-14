@@ -10,7 +10,7 @@ from ptah_crowd.memberprops import get_properties
 
 
 @view_config(
-    route_name='ptah-login', 
+    route_name='ptah-login',
     wrapper=ptah.wrap_layout('ptah-page'),
     renderer="ptah_crowd:templates/login.pt")
 
@@ -127,7 +127,7 @@ class LoginSuspended(ptah.View):
         if not props.suspended:
             raise HTTPFound(location=self.request.application_url)
 
-        MAIL = ptah.get_settings(ptah.CFG_ID_MAIL)
+        MAIL = ptah.get_settings(ptah.CFG_ID_PTAH)
         self.from_name = MAIL.from_name
         self.from_address = MAIL.from_address
         self.full_address = ptah.mail.formataddr(

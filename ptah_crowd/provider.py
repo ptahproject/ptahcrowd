@@ -4,8 +4,7 @@ import ptah
 from ptah_crowd.settings import CFG_ID_CROWD
 from ptah_crowd.memberprops import get_properties
 
-
-APP_ID_CROWD = 'ptah-crowd'
+CROWD_APP_ID = 'ptah-crowd'
 
 
 class CrowdUser(ptah.cms.BaseContent):
@@ -88,5 +87,5 @@ class CrowdAuthProvider(object):
 
 CrowdFactory = ptah.cms.ApplicationFactory(
     CrowdApplication,
-    name = APP_ID_CROWD,
+    name = CROWD_APP_ID,
     title = 'Ptah user management')
