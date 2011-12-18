@@ -28,13 +28,13 @@ class Registration(form.Form):
     def update(self):
         uri = ptah.auth_service.get_userid()
         if uri is not None:
-            raise HTTPFound(location = self.request.application_url)
+            return HTTPFound(location = self.request.application_url)
 
         self.cfg = ptah.get_settings(CFG_ID_CROWD, self.request.registry)
         if not self.cfg['join'] or not self.cfg['type']:
-            raise HTTPForbidden('Site registraion is disabled.')
+            return HTTPForbidden('Site registraion is disabled.')
 
-        super(Registration, self).update()
+        return super(Registration, self).update()
 
     def create(self, data):
         tp = self.cfg['type']
@@ -61,21 +61,21 @@ class Registration(form.Form):
             return
 
         user = self.create(data)
-        config.notify(PrincipalRegisteredEvent(user))
+        self.request.registry.notify(PrincipalRegisteredEvent(user))
 
         # validation
         if self.cfg['validation']:
             initiate_email_validation(user.email, user, self.request)
             self.message('Validation email has been sent.')
             if not self.cfg['allow-unvalidated']:
-                raise HTTPFound(location=self.request.application_url)
+                return HTTPFound(location=self.request.application_url)
 
         # authenticate
         info = ptah.auth_service.authenticate(
             {'login': user.login, 'password': user.password})
         if info.status:
             headers = security.remember(self.request, info.__uri__)
-            raise HTTPFound(
+            return HTTPFound(
                 location='%s/login-success.html'%self.request.application_url,
                 headers = headers)
         else:

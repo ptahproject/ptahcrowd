@@ -8,20 +8,21 @@ from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 
 class TestResetPassword(PtahTestCase):
 
+    def setUp(self):
+        super(TestResetPassword, self).setUp()
+
+        self._app = self.config.make_wsgi_app()
+
     def test_resetpassword_cancel(self):
         from ptah_crowd.resetpassword import ResetPassword
         request = DummyRequest(
             POST={'form.buttons.cancel': 'Cancel'})
 
         form = ResetPassword(None, request)
-        try:
-            form.update()
-        except Exception, res:
-            pass
+        res = form.update()
 
         self.assertIsInstance(res, HTTPFound)
-        self.assertEqual(
-            res.headers['location'], 'http://example.com')
+        self.assertEqual(res.headers['location'], 'http://example.com')
 
     def test_resetpassword_required(self):
         from ptah_crowd.resetpassword import ResetPassword
@@ -31,17 +32,16 @@ class TestResetPassword(PtahTestCase):
         form = ResetPassword(None, request)
         form.update()
 
-        msg = request.session['msgservice'][0]
+        msg = ptah.render_messages(request)
         self.assertIn("System can't restore password for this user.", msg)
 
     def test_resetpassword(self):
-        from ptah_crowd.provider import CrowdUser, Session
         from ptah_crowd.resetpassword import ResetPassword
         from ptah_crowd.resetpassword import ResetPasswordTemplate
+        from ptah_crowd.provider import CrowdUser, CrowdFactory
 
-        user = CrowdUser('name', 'login', 'email')
-        Session.add(user)
-        Session.flush()
+        user = CrowdUser(title='name', login='login', email='email')
+        CrowdFactory().add(user)
 
         data = [1, None]
         def send(self):
@@ -55,17 +55,13 @@ class TestResetPassword(PtahTestCase):
                   'form.buttons.reset': 'Reset'})
 
         form = ResetPassword(None, request)
-        try:
-            form.update()
-        except HTTPFound, res:
-            pass
+        res = form.update()
 
-        msg = request.session['msgservice'][0]
+        msg = ptah.render_messages(request)
         self.assertIn("Password reseting process has been initiated.", msg)
 
         self.assertIsInstance(res, HTTPFound)
-        self.assertEqual(
-            res.headers['location'], 'http://example.com')
+        self.assertEqual(res.headers['location'], 'http://example.com')
         self.assertEqual(data[0], 2)
 
         principal = ptah.pwd_tool.get_principal(data[1])
@@ -80,23 +76,19 @@ class TestResetPassword(PtahTestCase):
         request = DummyRequest(subpath=('unknown',))
 
         form = ResetPasswordForm(None, request)
-        try:
-            form.update()
-        except HTTPFound, res:
-            pass
+        res = form.update()
 
-        msg = request.session['msgservice'][0]
+        msg = ptah.render_messages(request)
         self.assertIn("Passcode is invalid.", msg)
         self.assertEqual(
             res.headers['location'], 'http://example.com/resetpassword.html')
 
     def test_resetpassword_form_update(self):
-        from ptah_crowd.provider import CrowdUser, Session
         from ptah_crowd.resetpassword import ResetPasswordForm
+        from ptah_crowd.provider import CrowdUser, CrowdFactory
 
-        user = CrowdUser('name', 'login', 'email')
-        Session.add(user)
-        Session.flush()
+        user = CrowdUser(title='name', login='login', email='email')
+        CrowdFactory().add(user)
 
         passcode = ptah.pwd_tool.generate_passcode(user)
 
@@ -109,12 +101,11 @@ class TestResetPassword(PtahTestCase):
         self.assertEqual(form.passcode, passcode)
 
     def test_resetpassword_form_change_errors(self):
-        from ptah_crowd.provider import CrowdUser, Session
         from ptah_crowd.resetpassword import ResetPasswordForm
+        from ptah_crowd.provider import CrowdUser, CrowdFactory
 
-        user = CrowdUser('name', 'login', 'email')
-        Session.add(user)
-        Session.flush()
+        user = CrowdUser(title='name', login='login', email='email')
+        CrowdFactory().add(user)
 
         passcode = ptah.pwd_tool.generate_passcode(user)
 
@@ -122,20 +113,20 @@ class TestResetPassword(PtahTestCase):
             subpath=(passcode,),
             POST = {'password': '12345', 'confirm_password': '123456',
                     'form.buttons.change': 'Change'})
+        request.environ['HTTP_HOST'] = 'example.com'
 
         form = ResetPasswordForm(None, request)
         form.update()
 
-        msg = request.session['msgservice'][0]
+        msg = ptah.render_messages(request)
         self.assertIn("Please fix indicated errors.", msg)
 
     def test_resetpassword_form_change(self):
-        from ptah_crowd.provider import CrowdUser, Session
         from ptah_crowd.resetpassword import ResetPasswordForm
+        from ptah_crowd.provider import CrowdUser, CrowdFactory
 
-        user = CrowdUser('name', 'login', 'email')
-        Session.add(user)
-        Session.flush()
+        user = CrowdUser(title='name', login='login', email='email')
+        CrowdFactory().add(user)
 
         passcode = ptah.pwd_tool.generate_passcode(user)
 
@@ -143,25 +134,22 @@ class TestResetPassword(PtahTestCase):
             subpath=(passcode,),
             POST = {'password': '123456', 'confirm_password': '123456',
                     'form.buttons.change': 'Change'})
+        request.environ['HTTP_HOST'] = 'example.com'
 
         form = ResetPasswordForm(None, request)
-        try:
-            form.update()
-        except HTTPFound, res:
-            pass
+        res = form.update()
 
-        msg = request.session['msgservice'][0]
+        msg = ptah.render_messages(request)
         self.assertIn("You have successfully changed your password.", msg)
         self.assertEqual(res.headers['location'], 'http://example.com')
         self.assertTrue(ptah.pwd_tool.check(user.password, '123456'))
 
     def test_resetpassword_template(self):
-        from ptah_crowd.provider import CrowdUser, Session
         from ptah_crowd.resetpassword import ResetPasswordTemplate
+        from ptah_crowd.provider import CrowdUser, CrowdFactory
 
-        user = CrowdUser('name', 'login', 'email')
-        Session.add(user)
-        Session.flush()
+        user = CrowdUser(title='name', login='login', email='email')
+        CrowdFactory().add(user)
 
         request = DummyRequest()
         passcode = ptah.pwd_tool.generate_passcode(user)

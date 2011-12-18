@@ -4,6 +4,7 @@ from ptah import config
 from ptah.testing import PtahTestCase
 from webob.multidict import MultiDict
 from pyramid.testing import DummyRequest
+from pyramid.view import render_view_to_response
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 
 import ptah_crowd
@@ -18,29 +19,31 @@ class TestModule(PtahTestCase):
         request = DummyRequest()
 
         ptah.auth_service.set_userid('test')
-        ptah.manage.CONFIG['managers'] = ('*',)
+
+        cfg = ptah.get_settings(ptah.CFG_ID_PTAH)
+        cfg['managers'] = ('*',)
         mr = PtahManageRoute(request)
         mod = mr['crowd']
 
         self.assertIsInstance(mod, CrowdModule)
 
     def test_manage_module_get(self):
-        from ptah_crowd.module import CrowdModule, UserWrapper
-        from ptah_crowd.provider import CrowdUser, Session
+        from ptah_crowd.module import CrowdModule
+        from ptah_crowd.provider import CrowdUser, CrowdFactory
 
-        user = CrowdUser('name', 'login', 'email')
+        user = CrowdUser(title='name', login='login', email='email')
+        CrowdFactory().add(user)
+
         uri = user.__uri__
-        Session.add(user)
-        Session.flush()
 
         mod = CrowdModule(None, DummyRequest())
 
         self.assertRaises(KeyError, mod.__getitem__, 'unkown')
 
-        wu = mod[str(user.pid)]
+        wu = mod[str(user.__id__)]
 
-        self.assertIsInstance(wu, UserWrapper)
-        self.assertEqual(wu.user.__uri__, uri)
+        self.assertIsInstance(wu, CrowdUser)
+        self.assertEqual(wu.__uri__, uri)
 
 
 class TestModuleView(PtahTestCase):
@@ -50,38 +53,33 @@ class TestModuleView(PtahTestCase):
         return CrowdModule(None, DummyRequest())
 
     def _make_user(self):
-        from ptah_crowd.provider import CrowdUser, Session
+        from ptah_crowd.provider import CrowdUser, CrowdFactory
 
-        user = CrowdUser('name', 'login', 'email')
-        Session.add(user)
-        Session.flush()
+        user = CrowdUser(title='name', login='login', email='email')
+        CrowdFactory().add(user)
         return user
 
     def test_module_search(self):
-        from ptah_crowd.module import CrowdModuleView
+        from ptah_crowd.views import CrowdApplicationView
 
         mod = self._make_mod()
 
-        form = CrowdModuleView(mod, DummyRequest(
+        form = CrowdApplicationView(mod, DummyRequest(
                 POST=MultiDict({'form.buttons.search': 'Search',
                                 'term': 'search term'})))
         form.csrf = False
-        try:
-            form.update()
-        except Exception, res:
-            pass
+        res = form.update()
 
-        self.assertIsInstance(res, HTTPFound)
         self.assertIn('ptah-search-term', form.request.session)
         self.assertEqual(
             form.request.session['ptah-search-term'], 'search term')
 
     def test_module_clear(self):
-        from ptah_crowd.module import CrowdModuleView
+        from ptah_crowd.views import CrowdApplicationView
 
         mod = self._make_mod()
 
-        form = CrowdModuleView(mod, DummyRequest(
+        form = CrowdApplicationView(mod, DummyRequest(
                 session = {'ptah-search-term': 'test'},
                 POST=MultiDict({'form.buttons.clear': 'Clear'})))
         form.csrf = False
@@ -90,48 +88,54 @@ class TestModuleView(PtahTestCase):
         self.assertNotIn('ptah-search-term', form.request.session)
 
     def test_module_search_error(self):
-        from ptah_crowd.module import CrowdModuleView
+        from ptah_crowd.views import CrowdApplicationView
 
         mod = self._make_mod()
 
-        form = CrowdModuleView(mod, DummyRequest(
+        form = CrowdApplicationView(mod, DummyRequest(
                 POST=MultiDict({'form.buttons.search': 'Search'})))
         form.csrf = False
         form.update()
 
         self.assertIn('Please specify search term',
-                      form.request.session['msgservice'][0])
+                      ptah.render_messages(form.request))
 
     def test_module_list(self):
-        from ptah_crowd.module import CrowdModuleView
+        from ptah_crowd.views import CrowdApplicationView
 
         mod = self._make_mod()
         user = self._make_user()
 
-        res = CrowdModuleView.__renderer__(mod, DummyRequest(
-                session = {'ptah-search-term': 'email'},
-                params = MultiDict(), POST = MultiDict()))
+        request = DummyRequest(
+            session = {'ptah-search-term': 'email'},
+            params = MultiDict(), POST = MultiDict())
+
+        res = render_view_to_response(mod, request, '')
 
         self.assertIn('value="%s"'%user.__uri__, res.body)
 
-        res = CrowdModuleView.__renderer__(mod, DummyRequest(
-                params = MultiDict(), POST = MultiDict()))
+        res = render_view_to_response(
+            mod,
+            DummyRequest(params = MultiDict(), POST = MultiDict()), '')
 
         self.assertIn('value="%s"'%user.__uri__, res.body)
 
-        res = CrowdModuleView.__renderer__(mod, DummyRequest(
-                params = MultiDict({'batch': 1}), POST = MultiDict()))
+        res = render_view_to_response(
+            mod,
+            DummyRequest(params = MultiDict({'batch': 1}),
+                         POST = MultiDict()), '')
 
         self.assertIn('value="%s"'%user.__uri__, res.body)
 
-        res = CrowdModuleView.__renderer__(mod, DummyRequest(
-                params = MultiDict({'batch': 0}), POST = MultiDict()))
+        res = render_view_to_response(
+            mod,
+            DummyRequest(params = MultiDict({'batch': 0}),
+                         POST = MultiDict()), '')
 
         self.assertIn('value="%s"'%user.__uri__, res.body)
 
     def test_module_validate(self):
-        from ptah_crowd.module import CrowdModuleView
-        from ptah_crowd.provider import Session
+        from ptah_crowd.views import CrowdApplicationView
 
         mod = self._make_mod()
         user = self._make_user()
@@ -140,7 +144,7 @@ class TestModuleView(PtahTestCase):
         props = ptah_crowd.get_properties(uri)
         props.validated = False
 
-        form = CrowdModuleView(mod, DummyRequest(
+        form = CrowdApplicationView(mod, DummyRequest(
                 POST=MultiDict(
                     {'uid': uri,
                      'validate': 'validate'})))
@@ -150,13 +154,12 @@ class TestModuleView(PtahTestCase):
         transaction.commit()
 
         self.assertIn('Selected accounts have been validated.',
-                      form.request.session['msgservice'][0])
+                      ptah.render_messages(form.request))
         props = ptah_crowd.get_properties(uri)
         self.assertTrue(props.validated)
 
     def test_module_suspend(self):
-        from ptah_crowd.module import CrowdModuleView
-        from ptah_crowd.provider import Session
+        from ptah_crowd.views import CrowdApplicationView
 
         mod = self._make_mod()
         user = self._make_user()
@@ -165,23 +168,21 @@ class TestModuleView(PtahTestCase):
         props = ptah_crowd.get_properties(uri)
         props.suspended = False
 
-        form = CrowdModuleView(mod, DummyRequest(
+        form = CrowdApplicationView(mod, DummyRequest(
                 POST=MultiDict(
                     {'uid': uri,
                      'suspend': 'suspend'})))
-
-        form.csrf = False
+        form.request.POST[form.csrfname] = form.request.session.get_csrf_token()
         form.update()
-        transaction.commit()
 
         self.assertIn('Selected accounts have been suspended.',
-                      form.request.session['msgservice'][0])
+                      ptah.render_messages(form.request))
+        transaction.commit()
         props = ptah_crowd.get_properties(uri)
         self.assertTrue(props.suspended)
 
     def test_module_activate(self):
-        from ptah_crowd.module import CrowdModuleView
-        from ptah_crowd.provider import Session
+        from ptah_crowd.views import CrowdApplicationView
 
         mod = self._make_mod()
         user = self._make_user()
@@ -190,7 +191,7 @@ class TestModuleView(PtahTestCase):
         props = ptah_crowd.get_properties(uri)
         props.suspended = True
 
-        form = CrowdModuleView(mod, DummyRequest(
+        form = CrowdApplicationView(mod, DummyRequest(
                 POST=MultiDict(
                     {'uid': uri,
                      'activate': 'activate'})))
@@ -200,6 +201,29 @@ class TestModuleView(PtahTestCase):
         transaction.commit()
 
         self.assertIn('Selected accounts have been activated.',
-                      form.request.session['msgservice'][0])
+                      ptah.render_messages(form.request))
         props = ptah_crowd.get_properties(uri)
         self.assertFalse(props.suspended)
+
+    def test_module_remove(self):
+        from ptah_crowd.views import CrowdApplicationView
+
+        mod = self._make_mod()
+        user = self._make_user()
+        uri = user.__uri__
+
+        props = ptah_crowd.get_properties(uri)
+        props.suspended = False
+
+        form = CrowdApplicationView(mod, DummyRequest(
+                POST=MultiDict(
+                {'uid': uri,
+                 'remove': 'remove'})))
+        form.update()
+
+        self.assertIn('Selected accounts have been removed.',
+                      ptah.render_messages(form.request))
+        transaction.commit()
+
+        user = ptah.resolve(user.__uri__)
+        self.assertIsNone(user)

@@ -1,11 +1,7 @@
 """ member properties """
 import ptah
 import sqlalchemy as sqla
-import sqlahelper as psa
 from datetime import datetime
-
-Base = psa.get_base()
-Session = psa.get_session()
 
 
 def query_properties(uri):
@@ -16,12 +12,13 @@ def get_properties(uri):
     props = MemberProperties._sql_get.first(uri=uri)
     if props is None:
         props = MemberProperties(uri)
+        Session = ptah.get_session()
         Session.add(props)
         Session.flush()
     return props
 
 
-class MemberProperties(Base):
+class MemberProperties(ptah.get_base()):
 
     __tablename__ = 'ptah_crowd_memberprops'
 
@@ -40,5 +37,5 @@ class MemberProperties(Base):
         self.suspended = False
 
     _sql_get = ptah.QueryFreezer(
-        lambda: Session.query(MemberProperties)
+        lambda: ptah.get_session().query(MemberProperties)
         .filter(MemberProperties.uri == sqla.sql.bindparam('uri')))

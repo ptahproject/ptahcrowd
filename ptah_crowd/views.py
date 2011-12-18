@@ -41,43 +41,44 @@ class CrowdApplicationView(form.Form):
         request = self.request
         self.manage_url = ptah.manage.get_manage_url(self.request)
 
+        Session = ptah.get_session()
         uids = request.POST.getall('uid')
 
         if 'activate' in request.POST and uids:
-            ptah.Session.query(MemberProperties)\
+            Session.query(MemberProperties)\
                 .filter(MemberProperties.uri.in_(uids))\
                 .update({'suspended': False}, False)
             self.message("Selected accounts have been activated.", 'info')
 
         if 'suspend' in request.POST and uids:
-            ptah.Session.query(MemberProperties).filter(
+            Session.query(MemberProperties).filter(
                 MemberProperties.uri.in_(uids))\
                 .update({'suspended': True}, False)
             self.message("Selected accounts have been suspended.", 'info')
 
         if 'validate' in request.POST and uids:
-            ptah.Session.query(MemberProperties).filter(
+            Session.query(MemberProperties).filter(
                 MemberProperties.uri.in_(uids))\
                 .update({'validated': True}, False)
             self.message("Selected accounts have been validated.", 'info')
 
         if 'remove' in request.POST and uids:
             crowd = CrowdFactory()
-            for user in ptah.Session.query(CrowdUser).filter(
+            for user in Session.query(CrowdUser).filter(
                 CrowdUser.__uri__.in_(uids)):
-                ptah.Session.delete(ptah_crowd.get_properties(user.__uri__))
+                Session.delete(ptah_crowd.get_properties(user.__uri__))
                 del crowd[user.__name__]
             self.message("Selected accounts have been removed.", 'info')
 
         term = request.session.get('ptah-search-term', '')
         if term:
-            self.users = ptah.Session.query(CrowdUser) \
+            self.users = Session.query(CrowdUser) \
                 .filter(sqla.sql.or_(
                     CrowdUser.email.contains('%%%s%%'%term),
                     CrowdUser.title.contains('%%%s%%'%term)))\
                 .order_by(sqla.sql.asc('name')).all()
         else:
-            self.size = ptah.Session.query(CrowdUser).count()
+            self.size = Session.query(CrowdUser).count()
 
             try:
                 current = int(request.params.get('batch', None))
@@ -95,7 +96,7 @@ class CrowdApplicationView(form.Form):
             self.pages, self.prev, self.next = self.page(self.size,self.current)
 
             offset, limit = self.page.offset(current)
-            self.users = ptah.Session.query(CrowdUser)\
+            self.users = Session.query(CrowdUser)\
                     .offset(offset).limit(limit).all()
 
     @form.button(_('Search'), actype=form.AC_PRIMARY)

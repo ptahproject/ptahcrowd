@@ -9,11 +9,10 @@ class TestCheckLogin(PtahTestCase):
 
     def test_check_login(self):
         from ptah_crowd import login
-        from ptah_crowd.provider import CrowdUser, Session
+        from ptah_crowd.provider import CrowdUser, CrowdFactory
 
-        user = CrowdUser('name', 'login', 'email')
-        Session.add(user)
-        transaction.commit()
+        user = CrowdUser(title='name', login='login', email='email')
+        CrowdFactory().add(user)
 
         request = DummyRequest()
 
@@ -24,10 +23,10 @@ class TestCheckLogin(PtahTestCase):
             """ """
 
         field = Field()
-        field.content = 'login'
+        field.value = 'login'
         ptah_crowd.checkLoginValidator(field, 'login')
 
-        field.content = 'other-login'
+        field.value = 'other-login'
         self.assertRaises(
             form.Invalid, ptah_crowd.checkLoginValidator, field, 'login')
 

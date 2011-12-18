@@ -60,14 +60,14 @@ class LoginForm(form.Form):
                 location = '%s/login-success.html'%location
 
             headers = security.remember(request, info.__uri__)
-            raise HTTPFound(headers = headers, location = location)
+            return HTTPFound(headers = headers, location = location)
 
         if info.principal is not None:
             request.registry.notify(
                 ptah.events.LoginFailedEvent(info.principal, info.message))
 
         if info.arguments.get('suspended'):
-            raise HTTPFound(
+            return HTTPFound(
                 location='%s/login-suspended.html'%request.application_url)
 
         if info.message:
@@ -86,7 +86,7 @@ class LoginForm(form.Form):
             self.joinurl = '%s/join.html'%self.app_url
 
         if ptah.auth_service.get_userid():
-            raise HTTPFound(location = '%s/login-success.html'%self.app_url)
+            return HTTPFound(location = '%s/login-success.html'%self.app_url)
 
         super(LoginForm, self).update()
 
@@ -104,7 +104,7 @@ class LoginSuccess(ptah.View):
             request = self.request
             headers = security.forget(request)
 
-            raise HTTPFound(
+            return HTTPFound(
                 headers = headers,
                 location = '%s/login.html'%request.application_url)
         else:
@@ -121,17 +121,16 @@ class LoginSuspended(ptah.View):
     def update(self):
         uid = ptah.auth_service.get_userid()
         if not uid:
-            raise HTTPFound(location=self.request.application_url)
+            return HTTPFound(location=self.request.application_url)
 
         props = get_properties(uid)
         if not props.suspended:
-            raise HTTPFound(location=self.request.application_url)
+            return HTTPFound(location=self.request.application_url)
 
         MAIL = ptah.get_settings(ptah.CFG_ID_PTAH)
-        self.from_name = MAIL.from_name
-        self.from_address = MAIL.from_address
-        self.full_address = ptah.mail.formataddr(
-            (MAIL.from_name, MAIL.from_address))
+        self.from_name = MAIL['email_from_name']
+        self.from_address = MAIL['email_from_address']
+        self.full_address = MAIL['full_email_address']
 
 
 @view_config(route_name='ptah-logout')
@@ -146,8 +145,8 @@ def logout(request):
 
         view.add_message(request, _('Logout successful!'), 'info')
         headers = security.forget(request)
-        raise HTTPFound(
+        return HTTPFound(
             headers = headers,
             location = request.application_url)
     else:
-        raise HTTPFound(location = request.application_url)
+        return HTTPFound(location = request.application_url)

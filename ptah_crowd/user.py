@@ -92,7 +92,7 @@ class ModifyUserForm(form.Form):
         user = self.context
 
         # update attrs
-        user.name = data['name']
+        user.title = data['name']
         user.login = data['login']
         user.email = data['login']
         user.password = ptah.pwd_tool.encode(data['password'])
@@ -108,20 +108,21 @@ class ModifyUserForm(form.Form):
     def remove(self):
         self.validate_csrf_token()
 
-        user = self.context.user
+        user = self.context
+        Session = ptah.get_session()
         Session.delete(user)
         Session.flush()
 
         self.message("User has been removed.", 'info')
-        raise HTTPFound(location='..')
+        return HTTPFound(location='..')
 
     @form.button(_('Change password'), name='changepwd')
     def password(self):
-        raise HTTPFound(location='password.html')
+        return HTTPFound(location='password.html')
 
     @form.button(_('Back'))
     def back(self):
-        raise HTTPFound(location='..')
+        return HTTPFound(location='..')
 
 
 @view_config('password.html',
@@ -147,8 +148,7 @@ class ChangePasswordForm(form.Form):
 
         sm = self.request.registry
 
-        self.context.user.password = \
-            ptah.pwd_tool.encode(data['password'])
+        self.context.password = ptah.pwd_tool.encode(data['password'])
 
         self.message("User password has been changed.")
 

@@ -1,13 +1,14 @@
 import datetime
 import transaction
-import ptah, ptah_crowd
-from ptah.testing import PtahTestCase
+
+import ptah
+import ptah_crowd
 
 
-class TestMemberprops(PtahTestCase):
+class TestMemberprops(ptah.PtahTestCase):
 
     def test_memberprops_get(self):
-        from ptah_crowd.memberprops import Session, MemberProperties
+        from ptah_crowd.memberprops import MemberProperties
 
         props = ptah_crowd.get_properties('uid1')
 
@@ -21,12 +22,22 @@ class TestMemberprops(PtahTestCase):
         self.assertEqual(props.uri, 'uid1')
 
         self.assertEqual(
-            Session.query(MemberProperties).count(), 1)
+            ptah.get_session().query(MemberProperties).count(), 1)
 
     def test_memberprops_query(self):
-        from ptah_crowd.memberprops import Session, MemberProperties
+        from ptah_crowd.memberprops import MemberProperties
 
         props = ptah_crowd.query_properties('uid1')
         self.assertIsNone(props)
         self.assertEqual(
-            Session.query(MemberProperties).count(), 0)
+            ptah.get_session().query(MemberProperties).count(), 0)
+
+    def test_user_props(self):
+        from ptah_crowd import CrowdUser
+        from ptah_crowd.memberprops import MemberProperties
+
+        user = CrowdUser(title='user-name', login='user-login',
+                         email='user-email', password='passwd')
+
+        self.assertIs(
+            user.properties, ptah_crowd.query_properties(user.__uri__))

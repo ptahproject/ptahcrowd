@@ -17,10 +17,7 @@ class TestJoin(PtahTestCase):
         ptah.auth_service.set_userid('test')
 
         form = Registration(None, request)
-        try:
-            form.update()
-        except Exception, res:
-            pass
+        res = form.update()
 
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(
@@ -29,20 +26,22 @@ class TestJoin(PtahTestCase):
     def test_join_disabled(self):
         from ptah_crowd.registration import Registration
 
-        ptah_crowd.CONFIG['join'] = False
+        cfg = ptah.get_settings(ptah_crowd.CFG_ID_CROWD)
+        cfg['join'] = False
 
         request = DummyRequest()
         form = Registration(None, request)
-        self.assertRaises(HTTPForbidden, form.update)
+        res = form.update()
+        self.assertIsInstance(res, HTTPForbidden)
 
     def test_join_error(self):
         from ptah_crowd.registration import Registration
-        from ptah_crowd.provider import CrowdUser, Session
+        from ptah_crowd.provider import CrowdUser, CrowdFactory
 
-        user = CrowdUser('name', 'login', 'email')
+        user = CrowdUser(title='name', login='login', email='email')
+        CrowdFactory().add(user)
+
         uri = user.__uri__
-        Session.add(user)
-        Session.flush()
 
         request = DummyRequest(
             POST = {'name': 'Test user',
@@ -59,7 +58,7 @@ class TestJoin(PtahTestCase):
 
         form.register_handler()
         self.assertIn('Please fix indicated errors.',
-                      request.session['msgservice'][0])
+                      ptah.render_messages(request))
 
         request = DummyRequest(
             POST = {'name': 'Test user',
@@ -74,34 +73,31 @@ class TestJoin(PtahTestCase):
     def test_join(self):
         import ptah
         from ptah_crowd.registration import Registration
-        from ptah_crowd.provider import CrowdUser, Session
+        from ptah_crowd.provider import CrowdUser, CrowdFactory
 
-        user = CrowdUser('name', 'login', 'email')
+        user = CrowdUser(title='name', login='login', email='email')
+        CrowdFactory().add(user)
+
         uri = user.__uri__
-        Session.add(user)
-        Session.flush()
 
-        mailer = ptah.MAIL.get('Mailer')
         class Stub(object):
             status = ''
             def send(self, frm, to, msg):
                 Stub.status = 'Email has been sended'
 
-        ptah.MAIL['Mailer'] = Stub()
+        MAIL = ptah.get_settings(ptah.CFG_ID_PTAH)
+        MAIL['Mailer'] = Stub()
 
         request = DummyRequest(
             POST = {'name': 'Test user',
                     'login': 'test@example.com',
                     'password': '12345',
                     'confirm_password': '12345'})
+        request.environ['HTTP_HOST'] = 'example.com'
+
         form = Registration(None, request)
         form.update()
-        try:
-            form.register_handler()
-        except Exception, res:
-            pass
-
-        ptah.MAIL['Mailer'] = mailer
+        res = form.register_handler()
 
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'],
@@ -113,22 +109,23 @@ class TestJoin(PtahTestCase):
 
     def test_join_unvalidated(self):
         from ptah_crowd.registration import Registration
-        from ptah_crowd.provider import CrowdUser, Session
+        from ptah_crowd.provider import CrowdUser, CrowdFactory
 
-        user = CrowdUser('name', 'login', 'email')
+        user = CrowdUser(title='name', login='login', email='email')
+        CrowdFactory().add(user)
+
         uri = user.__uri__
-        Session.add(user)
-        Session.flush()
 
-        mailer = ptah.MAIL.get('Mailer')
         class Stub(object):
             status = ''
             def send(self, frm, to, msg):
                 Stub.status = 'Email has been sended'
 
-        ptah.MAIL['Mailer'] = Stub()
+        MAIL = ptah.get_settings(ptah.CFG_ID_PTAH)
+        MAIL['Mailer'] = Stub()
 
-        ptah_crowd.CONFIG['allow-unvalidated'] = False
+        CROWD = ptah.get_settings(ptah_crowd.CFG_ID_CROWD)
+        CROWD['allow-unvalidated'] = False
 
         request = DummyRequest(
             POST = {'name': 'Test user',
@@ -137,12 +134,7 @@ class TestJoin(PtahTestCase):
                     'confirm_password': '12345'})
         form = Registration(None, request)
         form.update()
-        try:
-            form.register_handler()
-        except Exception, res:
-            pass
-
-        ptah.MAIL['Mailer'] = mailer
+        res = form.register_handler()
 
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'], 'http://example.com')
@@ -152,4 +144,4 @@ class TestJoin(PtahTestCase):
         self.assertEqual(user.name, 'Test user')
 
         self.assertIn('Validation email has been sent.',
-                      request.session['msgservice'][0])
+                      ptah.render_messages(request))
