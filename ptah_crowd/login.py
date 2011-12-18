@@ -88,7 +88,7 @@ class LoginForm(form.Form):
         if ptah.auth_service.get_userid():
             return HTTPFound(location = '%s/login-success.html'%self.app_url)
 
-        super(LoginForm, self).update()
+        return super(LoginForm, self).update()
 
 
 @view_config(
