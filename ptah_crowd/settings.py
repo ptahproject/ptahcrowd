@@ -45,6 +45,6 @@ ptah.register_settings(
         default = True),
 
     title = 'Ptah crowd settings',
-    ttw = True,
-    ttw_skip_fields = ('type',),
+    #ttw = True,
+    #ttw_skip_fields = ('type',),
     )
