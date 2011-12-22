@@ -1,5 +1,6 @@
 import os
 from pyramid.testing import DummyRequest
+from pyramid.compat import text_
 from pyramid.httpexceptions import HTTPFound
 
 import ptah
@@ -162,7 +163,7 @@ class TestValidation(ptah.PtahTestCase):
             user, self.request, email = user.email, token = 'test-token')
         template.update()
 
-        res = template.render()
+        res = text_(template.render())
 
         self.assertIn(
             "You're close to completing the registration process.", res)

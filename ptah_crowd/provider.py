@@ -3,6 +3,7 @@ from pyramid.config import Configurator
 from pyramid.events import ApplicationCreated
 
 import ptah
+from ptah.password import ID_PASSWORD_CHANGER
 from ptah_crowd.settings import CFG_ID_CROWD
 from ptah_crowd.memberprops import get_properties
 
@@ -108,7 +109,8 @@ def initialize(ev):
 
     tinfo = ptah.resolve(tp)
     if tinfo is not None:
-        cfg.ptah_password_changer(
-            tinfo.schema, CrowdAuthProvider.change_password)
-        cfg.ptah_principal_searcher(
-            tinfo.schema, CrowdAuthProvider.search)
+        if tinfo.schema not in ptah.get_cfg_storage(ID_PASSWORD_CHANGER):
+            cfg.ptah_password_changer(
+                tinfo.schema, CrowdAuthProvider.change_password)
+            cfg.ptah_principal_searcher(
+                tinfo.schema, CrowdAuthProvider.search)

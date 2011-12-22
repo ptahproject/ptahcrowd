@@ -1,12 +1,10 @@
-import transaction
+import sys
 import ptah
-from ptah import config
-from ptah.testing import PtahTestCase
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 
 
-class TestResetPassword(PtahTestCase):
+class TestResetPassword(ptah.PtahTestCase):
 
     def setUp(self):
         super(TestResetPassword, self).setUp()

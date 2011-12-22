@@ -65,8 +65,8 @@ class TestModuleView(PtahTestCase):
         mod = self._make_mod()
 
         form = CrowdApplicationView(mod, DummyRequest(
-                POST=MultiDict({'form.buttons.search': 'Search',
-                                'term': 'search term'})))
+                POST=MultiDict((('form.buttons.search', 'Search'),
+                                ('term', 'search term')))))
         form.csrf = False
         res = form.update()
 
@@ -81,7 +81,7 @@ class TestModuleView(PtahTestCase):
 
         form = CrowdApplicationView(mod, DummyRequest(
                 session = {'ptah-search-term': 'test'},
-                POST=MultiDict({'form.buttons.clear': 'Clear'})))
+                POST=MultiDict((('form.buttons.clear', 'Clear'),))))
         form.csrf = False
         form.update()
 
@@ -93,7 +93,7 @@ class TestModuleView(PtahTestCase):
         mod = self._make_mod()
 
         form = CrowdApplicationView(mod, DummyRequest(
-                POST=MultiDict({'form.buttons.search': 'Search'})))
+                POST=MultiDict((('form.buttons.search', 'Search'),))))
         form.csrf = False
         form.update()
 
@@ -107,32 +107,32 @@ class TestModuleView(PtahTestCase):
         user = self._make_user()
 
         request = DummyRequest(
-            session = {'ptah-search-term': 'email'},
             params = MultiDict(), POST = MultiDict())
+        request.session['ptah-search-term'] = 'email'
 
         res = render_view_to_response(mod, request, '')
 
-        self.assertIn('value="%s"'%user.__uri__, res.body)
+        self.assertIn('value="%s"'%user.__uri__, res.text)
 
         res = render_view_to_response(
             mod,
             DummyRequest(params = MultiDict(), POST = MultiDict()), '')
 
-        self.assertIn('value="%s"'%user.__uri__, res.body)
+        self.assertIn('value="%s"'%user.__uri__, res.text)
 
         res = render_view_to_response(
             mod,
             DummyRequest(params = MultiDict({'batch': 1}),
                          POST = MultiDict()), '')
 
-        self.assertIn('value="%s"'%user.__uri__, res.body)
+        self.assertIn('value="%s"'%user.__uri__, res.text)
 
         res = render_view_to_response(
             mod,
             DummyRequest(params = MultiDict({'batch': 0}),
                          POST = MultiDict()), '')
 
-        self.assertIn('value="%s"'%user.__uri__, res.body)
+        self.assertIn('value="%s"'%user.__uri__, res.text)
 
     def test_module_validate(self):
         from ptah_crowd.views import CrowdApplicationView
@@ -145,9 +145,8 @@ class TestModuleView(PtahTestCase):
         props.validated = False
 
         form = CrowdApplicationView(mod, DummyRequest(
-                POST=MultiDict(
-                    {'uid': uri,
-                     'validate': 'validate'})))
+                POST=MultiDict((('uid', uri),
+                                ('validate', 'validate')))))
 
         form.csrf = False
         form.update()
@@ -169,9 +168,8 @@ class TestModuleView(PtahTestCase):
         props.suspended = False
 
         form = CrowdApplicationView(mod, DummyRequest(
-                POST=MultiDict(
-                    {'uid': uri,
-                     'suspend': 'suspend'})))
+                POST=MultiDict((('uid', uri),
+                                ('suspend', 'suspend')))))
         form.request.POST[form.csrfname] = form.request.session.get_csrf_token()
         form.update()
 
@@ -192,9 +190,8 @@ class TestModuleView(PtahTestCase):
         props.suspended = True
 
         form = CrowdApplicationView(mod, DummyRequest(
-                POST=MultiDict(
-                    {'uid': uri,
-                     'activate': 'activate'})))
+                POST=MultiDict((('uid', uri),
+                                ('activate', 'activate')))))
 
         form.csrf = False
         form.update()
@@ -216,9 +213,8 @@ class TestModuleView(PtahTestCase):
         props.suspended = False
 
         form = CrowdApplicationView(mod, DummyRequest(
-                POST=MultiDict(
-                {'uid': uri,
-                 'remove': 'remove'})))
+                POST=MultiDict((('uid', uri),
+                                ('remove', 'remove')))))
         form.update()
 
         self.assertIn('Selected accounts have been removed.',

@@ -55,7 +55,7 @@ class TestSuspended(PtahTestCase):
         request = DummyRequest()
         res = self.render_route_view(None, request, 'ptah-login-suspended')
 
-        self.assertIn('Your account is suspended', res.body)
+        self.assertIn('Your account is suspended', res.text)
 
 
 class TestLogout(PtahTestCase):
@@ -113,7 +113,7 @@ class TestLogoutSuccess(PtahTestCase):
         ptah.auth_service.set_userid(uri)
 
         res = self.render_route_view(None, request, 'ptah-login-success')
-        self.assertIn('You are now logged in', res.body)
+        self.assertIn('You are now logged in', res.text)
 
 
 class TestLogin(PtahTestCase):
@@ -146,7 +146,7 @@ class TestLogin(PtahTestCase):
         self.assertEqual(form.joinurl, 'http://test/login.html')
 
         res = login.LoginForm(None, request)()
-        self.assertNotIn('head over to the registration form', res.body)
+        self.assertNotIn('head over to the registration form', res.text)
 
     def test_login_update_join(self):
         from ptah_crowd import login
@@ -163,7 +163,7 @@ class TestLogin(PtahTestCase):
         self.assertTrue(form.join)
         self.assertEqual(form.joinurl, 'http://example.com/join.html')
 
-        #self.assertIn('head over to the registration form', res.body)
+        #self.assertIn('head over to the registration form', res.text)
 
     def test_login(self):
         from ptah_crowd import login
@@ -274,7 +274,7 @@ class TestLogin(PtahTestCase):
         CrowdFactory().add(user)
 
         uri = user.__uri__
-        ptah_crowd.get_properties(uri).suspended = True
+        user.properties.suspended = True
 
         request = DummyRequest(
             POST={'login': 'login', 'password': '12345'})
