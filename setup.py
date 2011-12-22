@@ -4,7 +4,7 @@ import logging
 import multiprocessing # atexit exception
 from setuptools import setup, find_packages
 
-version='0.1'
+version='0.2dev'
 
 install_requires = ['setuptools',
                     'ptah >= 0.2',
