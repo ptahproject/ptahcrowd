@@ -1,5 +1,5 @@
-ptah_crowd
-----------
+API
+---
 
   .. automodule:: ptah_crowd
 
