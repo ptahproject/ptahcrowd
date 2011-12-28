@@ -29,6 +29,10 @@ class TestForbiddenView(ptah.PtahTestCase):
             text_(res.headers['location']),
             'http://example.com/login.html?came_from=http%3A%2F%2Fexample.com')
 
+        excview = Forbidden(HTTPForbidden(), request)
+        res = excview()
+        self.assertEqual(res.status, '302 Found')
+
     def test_forbidden_default_root(self):
         from ptah_crowd.forbidden import Forbidden
         from pyramid.interfaces import IRootFactory

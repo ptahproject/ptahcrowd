@@ -1,5 +1,5 @@
 """ forbidden view """
-from pyramid.compat import text_type, url_encode
+from pyramid.compat import url_encode
 from pyramid.view import view_config
 from pyramid.view import render_view_to_response
 from pyramid.response import Response
@@ -42,8 +42,6 @@ class Forbidden(ptah.View):
 
             location = '%s?%s'%(
                 loginurl, url_encode({'came_from': request.url}))
-            if isinstance(location, text_type):
-                location = location.encode('utf-8')
 
             response = request.response
             response.status = HTTPFound.code
