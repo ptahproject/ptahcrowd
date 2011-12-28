@@ -138,7 +138,7 @@ class TestLogin(PtahTestCase):
 
         cfg = ptah.get_settings(ptah_crowd.CFG_ID_CROWD)
         cfg['join'] = False
-        cfg['joinurl'] = 'http://test/login.html'
+        cfg['join-url'] = 'http://test/login.html'
 
         form = login.LoginForm(None, request)
         form.update()
@@ -156,7 +156,7 @@ class TestLogin(PtahTestCase):
 
         cfg = ptah.get_settings(ptah_crowd.CFG_ID_CROWD, self.registry)
         cfg['join'] = True
-        cfg['joinurl'] = ''
+        cfg['join-url'] = ''
 
         form = login.LoginForm(None, request)
         form.update()

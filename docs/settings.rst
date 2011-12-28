@@ -1,0 +1,33 @@
+Ptah crowd settings
+===================
+
+Listed are a following of .ini attributes you can override.
+
+``ptah_crowd.type``
+
+   User content type for crowd user provider.
+ 
+``ptah_crowd.join``
+
+   Enable/Disable site registration.
+
+``ptah_crowd.join-url``
+
+   Custom join form url.
+
+``ptah_crowd.login-url``
+
+   Custom login form url.
+  
+``ptah_crowd.password``
+
+   Allow user to select password during registration.
+
+``ptah_crowd.validation``
+
+   Validate user account by email.
+
+``ptah_crowd.allow-unvalidated``
+
+   Allow login for un Validated users.
+

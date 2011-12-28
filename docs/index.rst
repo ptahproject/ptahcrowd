@@ -5,6 +5,7 @@ Ptah Crowd
    :maxdepth: 2
    
    overview.rst
+   settings.rst
    api.rst
    license.rst
 

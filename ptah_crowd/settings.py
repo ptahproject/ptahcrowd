@@ -4,7 +4,7 @@ import translationstring
 _ = translationstring.TranslationStringFactory('ptah_crowd')
 
 
-CFG_ID_CROWD = 'ptah-crowd'
+CFG_ID_CROWD = 'ptah_crowd'
 
 ptah.register_settings(
     CFG_ID_CROWD,
@@ -12,24 +12,31 @@ ptah.register_settings(
     ptah.form.TextField(
         'type',
         title = 'User content type',
-        description = 'User content type for crowd user provider',
+        description = 'User content type for crowd user provider.',
         default = 'ptah-crowd-user'),
 
     ptah.form.BoolField(
         'join',
         title = 'Site registration',
-        description = 'Enable/Disable site registration',
+        description = 'Enable/Disable site registration.',
         default = True),
 
     ptah.form.TextField(
-        'joinurl',
-        title = 'Join form url',
+        'join-url',
+        title = 'Join url',
+        description = 'Custom join form url.',
+        default = ''),
+
+    ptah.form.TextField(
+        'login-url',
+        title = 'Login url',
+        description = 'Custom login form url.',
         default = ''),
 
     ptah.form.BoolField(
         'password',
         title = 'User password',
-        description = 'Allow use to select password during registration',
+        description = 'Allow user to select password during registration.',
         default = False),
 
     ptah.form.BoolField(
@@ -45,6 +52,4 @@ ptah.register_settings(
         default = True),
 
     title = 'Ptah crowd settings',
-    #ttw = True,
-    #ttw_skip_fields = ('type',),
     )

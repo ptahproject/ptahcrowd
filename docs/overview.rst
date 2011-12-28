@@ -70,23 +70,6 @@ then add it as a dependency in your package's :file:`setup.py`, for example::
 
   It also requires :mod:`ptah` 0.2 or above
 
-settings.ini
-============
-
-Listed are a following of .ini attributes you can override.
-
-  * ptah_crowd.type
-  
-  * ptah_crowd.join
-  
-  * ptah_crowd.joinurl
-  
-  * ptah_crowd.password
-
-  * ptah_crowd.validation
-
-  * ptah_crowd.allow-unvalidated
-  
 schema
 ======
 

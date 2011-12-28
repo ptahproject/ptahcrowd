@@ -80,8 +80,9 @@ class LoginForm(form.Form):
         self.app_url = self.request.application_url
         cfg = ptah.get_settings(CFG_ID_CROWD, self.request.registry)
         self.join = cfg['join']
-        if cfg['joinurl']:
-            self.joinurl = cfg['joinurl']
+        joinurl = cfg['join-url']
+        if joinurl:
+            self.joinurl = joinurl
         else:
             self.joinurl = '%s/join.html'%self.app_url
 
