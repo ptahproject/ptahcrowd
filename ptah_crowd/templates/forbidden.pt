@@ -1,0 +1,8 @@
+<div class="page-header">
+  <h1>Your are not allowed to access this part of site.</h1>
+</div>
+
+<p>
+You do not have sufficient privileges to view this page. 
+If you believe you are receiving this message in error, 
+contact the <a href="mailto:${view.email_address}">site administration</a>.</p>
