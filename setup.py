@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 version='0.2dev'
 
 install_requires = ['setuptools',
-                    'ptah >= 0.2',
+                    'ptah >= 0.2.1',
                     ]
 tests_require = ['nose']
 

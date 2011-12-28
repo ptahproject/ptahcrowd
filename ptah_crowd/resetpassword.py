@@ -137,8 +137,8 @@ class ResetPasswordTemplate(ptah.mail.MailTemplate):
 
         self.date = datetime.now()
 
-        remoteAddr = request.get('REMOTE_ADDR', '')
-        forwardedFor = request.get('HTTP_X_FORWARDED_FOR', None)
+        remoteAddr = request.environ.get('REMOTE_ADDR', '')
+        forwardedFor = request.environ.get('HTTP_X_FORWARDED_FOR', None)
 
         self.from_ip = (forwardedFor and '%s/%s' %
                         (remoteAddr, forwardedFor) or remoteAddr)

@@ -12,10 +12,12 @@ var/*
 *.pyc
 *.pyo
 *.pt.py
-*.pt.pyc
 *.bak
+*.egg
+.tox
 .DS_Store
 .coverage
 .noseids
-htmlcov
 docs/_build/
+nosetests.xml
+ptah_crowd/coverage.xml
