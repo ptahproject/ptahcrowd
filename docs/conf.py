@@ -18,7 +18,14 @@
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.intersphinx']
+
+intersphinx_mapping = dict(
+    python=('http://docs.python.org/dev', None),
+    sqlalchemy=('http://www.sqlalchemy.org/docs/', None),
+    pyramid=('http://readthedocs.org/docs/pyramid/en/latest/', None),
+    ptah=('http://readthedocs.org/docs/ptahproject/en/latest/', None)
+    )
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']

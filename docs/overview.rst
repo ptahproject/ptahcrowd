@@ -2,7 +2,7 @@
 Overview
 ========
 
-`ptah` does not require `ptah_crowd`.  The `ptah_simpleauth` package in
+:py:mod:`ptah` does not require `ptah_crowd`.  The `ptah_simpleauth` package in
 the examples repository demonstrates a fully working user/authentication
 system.  If you want to understand how to build your own user/properties
 subsystem - start at `ptah_simpleauth`.
