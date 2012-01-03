@@ -1,5 +1,6 @@
 # ptah_crowd package
 
+from ptah_crowd.provider import get_user_type
 from ptah_crowd.provider import CrowdUser
 from ptah_crowd.provider import CrowdApplication
 from ptah_crowd.provider import CrowdFactory

@@ -1,43 +1,34 @@
 import logging
 import ptah
 import ptah_crowd
-from pyramid.registry import Registry
 
 
-@ptah.adapter(Registry, name=ptah_crowd.POPULATE_CREATE_ADMIN)
-class CreateAdminUser(ptah.PopulateStep):
+@ptah.populate(ptah_crowd.POPULATE_CREATE_ADMIN,
+               title='Create admin user',
+               requires=(ptah.POPULATE_DB_SCHEMA,))
+def create_admin_user(registry):
+    crowd_cfg = ptah.get_settings(ptah_crowd.CFG_ID_CROWD, registry)
+    if not crowd_cfg['admin-login']:
+        return
 
-    title = 'Create admin user'
-    requires = (ptah.POPULATE_DB_SCHEMA,)
+    Session = ptah.get_session()
+    ptah_cfg = ptah.get_settings(ptah.CFG_ID_PTAH, registry)
 
-    def execute(self):
-        crowd_cfg = ptah.get_settings(ptah_crowd.CFG_ID_CROWD, self.registry)
-        if not crowd_cfg['admin-login']:
-            return
+    user = Session.query(ptah_crowd.CrowdUser).\
+        filter(ptah_crowd.CrowdUser.login==crowd_cfg['admin-login']).first()
 
-        Session = ptah.get_session()
-        ptah_cfg = ptah.get_settings(ptah.CFG_ID_PTAH, self.registry)
+    if user is None:
+        tinfo = ptah_crowd.get_user_type(registry)
 
-        user = Session.query(ptah_crowd.CrowdUser).\
-               filter(ptah_crowd.CrowdUser.login==crowd_cfg['admin-login']).\
-               first()
+        log = logging.getLogger('ptah_crowd')
+        log.info("Creating admin user `%s` %s",
+                 crowd_cfg['admin-login'], crowd_cfg['admin-name'])
 
-        if user is None:
-            tp = crowd_cfg['type']
-            if not tp.startswith('cms-type:'):
-                tp = 'cms-type:{0}'.format(tp)
+        # create user
+        user = tinfo.create(
+            title=crowd_cfg['admin-name'],
+            login=crowd_cfg['admin-login'],
+            email=ptah_cfg['email_from_address'])
+        user.password = ptah.pwd_tool.encode(crowd_cfg['admin-password'])
 
-            tinfo = ptah.resolve(tp)
-
-            log = logging.getLogger('ptah_crowd')
-            log.info("Creating admin user `%s` %s",
-                     crowd_cfg['admin-login'], crowd_cfg['admin-name'])
-
-            # create user
-            user = tinfo.create(
-                title=crowd_cfg['admin-name'],
-                login=crowd_cfg['admin-login'],
-                email=ptah_cfg['email_from_address'])
-            user.password = ptah.pwd_tool.encode(crowd_cfg['admin-password'])
-
-            ptah_crowd.CrowdFactory().add(user)
+        ptah_crowd.CrowdFactory().add(user)

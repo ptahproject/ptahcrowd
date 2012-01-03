@@ -38,6 +38,28 @@
         </tr>
       </tbody>
     </table>
+
+    <div class="pagination" tal:condition="len(view.pages)>1">
+      <ul>
+	<li class="${'prev' if view.prev else 'prev disabled'}">
+	  <a href="?batch=${view.prev}">&larr; Previous</a>
+	</li>
+    
+	<tal:block repeat="idx view.pages">
+	  <li tal:define="klass '' if idx else 'disabled'"
+              tal:attributes="class 'active' if idx==view.current else klass">
+            <a href="?batch=${idx}">${idx if idx else '...'}</a>
+	  </li>
+	</tal:block>
+	
+	<li class="${'next' if view.next else 'next disabled'}">
+	  <a href="?batch=${view.next}">
+            Next &rarr;
+	  </a>
+	</li>
+      </ul>
+    </div>
+
     <div class="actions">
       <tal:block condition="view.users">
         <input type="submit" class="btn" value="Activate" name="activate" />
