@@ -13,6 +13,8 @@ from ptah_crowd.validation import initiate_email_validation
 from ptah_crowd.schemas import UserSchema
 from ptah_crowd.schemas import checkLoginValidator
 
+POPULATE_CREATE_ADMIN = 'ptah-crowd-admin'
+
 
 # ptah_crowd include
 def includeme(config):

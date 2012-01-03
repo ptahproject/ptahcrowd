@@ -51,5 +51,23 @@ ptah.register_settings(
         description = 'Allow login for un Validated users.',
         default = True),
 
+    ptah.form.TextField(
+        'admin-name',
+        title = 'Admin name',
+        description = 'Default admin name.',
+        default = 'Ptah admin'),
+
+    ptah.form.TextField(
+        'admin-login',
+        title = 'Admin login',
+        description = 'Default admin login.',
+        default = ''),
+
+    ptah.form.TextField(
+        'admin-password',
+        title = 'Admin password',
+        description = 'Default admin password.',
+        default = '12345'),
+
     title = 'Ptah crowd settings',
     )

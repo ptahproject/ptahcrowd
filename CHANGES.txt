@@ -8,7 +8,9 @@ CHANGES
 
 - Added HTTPForbidden view
 
-- Rename settings group 'ptah-crowd' to 'ptah_crowd'.
+- Added `admin` user auto creation.
+
+- Rename settings group `ptah-crowd` to `ptah_crowd`.
 
 
 0.1 (2011-12-22)

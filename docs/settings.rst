@@ -31,3 +31,16 @@ Listed are a following of .ini attributes you can override.
 
    Allow login for un Validated users.
 
+
+``ptah_crowd.admin-name``
+
+   Admin human readable name for population script.
+
+``ptah_crowd.admin-login``
+
+   Admin login for population subsystem. Default value is ``''``.
+   Empty string means do not create admin user.
+
+``ptah_crowd.admin-password``
+
+   Admin user password.
