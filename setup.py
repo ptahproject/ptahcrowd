@@ -8,6 +8,7 @@ version='0.2dev'
 
 install_requires = ['setuptools',
                     'ptah >= 0.2.1',
+                    'velruse >= 0.20a1dev',
                     ]
 tests_require = install_requires + ['nose']
 

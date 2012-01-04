@@ -46,5 +46,8 @@ def includeme(config):
     config.add_route(
         CROWD_APP_ID, '# {0}'.format(CROWD_APP_ID), use_global_views=True)
 
+    # velruse config
+    config.include('ptah_crowd.velruse_support')
+
     # scan
     config.scan('ptah_crowd')
