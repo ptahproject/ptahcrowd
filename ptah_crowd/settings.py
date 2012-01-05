@@ -3,8 +3,19 @@ import translationstring
 
 _ = translationstring.TranslationStringFactory('ptah_crowd')
 
-
+CFG_ID_AUTH = 'auth'
 CFG_ID_CROWD = 'ptah_crowd'
+
+providers = ptah.form.SimpleVocabulary(
+    ptah.form.SimpleTerm('facebook', 'facebook', 'Facebook'),
+    ptah.form.SimpleTerm('github', 'github', 'GitHub'),
+    #ptah.form.SimpleTerm('google', 'google', 'Google'),
+    ptah.form.SimpleTerm('bitbucket', 'bitbucket', 'Bitbucket'),
+    ptah.form.SimpleTerm('linkedin', 'linkedin', 'LinkedIn'),
+    ptah.form.SimpleTerm('live', 'live', 'Windows Live'),
+    ptah.form.SimpleTerm('twitter', 'twitter', 'Twitter'),
+    )
+
 
 ptah.register_settings(
     CFG_ID_CROWD,
@@ -71,3 +82,46 @@ ptah.register_settings(
 
     title = 'Ptah crowd settings',
     )
+
+
+ptah.register_settings(
+    CFG_ID_AUTH,
+
+    ptah.form.LinesField(
+        'providers',
+        title = 'Providers',
+        description = 'Enable external auth providers (github, facebook, etc).',
+        default = ()),
+
+    ptah.form.TextField(
+        'github_id',
+        title = 'Client id',
+        description = 'Github client id.',
+        default = ''),
+
+    ptah.form.TextField(
+        'github_secret',
+        title = 'Secret',
+        description = 'Github client secret.',
+        default = ''),
+
+    ptah.form.TextField(
+        'github_scope',
+        title = 'Scope',
+        description = 'Github oauth scope.',
+        default = ''),
+
+    ptah.form.TextField(
+        'facebook_id',
+        title = 'Id',
+        description = 'Facebook client id.',
+        default = ''),
+
+    ptah.form.TextField(
+        'facebook_secret',
+        title = 'Secret',
+        description = 'Facebook client secret.',
+        default = ''),
+
+    title = 'Ptah external auth providers',
+)

@@ -89,6 +89,8 @@ class LoginForm(form.Form):
         if ptah.auth_service.get_userid():
             return HTTPFound(location = '%s/login-success.html'%self.app_url)
 
+        self.providers = cfg['providers']
+
         return super(LoginForm, self).update()
 
 

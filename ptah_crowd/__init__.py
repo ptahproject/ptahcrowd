@@ -6,6 +6,7 @@ from ptah_crowd.provider import CrowdApplication
 from ptah_crowd.provider import CrowdFactory
 from ptah_crowd.provider import CROWD_APP_ID
 
+from ptah_crowd.settings import CFG_ID_AUTH
 from ptah_crowd.settings import CFG_ID_CROWD
 from ptah_crowd.memberprops import get_properties
 from ptah_crowd.memberprops import query_properties
@@ -46,8 +47,8 @@ def includeme(config):
     config.add_route(
         CROWD_APP_ID, '# {0}'.format(CROWD_APP_ID), use_global_views=True)
 
-    # velruse config
-    config.include('ptah_crowd.velruse_support')
+    # static assets
+    config.add_static_view('_ptah_crowd', 'ptah_crowd:static')
 
     # scan
     config.scan('ptah_crowd')

@@ -7,8 +7,9 @@ from setuptools import setup, find_packages
 version='0.2dev'
 
 install_requires = ['setuptools',
-                    'ptah >= 0.2.1',
-                    'velruse >= 0.20a1dev',
+                    'ptah >= 0.3.0dev',
+                    "requests >= 0.6.6",
+                    "oauth2 >= 1.1.3",
                     ]
 tests_require = install_requires + ['nose']
 
