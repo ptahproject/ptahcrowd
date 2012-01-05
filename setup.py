@@ -8,8 +8,8 @@ version='0.2dev'
 
 install_requires = ['setuptools',
                     'ptah >= 0.3.0dev',
-                    "requests >= 0.6.6",
                     "oauth2 >= 1.1.3",
+                    "requests >= 0.6.6",
                     ]
 tests_require = install_requires + ['nose']
 

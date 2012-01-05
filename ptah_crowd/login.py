@@ -5,6 +5,7 @@ from pyramid import security
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
+import ptah_crowd
 from ptah_crowd.settings import _, CFG_ID_CROWD
 from ptah_crowd.memberprops import get_properties
 
@@ -37,7 +38,7 @@ class LoginForm(form.Form):
         )
 
     @form.button(_("Log in"), name='login', actype=form.AC_PRIMARY)
-    def handleLogin(self):
+    def login_handler(self):
         request = self.request
 
         data, errors = self.extract()
@@ -89,6 +90,7 @@ class LoginForm(form.Form):
         if ptah.auth_service.get_userid():
             return HTTPFound(location = '%s/login-success.html'%self.app_url)
 
+        cfg = ptah.get_settings(ptah_crowd.CFG_ID_AUTH, self.request.registry)
         self.providers = cfg['providers']
 
         return super(LoginForm, self).update()

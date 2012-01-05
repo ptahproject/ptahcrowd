@@ -7,10 +7,10 @@ CFG_ID_AUTH = 'auth'
 CFG_ID_CROWD = 'ptah_crowd'
 
 providers = ptah.form.SimpleVocabulary(
+    ptah.form.SimpleTerm('bitbucket', 'bitbucket', 'Bitbucket'),
     ptah.form.SimpleTerm('facebook', 'facebook', 'Facebook'),
     ptah.form.SimpleTerm('github', 'github', 'GitHub'),
-    #ptah.form.SimpleTerm('google', 'google', 'Google'),
-    ptah.form.SimpleTerm('bitbucket', 'bitbucket', 'Bitbucket'),
+    ptah.form.SimpleTerm('google', 'google', 'Google'),
     ptah.form.SimpleTerm('linkedin', 'linkedin', 'LinkedIn'),
     ptah.form.SimpleTerm('live', 'live', 'Windows Live'),
     ptah.form.SimpleTerm('twitter', 'twitter', 'Twitter'),
@@ -108,7 +108,7 @@ ptah.register_settings(
     ptah.form.TextField(
         'github_scope',
         title = 'Scope',
-        description = 'Github oauth scope.',
+        description = 'Github access oauth scope.',
         default = ''),
 
     ptah.form.TextField(
@@ -122,6 +122,12 @@ ptah.register_settings(
         title = 'Secret',
         description = 'Facebook client secret.',
         default = ''),
+
+    ptah.form.TextField(
+        'facebook_scope',
+        title = 'Scope',
+        description = 'Facebook access oauth scope.',
+        default = 'email'),
 
     title = 'Ptah external auth providers',
 )

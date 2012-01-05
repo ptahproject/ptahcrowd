@@ -9,6 +9,7 @@ from pyramid.httpexceptions import HTTPFound
 
 import ptah
 import ptah_crowd
+from ptah_crowd.providers import Storage
 from ptah_crowd.providers import AuthenticationComplete
 from ptah_crowd.providers.exceptions import AuthenticationDenied
 from ptah_crowd.providers.exceptions import ThirdPartyFailure
@@ -32,7 +33,7 @@ def github_login(request):
 
     scope = cfg['github_scope']
     client_id = cfg['github_id']
-    
+
     gh_url = '{0}?{1}'.format(
         'https://github.com/login/oauth/authorize',
         url_encode({'scope': scope,
@@ -65,9 +66,14 @@ def github_process(request):
     if r.status_code != 200:
         raise ThirdPartyFailure("Status %s: %s" % (r.status_code, r.content))
 
-    print r, r.status_code, r.content
+    try:
+        access_token = parse_qs(r.content)['access_token'][0]
+    except:
+        return AuthenticationDenied("Can't get access_token.")
 
-    access_token = parse_qs(r.content)['access_token'][0]
+    entry = Storage.get_by_token(access_token, 'github.com')
+    if entry is not None:
+        return GithubAuthenticationComplete(entry)
 
     # Retrieve profile data
     graph_url = '{0}?{1}'.format('https://github.com/api/v2/json/user/show',
@@ -78,18 +84,11 @@ def github_process(request):
     data = loads(r.content)['user']
 
     profile = {}
-    profile['accounts'] = [{
-        'domain':'github.com',
-        'username':data['login'],
-        'userid':data['id']
-    }]
+    profile['id'] = data['id']
+    profile['name'] = data['login']
     profile['displayName'] = data['name']
     profile['preferredUsername'] = data['login']
+    profile['email'] = data.get('email', '')
 
-    # We don't add this to verifiedEmail because ppl can change email addresses
-    # without verifying them
-    if 'email' in data:
-        profile['emails'] = [{'value':data['email']}]
-
-    cred = {'oauthAccessToken': access_token}
-    return GithubAuthenticationComplete(profile=profile, credentials=cred)
+    entry = Storage.create(access_token, 'github.com', profile)
+    return GithubAuthenticationComplete(entry)
