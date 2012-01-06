@@ -129,5 +129,17 @@ ptah.register_settings(
         description = 'Facebook access oauth scope.',
         default = 'email'),
 
+    ptah.form.TextField(
+        'google_id',
+        title = 'Id',
+        description = 'Google client id.',
+        default = ''),
+
+    ptah.form.TextField(
+        'google_secret',
+        title = 'Secret',
+        description = 'Google client secret.',
+        default = ''),
+
     title = 'Ptah external auth providers',
 )
