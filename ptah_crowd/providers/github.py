@@ -71,7 +71,7 @@ def github_process(request):
     except:
         return AuthenticationDenied("Can't get access_token.")
 
-    entry = Storage.get_by_token(access_token, 'github.com')
+    entry = Storage.get_by_token(access_token)
     if entry is not None:
         return GithubAuthenticationComplete(entry)
 
@@ -81,6 +81,8 @@ def github_process(request):
     r = requests.get(graph_url)
     if r.status_code != 200:
         raise ThirdPartyFailure("Status %s: %s" % (r.status_code, r.content))
+
+    print r.content
     data = loads(r.content)['user']
 
     profile = {}

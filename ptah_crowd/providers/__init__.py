@@ -83,19 +83,18 @@ class Storage(ptah.get_base()):
 
     __tablename__ = 'ptah_crowd_auth_storage'
 
+    uid = sqla.Column(
+        sqla.String(255), primary_key=True, nullable=False)
     access_token = sqla.Column(
-        sqla.String(255), primary_key=True, nullable=False)
-    domain = sqla.Column(
-        sqla.String(255), primary_key=True, nullable=False)
+        sqla.String(255), nullable=False, index=True)
     uri = sqla.Column(sqla.String(255), nullable=False)
     profile = sqla.Column(sqla.Text(), nullable=False)
     expires = sqla.Column(sqla.DateTime())
 
     @classmethod
-    def get_by_token(cls, access_token, domain):
+    def get_by_token(cls, access_token):
         return ptah.get_session().query(cls).filter(
-            sqla.and_(cls.access_token == access_token,
-                      cls.domain == domain)).first()
+            sqla.and_(cls.access_token == access_token)).first()
 
     @classmethod
     def create(cls, access_token, domain, profile, expires=None):
