@@ -1,12 +1,17 @@
-"""Live Authentication Views"""
-import datetime
-from json import loads
+"""Windows Live Authentication
 
+doc: http://msdn.microsoft.com/en-us/library/hh243647.aspx
+
+"""
+import datetime
 import requests
+from json import loads
 
 from pyramid.compat import url_encode
 from pyramid.httpexceptions import HTTPFound
 
+import ptah
+import ptah_crowd
 from ptah_crowd.providers import AuthenticationComplete
 from ptah_crowd.providers.exceptions import AuthenticationDenied
 from ptah_crowd.providers.exceptions import ThirdPartyFailure
@@ -26,16 +31,18 @@ def includeme(config):
 
 def live_login(request):
     """Initiate a Live login"""
-    config = request.registry.settings
-    scope = config.get('velruse.live.scope',
-                       request.POST.get('scope','wl.basic wl.emails wl.signin'))
-    fb_url = '{0}?{1}'.format(
+    cfg = ptah.get_settings(ptah_crowd.CFG_ID_AUTH, request.registry)
+
+    scope = 'wl.basic wl.emails wl.signin'
+    client_id = cfg['live_id']
+
+    live_url = '{0}?{1}&redirect_uri={2}'.format(
         'https://oauth.live.com/authorize',
-        url_encode(scope=scope,
-                   client_id=config['velruse.live.client_id'],
-                   redirect_uri=request.route_url('live_process'),
-                   response_type="code"))
-    return HTTPFound(location=fb_url)
+        url_encode({'scope': scope,
+                    'client_id': client_id,
+                    'redirect_uri': request.route_url('live_process'),
+                    'response_type': "code"}))
+    return HTTPFound(location=live_url)
 
 
 def live_process(request):
@@ -43,22 +50,32 @@ def live_process(request):
     if 'error' in request.GET:
         raise ThirdPartyFailure(request.GET.get('error_description',
                                 'No reason provided.'))
-    config = request.registry.settings
+
     code = request.GET.get('code')
     if not code:
         reason = request.GET.get('error_reason', 'No reason provided.')
         return AuthenticationDenied(reason)
 
+    cfg = ptah.get_settings(ptah_crowd.CFG_ID_AUTH, request.registry)
+
+    client_id = cfg['live_id']
+    client_secret = cfg['live_secret']
+
     # Now retrieve the access token with the code
     access_url = '{0}?{1}'.format(
         'https://oauth.live.com/token',
-        url_encode(client_id=config['velruse.live.client_id'],
-                   client_secret=config['velruse.live.client_secret'],
-                   redirect_uri=request.route_url('live_process'),
-                   grant_type="authorization_code", code=code))
+        url_encode({'client_id': client_id,
+                    'client_secret': client_secret,
+                    'redirect_uri': request.route_url('live_process'),
+                    'grant_type': 'authorization_code',
+                    'code': code}))
+
     r = requests.get(access_url)
     if r.status_code != 200:
         raise ThirdPartyFailure("Status %s: %s" % (r.status_code, r.content))
+
+    print r.content
+
     data = loads(r.content)
     access_token = data['access_token']
 

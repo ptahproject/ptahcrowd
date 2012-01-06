@@ -1,4 +1,8 @@
-"""Twitter Authentication Views"""
+"""Twitter Authentication
+
+
+app: https://dev.twitter.com/apps/
+"""
 from urlparse import parse_qs
 
 import oauth2 as oauth
@@ -30,7 +34,7 @@ def includeme(config):
 
 def twitter_login(request):
     """Initiate a Twitter login"""
-    settings = request.registry.settings
+
 
     # Create the consumer and client, make the request
     consumer = oauth.Consumer(settings['velruse.twitter.consumer_key'],

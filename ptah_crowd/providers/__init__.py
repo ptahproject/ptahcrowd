@@ -110,7 +110,7 @@ class Storage(ptah.get_base()):
 
         schema = ptah.extract_uri_schema(user.__uri__)
         uri = '{0}:{1}-{2}'.format(schema, domain, profile['id'])
-        
+
         existing_user = ptah.resolve(uri)
         if existing_user is not None:
             user = existing_user

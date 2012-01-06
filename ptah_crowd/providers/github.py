@@ -1,4 +1,4 @@
-"""Github Authentication Views"""
+"""Github Authentication"""
 from json import loads
 from urlparse import parse_qs
 

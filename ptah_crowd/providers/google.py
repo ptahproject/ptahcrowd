@@ -57,7 +57,7 @@ def google_login(request):
         url_encode({'client_id': client_id,
                     'redirect_uri': request.route_url('google_process'),
                     'response_type': 'code'}))
-    
+
     return HTTPFound(location=go_url)
 
 

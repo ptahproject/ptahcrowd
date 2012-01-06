@@ -141,5 +141,29 @@ ptah.register_settings(
         description = 'Google client secret.',
         default = ''),
 
+    ptah.form.TextField(
+        'live_id',
+        title = 'Id',
+        description = 'Windows Live client id.',
+        default = ''),
+
+    ptah.form.TextField(
+        'live_secret',
+        title = 'Secret',
+        description = 'Windows Live client secret.',
+        default = ''),
+
+    ptah.form.TextField(
+        'twitter_key',
+        title = 'Key',
+        description = 'Twitter consummer key.',
+        default = ''),
+
+    ptah.form.TextField(
+        'twitter_secret',
+        title = 'Secret',
+        description = 'Twitter consummer secret.',
+        default = ''),
+
     title = 'Ptah external auth providers',
 )
