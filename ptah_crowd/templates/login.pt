@@ -18,6 +18,20 @@
     <tal:block i18n:translate="">New user? If you do not have an account here, </tal:block>
     <a href="${view.joinurl}">head over to the registration form.</a>
   </p>
-  
+ 
   <tal:block content="structure view.snippet('form-view', view)" />
+</div>
+
+
+<div tal:condition="view.providers">
+  <div class="page-header">
+    <h6 i18n:translate="">Or use your account from</h6>
+  </div>
+
+  <div style="text-align: center">
+    <a tal:repeat="p view.providers" 
+       href="${request.route_url('%s_login'%p)}" title="${p}">
+      <img src="${request.static_url('ptah_crowd:static/buttons/%s_64.png'%p)}"/>
+    </a>
+  </div>
 </div>

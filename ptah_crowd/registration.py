@@ -8,6 +8,7 @@ from ptah import config, form
 from ptah.password import PasswordSchema
 from ptah.events import PrincipalRegisteredEvent
 
+from ptah_crowd.provider import get_user_type
 from ptah_crowd.provider import CrowdFactory
 from ptah_crowd.settings import _, CFG_ID_CROWD
 from ptah_crowd.schemas import RegistrationSchema
@@ -37,11 +38,7 @@ class Registration(form.Form):
         return super(Registration, self).update()
 
     def create(self, data):
-        tp = self.cfg['type']
-        if not tp.startswith('cms-type:'):
-            tp = 'cms-type:{0}'.format(tp)
-
-        tinfo = ptah.resolve(tp)
+        tinfo = get_user_type(self.request.registry)
 
         # create user
         user = tinfo.create(

@@ -11,6 +11,20 @@ CROWD_APP_ID = 'ptah-crowd'
 
 
 class CrowdUser(ptah.cms.BaseContent):
+    """Default crowd user
+
+    ``name``: User name.
+
+    ``login``: User login.
+
+    ``email``: User email.
+
+    ``password``: User password.
+
+    ``properties``: Instance of
+    :py:class:`ptah_crowd.memberprops.UserProperties` class.
+
+    """
 
     __tablename__ = 'ptah_crowd'
 
@@ -36,12 +50,24 @@ class CrowdUser(ptah.cms.BaseContent):
         return '%s<%s:%s>'%(self.__class__.__name__, self.title, self.__uri__)
 
 
+def get_user_type(registry=None):
+    cfg = ptah.get_settings(CFG_ID_CROWD, registry)
+    tp = cfg['type']
+    if not tp.startswith('cms-type:'):
+        tp = 'cms-type:{0}'.format(tp)
+
+    return ptah.resolve(tp)
+
+
 def get_allowed_content_types(context, registry=None):
-    CROWD = ptah.get_settings(CFG_ID_CROWD, registry)
-    return (CROWD['type'],)
+    cfg = ptah.get_settings(CFG_ID_CROWD, registry)
+    return (cfg['type'],)
 
 
 class CrowdApplication(ptah.cms.BaseApplicationRoot,ptah.cms.BaseContainer):
+    """Ptah crowd application, you should never directly create
+    instances of this class. Use :py:data:`ptah_crowd.CrowdFactory` instead.
+    """
 
     __type__ = ptah.cms.Type('ptah-crowd-provider',
                              'Ptah user management',
@@ -49,6 +75,7 @@ class CrowdApplication(ptah.cms.BaseApplicationRoot,ptah.cms.BaseContainer):
                              allowed_content_types = get_allowed_content_types)
 
     def add(self, user):
+        """ Add user to crowd application. """
         Session = ptah.get_session()
         Session.add(user)
         Session.flush()

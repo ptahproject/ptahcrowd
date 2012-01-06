@@ -6,8 +6,6 @@ from pyramid.security import remember
 from pyramid.httpexceptions import HTTPFound
 
 import ptah
-from ptah import mail
-
 from ptah_crowd.settings import CFG_ID_CROWD
 from ptah_crowd.memberprops import get_properties, query_properties
 
@@ -16,7 +14,12 @@ TOKEN_TYPE = ptah.token.TokenType(
 
 
 def initiate_email_validation(email, principal, request):
-    """ initiate principal email validation """
+    """ Initiate email validation
+
+    :param email: email address of user
+    :param principal: principal object
+    :param request: current request object
+    """
     t = ptah.token.service.generate(TOKEN_TYPE, principal.__uri__)
     template = ValidationTemplate(principal, request, email=email, token = t)
     template.send()
@@ -62,7 +65,7 @@ def principalAdded(ev):
     props.validated = True
 
 
-class ValidationTemplate(mail.MailTemplate):
+class ValidationTemplate(ptah.mail.MailTemplate):
 
     subject = 'Activate Your Account'
     template = 'ptah_crowd:templates/validate_email.txt'
@@ -74,7 +77,7 @@ class ValidationTemplate(mail.MailTemplate):
             self.request.application_url, self.token)
 
         principal = self.context
-        self.to_address = mail.formataddr((principal.name, self.email))
+        self.to_address = ptah.mail.formataddr((principal.name, self.email))
 
 
 @view_config(route_name='ptah-principal-validate')

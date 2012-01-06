@@ -6,6 +6,7 @@ Ptah Crowd
    
    overview.rst
    settings.rst
+   customize.rst
    api.rst
    license.rst
 

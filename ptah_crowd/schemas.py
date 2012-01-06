@@ -14,12 +14,14 @@ def lower(s):
     return s
 
 
-def checkLoginValidator(node, login):
-    if getattr(node, 'value', None) == login:
+def checkLoginValidator(field, login):
+    """Ptah field validator, checks if login is already in use."""
+
+    if getattr(field, 'value', None) == login:
         return
 
     if ptah.auth_service.get_principal_bylogin(login) is not None:
-        raise form.Invalid(node, _('Login already is in use.'))
+        raise form.Invalid(field, _('Login already is in use.'))
 
 
 RegistrationSchema = form.Fieldset(
