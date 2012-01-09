@@ -61,6 +61,7 @@ def auth_complete_view(context, request):
                     password=entry.access_token)
                 ptah_crowd.CrowdFactory().add(user)
                 entry.uri = user.__uri__
+            user.properties.validated = True
         else:
             # verify email
             return HTTPFound(
@@ -194,6 +195,8 @@ def verify(request):
         session = ptah.get_session()
 
         principal = ptah.resolve(data['uri'])
+        principal.properties.validated = True
+
         entry = session.query(Storage).filter(Storage.uid==data['uid']).first()
         entry.uri = principal.__uri__
         entry.email = data['email']
