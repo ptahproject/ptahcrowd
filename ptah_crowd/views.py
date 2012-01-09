@@ -31,6 +31,8 @@ class CrowdApplicationView(form.Form):
         )
 
     users = None
+    external = {}
+    pages = ()
     page = ptah.Pagination(15)
 
     def form_content(self):

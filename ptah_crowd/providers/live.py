@@ -80,7 +80,7 @@ def live_process(request):
     # Retrieve profile data
     url = '{0}?{1}'.format(
         'https://apis.live.net/v5.0/me',
-        url_encode('access_token': access_token})
+        url_encode({'access_token': access_token}))
     r = requests.get(url)
     if r.status_code != 200:
         raise ThirdPartyFailure("Status %s: %s" % (r.status_code, r.content))
