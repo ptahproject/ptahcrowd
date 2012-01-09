@@ -8,6 +8,7 @@ from ptah import form
 from ptah_crowd.settings import _
 from ptah_crowd.module import CrowdModule
 from ptah_crowd.provider import CrowdUser, CrowdFactory
+from ptah_crowd.providers import Storage
 from ptah_crowd.memberprops import UserProperties
 
 
@@ -98,6 +99,17 @@ class CrowdApplicationView(form.Form):
             offset, limit = self.page.offset(current)
             self.users = Session.query(CrowdUser)\
                     .offset(offset).limit(limit).all()
+
+            auths = Session.query(Storage).filter(
+                Storage.uri.in_([u.__uri__ for u in self.users])).all()
+
+            self.external = extr = {}
+            for entry in auths:
+                data = extr.get(entry.uri)
+                if data is None:
+                    data = []
+                data.append(entry.domain)
+                extr[entry.uri] = data
 
     @form.button(_('Search'), actype=form.AC_PRIMARY)
     def search(self):

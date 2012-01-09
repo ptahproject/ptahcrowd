@@ -3,9 +3,9 @@
 doc: http://msdn.microsoft.com/en-us/library/hh243647.aspx
 
 """
+import json
 import datetime
 import requests
-from json import loads
 
 from pyramid.compat import url_encode
 from pyramid.httpexceptions import HTTPFound
@@ -74,66 +74,27 @@ def live_process(request):
     if r.status_code != 200:
         raise ThirdPartyFailure("Status %s: %s" % (r.status_code, r.content))
 
-    print r.content
-
-    data = loads(r.content)
+    data = json.loads(r.content)
     access_token = data['access_token']
 
     # Retrieve profile data
-    graph_url = '{0}?{1}'.format('https://apis.live.net/v5.0/me',
-                                 url_encode(access_token=access_token))
-    r = requests.get(graph_url)
+    url = '{0}?{1}'.format(
+        'https://apis.live.net/v5.0/me',
+        url_encode('access_token': access_token})
+    r = requests.get(url)
     if r.status_code != 200:
         raise ThirdPartyFailure("Status %s: %s" % (r.status_code, r.content))
-    live_profile = loads(r.content)
-    profile = extract_live_data(live_profile)
 
-    cred = {'oauthAccessToken': access_token}
-    if 'refresh_token' in data:
-        cred['oauthRefreshToken'] = data['refresh_token']
-    return LiveAuthenticationComplete(profile=profile,
-                                      credentials=cred)
+    profile = json.loads(r.content)
 
+    id = profile['id']
+    name = profile.get('name','')
+    email = profile.get('email','')
+    verified = bool(email)
 
-def extract_live_data(data):
-    """Extract and normalize Windows Live Connect data"""
-    emails = data.get('emails', {})
-    profile = {
-        'accounts': [{'domain':'live.com', 'userid':data['id']}],
-        'gender': data.get('gender'),
-        'verifiedEmail': emails.get('preferred'),
-        'updated': data.get('updated_time'),
-        'name': {
-            'formatted': data.get('name'),
-            'familyName': data.get('last_name'),
-            'givenName': data.get('first_name'),
-        },
-        'emails': [],
-        'urls': [],
-    }
-
-    if emails.get('personal'):
-        profile['emails'].append(
-            {'type': 'personal', 'value': emails['personal']})
-    if emails.get('business'):
-        profile['emails'].append(
-            {'type': 'business', 'value': emails['business']})
-    if emails.get('preferred'):
-        profile['emails'].append(
-            {'type': 'preferred', 'value': emails['preferred'],
-             'primary': True})
-    if emails.get('account'):
-        profile['emails'].append(
-            {'type': 'account', 'value': emails['account']})
-    if 'link' in data:
-        profile['urls'].append(
-            {'type': 'profile', 'value': data['link']})
-    if 'birth_day' in data:
-        try:
-            profile['birthday'] = datetime.date(
-                    int(data['birth_year']),
-                    int(data['birth_month']),
-                    int(data['birth_day']))
-        except ValueError:
-            pass
-    return profile
+    return LiveAuthenticationComplete(access_token, 'live',
+                                      uid = 'live:{0}'.format(id),
+                                      name = name,
+                                      email = email,
+                                      verified = verified,
+                                      profile = profile)

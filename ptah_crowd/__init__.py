@@ -43,6 +43,16 @@ def includeme(config):
     config.add_route(
         'ptah-join', '/join.html', use_global_views=True)
 
+    # verify auth provider email
+    config.add_route(
+        'ptah-crowd-verify-email',
+        '/auth-verify-email/*subpath',
+        use_global_views=True)
+
+    config.add_route(
+        'ptah-crowd-verify-email-complete',
+        '/auth-verify-email-complete/*subpath')
+
     # for management module
     config.add_route(
         CROWD_APP_ID, '# {0}'.format(CROWD_APP_ID), use_global_views=True)

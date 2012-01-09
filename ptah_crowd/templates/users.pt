@@ -14,6 +14,7 @@
           <th>Validated</th>
           <th>Suspended</th>
           <th>Joined</th>
+          <th>External</th>
         </tr>
       </thead>
       <tbody tal:condition="not: view.users">
@@ -34,7 +35,13 @@
             <td tal:content="props.validated"></td>
             <td tal:content="props.suspended"></td>
           </tal:block>
-            <td>${view.format.datetime(user.created,'short')}</td>
+          <td>${view.format.datetime(user.created,'short')}</td>
+	  <td>
+	    <tal:block repeat="item view.external.get(user.__uri__,())">
+	      <img src="${request.static_url('ptah_crowd:static/buttons/%s_32.png'%item)}"
+		   title="${item}" />
+	    </tal:block>
+	  </td>
         </tr>
       </tbody>
     </table>

@@ -1,5 +1,4 @@
 license for files
-    ptah_crowd/providers/bitbucket.py
     ptah_crowd/providers/facebook.py
     ptah_crowd/providers/github.py
     ptah_crowd/providers/linkedin.py
