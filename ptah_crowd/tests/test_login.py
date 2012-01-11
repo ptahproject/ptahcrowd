@@ -182,7 +182,7 @@ class TestLogin(PtahTestCase):
         data, errors = form.extract()
         self.assertEqual(len(errors), 2)
 
-        form.handleLogin()
+        form.login_handler()
         self.assertIn('Please fix indicated errors.',
                       ptah.render_messages(request))
 
@@ -192,7 +192,7 @@ class TestLogin(PtahTestCase):
 
         form = login.LoginForm(None, request)
         form.update()
-        res = form.handleLogin()
+        res = form.login_handler()
 
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'],
@@ -215,7 +215,7 @@ class TestLogin(PtahTestCase):
 
         form = login.LoginForm(None, request)
         form.update()
-        res = form.handleLogin()
+        res = form.login_handler()
 
         self.assertEqual(res.headers['location'],
                          'http://example.com/ptah-manage/')
@@ -236,7 +236,7 @@ class TestLogin(PtahTestCase):
 
         form = login.LoginForm(None, request)
         form.update()
-        form.handleLogin()
+        form.login_handler()
 
         self.assertIn('You enter wrong login or password',
                       ptah.render_messages(request))
@@ -261,7 +261,7 @@ class TestLogin(PtahTestCase):
 
         form = login.LoginForm(None, request)
         form.update()
-        form.handleLogin()
+        form.login_handler()
 
         self.assertIn('Account is not validated.',ptah.render_messages(request))
 
@@ -282,7 +282,7 @@ class TestLogin(PtahTestCase):
 
         form = login.LoginForm(None, request)
         form.update()
-        res = form.handleLogin()
+        res = form.login_handler()
 
         self.assertEqual(res.headers['location'],
                          'http://example.com/login-suspended.html')

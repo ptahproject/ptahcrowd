@@ -1,10 +1,8 @@
-"""Github Authentication Views"""
-from json import loads
-from urlparse import parse_qs
-
+"""Github Authentication"""
+import json
 import requests
 
-from pyramid.compat import url_encode
+from pyramid.compat import url_encode, urlparse
 from pyramid.httpexceptions import HTTPFound
 
 import ptah
@@ -39,6 +37,7 @@ def github_login(request):
         url_encode({'scope': scope,
                     'client_id': client_id,
                     'redirect_uri': request.route_url('github_process')}))
+
     return HTTPFound(location=gh_url)
 
 
@@ -67,28 +66,28 @@ def github_process(request):
         raise ThirdPartyFailure("Status %s: %s" % (r.status_code, r.content))
 
     try:
-        access_token = parse_qs(r.content)['access_token'][0]
+        access_token = urlparse.parse_qs(r.content)['access_token'][0]
     except:
         return AuthenticationDenied("Can't get access_token.")
 
-    entry = Storage.get_by_token(access_token, 'github.com')
+    entry = Storage.get_by_token(access_token)
     if entry is not None:
         return GithubAuthenticationComplete(entry)
 
     # Retrieve profile data
-    graph_url = '{0}?{1}'.format('https://github.com/api/v2/json/user/show',
-                                 url_encode({'access_token': access_token}))
+    graph_url = '{0}?{1}'.format(
+        'https://github.com/api/v2/json/user/show',
+        url_encode({'access_token': access_token}))
     r = requests.get(graph_url)
     if r.status_code != 200:
         raise ThirdPartyFailure("Status %s: %s" % (r.status_code, r.content))
-    data = loads(r.content)['user']
 
-    profile = {}
-    profile['id'] = data['id']
-    profile['name'] = data['login']
-    profile['displayName'] = data['name']
-    profile['preferredUsername'] = data['login']
-    profile['email'] = data.get('email', '')
+    profile = json.loads(r.content)
 
-    entry = Storage.create(access_token, 'github.com', profile)
+    entry = Storage.create(access_token, 'github',
+                           uid = 'github:{0}'.format(profile['user']['id']),
+                           name = profile['user']['name'],
+                           email = profile['user'].get('email') or '',
+                           profile = profile)
+
     return GithubAuthenticationComplete(entry)

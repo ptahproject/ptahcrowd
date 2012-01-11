@@ -1,11 +1,9 @@
 """Github Authentication
 
 Docs: http://code.google.com/apis/accounts/docs/OAuth2Login.html
-oAuth App: https://code.google.com/apis/console   'Api Access'
+OAuth App: https://code.google.com/apis/console   'Api Access'
 """
-from json import loads
-from urlparse import parse_qs
-
+import json
 import requests
 
 from pyramid.compat import url_encode
@@ -31,19 +29,6 @@ def includeme(config):
     config.add_view(google_login, route_name="google_login")
 
 
-#https://accounts.google.com/o/oauth2/auth
-
-#scope=
-#https://www.googleapis.com/auth/userinfo.email
-#https://www.googleapis.com/auth/userinfo.profile
-
-#response_type=code
-#redirect_uri=https://oauth2-login-demo.appspot.com/code
-#approval_prompt=force
-#state=/profile
-#client_id=812741506391.apps.googleusercontent.com
-
-
 def google_login(request):
     """Initiate a google login"""
     cfg = ptah.get_settings(ptah_crowd.CFG_ID_AUTH, request.registry)
@@ -57,7 +42,7 @@ def google_login(request):
         url_encode({'client_id': client_id,
                     'redirect_uri': request.route_url('google_process'),
                     'response_type': 'code'}))
-    
+
     return HTTPFound(location=go_url)
 
 
@@ -84,11 +69,11 @@ def google_process(request):
         raise ThirdPartyFailure("Status %s: %s" % (r.status_code, r.content))
 
     try:
-        access_token = loads(r.content)['access_token']
+        access_token = json.loads(r.content)['access_token']
     except:
         return AuthenticationDenied("Can't get access_token.")
 
-    entry = Storage.get_by_token(access_token, 'google.com')
+    entry = Storage.get_by_token(access_token)
     if entry is not None:
         return GoogleAuthenticationComplete(entry)
 
@@ -100,14 +85,17 @@ def google_process(request):
     if r.status_code != 200:
         raise ThirdPartyFailure("Status %s: %s" % (r.status_code, r.content))
 
-    data = loads(r.content)
+    data = json.loads(r.content)
 
-    profile = {}
-    profile['id'] = data['id']
-    profile['name'] = data['name']
-    profile['displayName'] = data['name']
-    profile['preferredUsername'] = data['name']
-    profile['email'] = data.get('email', '')
+    id = data['id']
+    name = data['name']
+    email = data.get('email', '')
 
-    entry = Storage.create(access_token, 'google.com', profile)
+    entry = Storage.create(access_token, 'google',
+                           uid = '{0}:{1}'.format('google', id),
+                           name = name,
+                           email = email,
+                           verified = True,
+                           profile = data)
+
     return GoogleAuthenticationComplete(entry)

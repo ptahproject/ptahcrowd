@@ -1,12 +1,15 @@
-"""Twitter Authentication Views"""
-from urlparse import parse_qs
+"""Twitter Authentication
 
-import oauth2 as oauth
+app: https://dev.twitter.com/apps/
+"""
 import requests
+import oauth2 as oauth
 
+from pyramid.compat import urlparse
 from pyramid.httpexceptions import HTTPFound
-from pyramid.settings import asbool
 
+import ptah
+import ptah_crowd
 from ptah_crowd.providers import AuthenticationComplete
 from ptah_crowd.providers.exceptions import AuthenticationDenied
 from ptah_crowd.providers.exceptions import ThirdPartyFailure
@@ -30,7 +33,6 @@ def includeme(config):
 
 def twitter_login(request):
     """Initiate a Twitter login"""
-    settings = request.registry.settings
 
     # Create the consumer and client, make the request
     consumer = oauth.Consumer(settings['velruse.twitter.consumer_key'],
@@ -80,7 +82,7 @@ def twitter_process(request):
     resp, content = client.request(ACCESS_URL, "POST")
     if resp['status'] != '200':
         raise ThirdPartyFailure("Status %s: %s" % (resp['status'], content))
-    access_token = dict(parse_qs(content))
+    access_token = urlparse.parse_qs(content)
 
     # Setup the normalized contact info
     profile = {}
