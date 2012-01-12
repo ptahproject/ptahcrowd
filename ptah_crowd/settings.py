@@ -78,7 +78,8 @@ ptah.register_settings(
         'admin-password',
         title = 'Admin password',
         description = 'Default admin password.',
-        default = '12345'),
+        default = '12345',
+        tint = True),
 
     title = 'Ptah crowd settings',
     )
@@ -103,7 +104,8 @@ ptah.register_settings(
         'github_secret',
         title = 'Secret',
         description = 'Github client secret.',
-        default = ''),
+        default = '',
+        tint = True),
 
     ptah.form.TextField(
         'github_scope',
@@ -121,7 +123,8 @@ ptah.register_settings(
         'facebook_secret',
         title = 'Secret',
         description = 'Facebook client secret.',
-        default = ''),
+        default = '',
+        tint = True),
 
     ptah.form.TextField(
         'facebook_scope',
@@ -139,7 +142,8 @@ ptah.register_settings(
         'google_secret',
         title = 'Secret',
         description = 'Google client secret.',
-        default = ''),
+        default = '',
+        tint = True),
 
     ptah.form.TextField(
         'live_id',
@@ -151,7 +155,8 @@ ptah.register_settings(
         'live_secret',
         title = 'Secret',
         description = 'Windows Live client secret.',
-        default = ''),
+        default = '',
+        tint = True),
 
     ptah.form.TextField(
         'twitter_key',
@@ -163,7 +168,8 @@ ptah.register_settings(
         'twitter_secret',
         title = 'Secret',
         description = 'Twitter consummer secret.',
-        default = ''),
+        default = '',
+        tint = True),
 
     title = 'Ptah external auth providers',
 )

@@ -9,6 +9,7 @@ import ptah_crowd
 from ptah_crowd.settings import _
 from ptah_crowd.module import CrowdModule
 from ptah_crowd.provider import CrowdUser, CrowdFactory
+from ptah.password import passwordValidator
 from ptah_crowd.schemas import UserSchema, ManagerChangePasswordSchema
 
 
@@ -69,7 +70,20 @@ class ModifyUserForm(form.Form):
 
     csrf = True
     label = 'Update user'
-    fields = form.Fieldset(UserSchema)
+    fields = form.Fieldset(
+        UserSchema['name'],
+        UserSchema['login'],
+        form.fields.TextField(
+            'password',
+            title = _('Password'),
+            description = _('Enter password. '\
+                            'No spaces or special characters, should contain '\
+                            'digits and letters in mixed case.'),
+            missing = ptah.form.null,
+            validator = passwordValidator),
+        UserSchema['validated'],
+        UserSchema['suspended'],
+        )
 
     def form_content(self):
         user = self.context
@@ -95,7 +109,8 @@ class ModifyUserForm(form.Form):
         user.title = data['name']
         user.login = data['login']
         user.email = data['login']
-        user.password = ptah.pwd_tool.encode(data['password'])
+        if data['password'] is not ptah.form.null:
+            user.password = ptah.pwd_tool.encode(data['password'])
 
         # update props
         props = ptah_crowd.get_properties(user.__uri__)

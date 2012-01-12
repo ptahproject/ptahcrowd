@@ -85,7 +85,7 @@ class CrowdApplication(ptah.cms.BaseApplicationRoot,ptah.cms.BaseContainer):
     def get_user_bylogin(self, login):
         """ Given a login string return a user """
         return CrowdAuthProvider._sql_get_login.first(login=login)
-        
+
 
 @ptah.auth_provider('ptah-crowd-auth')
 class CrowdAuthProvider(object):
