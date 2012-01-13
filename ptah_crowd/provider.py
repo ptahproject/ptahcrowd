@@ -50,6 +50,33 @@ class CrowdUser(ptah.cms.BaseContent):
         return '%s<%s:%s>'%(self.__class__.__name__, self.title, self.__uri__)
 
 
+class CrowdGroup(ptah.cms.BaseContent):
+    """Crowd group
+
+    ``name``: User name.
+
+    ``users``: Users list.
+
+    """
+
+    login = ''
+
+    __type__ = ptah.cms.Type(
+        'ptah-crowd-group', 'Crowd group', global_allow = False)
+
+    @property
+    def name(self):
+        return self.title
+
+
+class UserGroup(ptah.get_base()):
+
+    __tablename__ = 'ptah_crowd_usergroups'
+
+    user = sqla.Column(sqla.String(255), primary_key=True)
+    group = sqla.Column(sqla.String(255), primary_key=True)
+
+
 def get_user_type(registry=None):
     cfg = ptah.get_settings(CFG_ID_CROWD, registry)
     tp = cfg['type']
@@ -80,7 +107,11 @@ class CrowdApplication(ptah.cms.BaseApplicationRoot,ptah.cms.BaseContainer):
         Session.add(user)
         Session.flush()
 
-        self[str(user.__id__)] = user
+        name = str(user.__id__)
+        if isinstance(user, CrowdGroup):
+            name = 'group_{0}'.format(name)
+
+        self[name] = user
 
     def get_user_bylogin(self, login):
         """ Given a login string return a user """

@@ -23,6 +23,10 @@ class CreateUserForm(form.Form):
     label = _('Create new user')
     fields = UserSchema
 
+    @form.button(_('Back'))
+    def back(self):
+        return HTTPFound(location='.')
+
     @form.button(_('Create'), actype=form.AC_PRIMARY)
     def create(self):
         data, errors = self.extract()
@@ -57,10 +61,6 @@ class CreateUserForm(form.Form):
         self.message('User has been created.', 'success')
         return HTTPFound(location='.')
 
-    @form.button(_('Back'))
-    def back(self):
-        return HTTPFound(location='.')
-
 
 @view_config(context=CrowdUser,
              wrapper=ptah.wrap_layout(),
@@ -83,6 +83,14 @@ class ModifyUserForm(form.Form):
             validator = passwordValidator),
         UserSchema['validated'],
         UserSchema['suspended'],
+
+        form.fields.MultiSelectField(
+            'groups',
+            title = _('Groups'),
+            description = _('Choose user groups.'),
+            missing = (),
+            required = False,
+            vocabulary = ptah.form.SimpleVocabulary())
         )
 
     def form_content(self):
@@ -153,6 +161,10 @@ class ChangePasswordForm(form.Form):
     label = _('Change password')
     description = _('Please specify password for this users.')
 
+    @form.button(_('Back'))
+    def back(self):
+        return HTTPFound(location='..')
+
     @form.button(_('Change'), actype=form.AC_PRIMARY)
     def change(self):
         data, errors = self.extract()
@@ -166,7 +178,3 @@ class ChangePasswordForm(form.Form):
         self.context.password = ptah.pwd_tool.encode(data['password'])
 
         self.message("User password has been changed.")
-
-    @form.button(_('Back'))
-    def back(self):
-        return HTTPFound(location='..')

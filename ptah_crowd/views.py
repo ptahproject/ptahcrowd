@@ -7,7 +7,7 @@ import ptah_crowd
 from ptah import form
 from ptah_crowd.settings import _
 from ptah_crowd.module import CrowdModule
-from ptah_crowd.provider import CrowdUser, CrowdFactory
+from ptah_crowd.provider import CrowdUser, CrowdGroup, CrowdFactory
 from ptah_crowd.providers import Storage
 from ptah_crowd.memberprops import UserProperties
 
@@ -127,3 +127,82 @@ class CrowdApplicationView(form.Form):
     def clear(self):
         if 'ptah-search-term' in self.request.session:
             del self.request.session['ptah-search-term']
+
+
+@view_config(
+    'groups.html',
+    context=CrowdModule,
+    wrapper=ptah.wrap_layout(),
+    renderer='ptah_crowd:templates/groups.pt')
+
+class CrowdGroupsView(ptah.View):
+    __doc__ = 'List groups view'
+
+    pages = ()
+    page = ptah.Pagination(15)
+
+    def update(self):
+        request = self.request
+        self.manage_url = ptah.manage.get_manage_url(request)
+
+        Session = ptah.get_session()
+        uids = request.POST.getall('uid')
+
+        if 'remove' in request.POST and uids:
+            crowd = CrowdFactory()
+            for grp in Session.query(CrowdGroup).\
+                    filter(CrowdGroup.__uri__.in_(uids)):
+                del crowd[grp.__name__]
+            self.message("Selected groups have been removed.", 'info')
+
+        self.size = Session.query(CrowdGroup).count()
+
+        try:
+            current = int(request.params.get('batch', None))
+            if not current:
+                current = 1
+
+            request.session['crowd-grp-batch'] = current
+        except:
+            current = request.session.get('crowd-grp-batch')
+            if not current:
+                current = 1
+
+        self.current = current
+        self.pages, self.prev, self.next = self.page(self.size, self.current)
+
+        offset, limit = self.page.offset(current)
+        self.groups = Session.query(CrowdGroup)\
+                      .offset(offset).limit(limit).all()
+
+
+@view_config('create-grp.html',
+             context=CrowdModule,
+             wrapper=ptah.wrap_layout())
+
+class CreateGroupForm(form.Form):
+
+    csrf = True
+    label = _('Create new group')
+    fields = ptah.cms.ContentSchema
+
+    @form.button(_('Back'))
+    def back(self):
+        return HTTPFound(location='groups.html')
+
+    @form.button(_('Create'), actype=form.AC_PRIMARY)
+    def create(self):
+        data, errors = self.extract()
+
+        if errors:
+            self.message(errors, 'form-error')
+            return
+
+        # create grp
+        grp = CrowdGroup.__type__.create(
+            title=data['title'], description=data['description'])
+        crowd = CrowdFactory()
+        crowd.add(grp)
+
+        self.message('Group has been created.', 'success')
+        return HTTPFound(location='groups.html')
