@@ -58,8 +58,8 @@ ptah.register_settings(
 
     ptah.form.BoolField(
         'allow-unvalidated',
-        title = 'Allow un validation',
-        description = 'Allow login for un Validated users.',
+        title = 'Allow unvalidated',
+        description = 'Allow login for unvalidated users.',
         default = True),
 
     ptah.form.TextField(
@@ -161,13 +161,13 @@ ptah.register_settings(
     ptah.form.TextField(
         'twitter_key',
         title = 'Key',
-        description = 'Twitter consummer key.',
+        description = 'Twitter consumer key.',
         default = ''),
 
     ptah.form.TextField(
         'twitter_secret',
         title = 'Secret',
-        description = 'Twitter consummer secret.',
+        description = 'Twitter consumer secret.',
         default = '',
         tint = True),
 
