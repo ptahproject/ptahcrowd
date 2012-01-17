@@ -68,7 +68,7 @@ def auth_complete_view(context, request):
                 request.route_url(
                     'ptah-crowd-verify-email', subpath=(entry.uid,)))
 
-        return login(entry.uri, request)
+    return login(entry.uri, request)
 
 
 def login(uri, request):
