@@ -7,7 +7,7 @@ from setuptools import setup, find_packages
 version='0.2dev'
 
 install_requires = ['setuptools',
-                    'ptah >= 0.3.0dev',
+                    'ptah >= 0.3.0',
                     "oauth2 >= 1.1.3",
                     "requests >= 0.6.6",
                     ]
@@ -26,8 +26,6 @@ setup(name='ptah_crowd',
           "Programming Language :: Python",
           "Programming Language :: Python :: 2.6",
           "Programming Language :: Python :: 2.7",
-          "Programming Language :: Python :: 3",
-          "Programming Language :: Python :: 3.2",
           "Programming Language :: Python :: Implementation :: CPython",
           "Framework :: Pylons",
           "Topic :: Internet :: WWW/HTTP",

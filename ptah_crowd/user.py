@@ -9,6 +9,7 @@ import ptah_crowd
 from ptah_crowd.settings import _
 from ptah_crowd.module import CrowdModule
 from ptah_crowd.provider import CrowdUser, CrowdFactory
+from ptah.password import passwordValidator
 from ptah_crowd.schemas import UserSchema, ManagerChangePasswordSchema
 
 
@@ -21,6 +22,10 @@ class CreateUserForm(form.Form):
     csrf = True
     label = _('Create new user')
     fields = UserSchema
+
+    @form.button(_('Back'))
+    def back(self):
+        return HTTPFound(location='.')
 
     @form.button(_('Create'), actype=form.AC_PRIMARY)
     def create(self):
@@ -56,10 +61,6 @@ class CreateUserForm(form.Form):
         self.message('User has been created.', 'success')
         return HTTPFound(location='.')
 
-    @form.button(_('Back'))
-    def back(self):
-        return HTTPFound(location='.')
-
 
 @view_config(context=CrowdUser,
              wrapper=ptah.wrap_layout(),
@@ -69,7 +70,28 @@ class ModifyUserForm(form.Form):
 
     csrf = True
     label = 'Update user'
-    fields = form.Fieldset(UserSchema)
+    fields = form.Fieldset(
+        UserSchema['name'],
+        UserSchema['login'],
+        form.fields.TextField(
+            'password',
+            title = _('Password'),
+            description = _('Enter password. '\
+                            'No spaces or special characters, should contain '\
+                            'digits and letters in mixed case.'),
+            missing = ptah.form.null,
+            validator = passwordValidator),
+        UserSchema['validated'],
+        UserSchema['suspended'],
+
+        form.fields.MultiSelectField(
+            'groups',
+            title = _('Groups'),
+            description = _('Choose user groups.'),
+            missing = (),
+            required = False,
+            vocabulary = ptah.form.SimpleVocabulary())
+        )
 
     def form_content(self):
         user = self.context
@@ -95,7 +117,8 @@ class ModifyUserForm(form.Form):
         user.title = data['name']
         user.login = data['login']
         user.email = data['login']
-        user.password = ptah.pwd_tool.encode(data['password'])
+        if data['password'] is not ptah.form.null:
+            user.password = ptah.pwd_tool.encode(data['password'])
 
         # update props
         props = ptah_crowd.get_properties(user.__uri__)
@@ -138,6 +161,10 @@ class ChangePasswordForm(form.Form):
     label = _('Change password')
     description = _('Please specify password for this users.')
 
+    @form.button(_('Back'))
+    def back(self):
+        return HTTPFound(location='..')
+
     @form.button(_('Change'), actype=form.AC_PRIMARY)
     def change(self):
         data, errors = self.extract()
@@ -151,7 +178,3 @@ class ChangePasswordForm(form.Form):
         self.context.password = ptah.pwd_tool.encode(data['password'])
 
         self.message("User password has been changed.")
-
-    @form.button(_('Back'))
-    def back(self):
-        return HTTPFound(location='..')
