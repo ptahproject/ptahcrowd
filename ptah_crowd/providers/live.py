@@ -1,7 +1,7 @@
 """Windows Live Authentication
 
 doc: http://msdn.microsoft.com/en-us/library/hh243647.aspx
-
+app: https://manage.dev.live.com/Applications/Index
 """
 import json
 import datetime
@@ -12,6 +12,7 @@ from pyramid.httpexceptions import HTTPFound
 
 import ptah
 import ptah_crowd
+from ptah_crowd.providers import Storage
 from ptah_crowd.providers import AuthenticationComplete
 from ptah_crowd.providers.exceptions import AuthenticationDenied
 from ptah_crowd.providers.exceptions import ThirdPartyFailure
@@ -36,12 +37,12 @@ def live_login(request):
     scope = 'wl.basic wl.emails wl.signin'
     client_id = cfg['live_id']
 
-    live_url = '{0}?{1}&redirect_uri={2}'.format(
-        'https://oauth.live.com/authorize',
+    live_url = 'https://oauth.live.com/authorize?{0}&redirect_uri={1}'.format(
         url_encode({'scope': scope,
                     'client_id': client_id,
-                    'redirect_uri': request.route_url('live_process'),
-                    'response_type': "code"}))
+                    'response_type': "code"}),
+        request.route_url('live_process'))
+
     return HTTPFound(location=live_url)
 
 
@@ -77,6 +78,10 @@ def live_process(request):
     data = json.loads(r.content)
     access_token = data['access_token']
 
+    entry = Storage.get_by_token(access_token)
+    if entry is not None:
+        return LiveAuthenticationComplete(entry)
+
     # Retrieve profile data
     url = '{0}?{1}'.format(
         'https://apis.live.net/v5.0/me',
@@ -89,12 +94,15 @@ def live_process(request):
 
     id = profile['id']
     name = profile.get('name','')
-    email = profile.get('email','')
+    email = profile.get('emails',{}).get('preferred')
     verified = bool(email)
 
-    return LiveAuthenticationComplete(access_token, 'live',
-                                      uid = 'live:{0}'.format(id),
-                                      name = name,
-                                      email = email,
-                                      verified = verified,
-                                      profile = profile)
+    entry = Storage.create(access_token, 'live',
+                           uid = 'live:{0}'.format(id),
+                           name = name,
+                           email = email,
+                           verified = verified,
+                           profile = profile)
+
+    return LiveAuthenticationComplete(entry)
+
