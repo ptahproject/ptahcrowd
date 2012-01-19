@@ -6,7 +6,11 @@ CHANGES
 0.2 (Unreleased)
 ----------------
 
-- Added HTTPForbidden view
+- Added Groups.
+
+- Added user default roles.
+
+- Added HTTPForbidden view.
 
 - Added `admin` user auto creation.
 

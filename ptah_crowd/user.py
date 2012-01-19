@@ -1,16 +1,41 @@
 """ add/edit user """
 from zope import interface
-from ptah import config, view, form
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
 import ptah
+from ptah import form
+from ptah.password import passwordValidator
+
 import ptah_crowd
 from ptah_crowd.settings import _
 from ptah_crowd.module import CrowdModule
-from ptah_crowd.provider import CrowdUser, CrowdFactory
-from ptah.password import passwordValidator
+from ptah_crowd.provider import UserSecurity
+from ptah_crowd.provider import CrowdUser, CrowdGroup, CrowdFactory
 from ptah_crowd.schemas import UserSchema, ManagerChangePasswordSchema
+
+
+def get_roles_vocabulary(context):
+    roles = []
+    for name, role in ptah.get_roles().items():
+        if role.system:
+            continue
+
+        roles.append([role.title,
+                      form.SimpleTerm(role.id, role.id, role.title)])
+
+    return form.SimpleVocabulary(*[term for _t, term in sorted(roles)])
+
+
+def get_groups_vocabulary(context):
+    groups = []
+    for grp in ptah.get_session().query(CrowdGroup).all():
+        groups.append(
+            (grp.title,
+             form.SimpleTerm(grp.__uri__, grp.__uri__, grp.title)))
+
+    groups.sort()
+    return form.SimpleVocabulary(*[term for _t, term in sorted(groups)])
 
 
 @view_config('create.html',
@@ -84,24 +109,40 @@ class ModifyUserForm(form.Form):
         UserSchema['validated'],
         UserSchema['suspended'],
 
-        form.fields.MultiSelectField(
+        form.fields.MultiChoiceField(
+            'roles',
+            title = _('Roles'),
+            description = _('Choose user default roles.'),
+            missing = (),
+            required = False,
+            voc_factory = get_roles_vocabulary),
+
+        form.fields.MultiChoiceField(
             'groups',
             title = _('Groups'),
             description = _('Choose user groups.'),
             missing = (),
             required = False,
-            vocabulary = ptah.form.SimpleVocabulary())
+            voc_factory = get_groups_vocabulary)
         )
 
     def form_content(self):
         user = self.context
         props = ptah_crowd.get_properties(user.__uri__)
 
+        sdata = ptah.get_session().query(UserSecurity).filter(
+                      UserSecurity.user == user.__uri__).all()
+
+        roles = [r.value for r in sdata if r.type == 0]
+        groups = [r.value for r in sdata if r.type == 1]
+
         return {'name': user.name,
                 'login': user.login,
                 'password': '',
                 'validated': props.validated,
-                'suspended': props.suspended}
+                'suspended': props.suspended,
+                'roles': roles,
+                'groups': groups}
 
     @form.button(_('Modify'), actype=form.AC_PRIMARY)
     def modify(self):
@@ -124,6 +165,19 @@ class ModifyUserForm(form.Form):
         props = ptah_crowd.get_properties(user.__uri__)
         props.validated = data['validated']
         props.suspended = data['suspended']
+
+        # remove user security mapping
+        session = ptah.get_session()
+        session.query(UserSecurity).filter(
+            UserSecurity.user == user.__uri__).delete()
+
+        # add roles info
+        for role in data['roles']:
+            session.add(UserSecurity(user=user.__uri__, type=0, value=role))
+
+        # add groups info
+        for grp in data['groups']:
+            session.add(UserSecurity(user=user.__uri__, type=1, value=grp))
 
         self.message("User properties has been updated.", 'info')
 

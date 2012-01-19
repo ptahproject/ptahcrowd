@@ -105,4 +105,3 @@ def live_process(request):
                            profile = profile)
 
     return LiveAuthenticationComplete(entry)
-

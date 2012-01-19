@@ -25,3 +25,18 @@ class CrowdModule(ptah.manage.PtahModule):
             return user
 
         raise KeyError(key)
+
+
+ptah.uiaction(
+    CrowdModule, **{'id': 'users',
+                    'title': 'Users',
+                    'action': '',
+                    'sort_weight': 0.5,
+                    'category': ptah.manage.MANAGE_ACTIONS})
+
+ptah.uiaction(
+    CrowdModule, **{'id': 'groups',
+                    'title': 'Groups',
+                    'action': 'groups.html',
+                    'sort_weight': 0.6,
+                    'category': ptah.manage.MANAGE_ACTIONS})

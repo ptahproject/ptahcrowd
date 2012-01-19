@@ -69,12 +69,48 @@ class CrowdGroup(ptah.cms.BaseContent):
         return self.title
 
 
-class UserGroup(ptah.get_base()):
+_sql_group_search = ptah.QueryFreezer(
+    lambda: ptah.get_session().query(CrowdGroup) \
+    .filter(CrowdUser.title.contains(sqla.sql.bindparam('term')))\
+    .order_by(sqla.sql.asc('title')))
 
-    __tablename__ = 'ptah_crowd_usergroups'
+@ptah.principal_searcher('crowd-group')
+def group_searcher(term):
+    return _sql_group_search.all(term = '%%%s%%'%term)
+
+
+class UserSecurity(ptah.get_base()):
+
+    __tablename__ = 'ptah_crowd_usersecurity'
+
+    ROLE = 0
+    GROUP = 1
 
     user = sqla.Column(sqla.String(255), primary_key=True)
-    group = sqla.Column(sqla.String(255), primary_key=True)
+    type = sqla.Column(sqla.Integer(), default=0)
+    value = sqla.Column(sqla.String(255), primary_key=True)
+
+
+@ptah.roles_provider('crowd')
+def crowd_user_roles(context, uid, registry):
+    """ crowd roles provider
+
+    return user default roles and user group roles"""
+    roles = set()
+
+    data = ptah.get_session().query(UserSecurity).filter(
+        UserSecurity.user == uid).all()
+
+    for item in data:
+        # default roles
+        if item.type == UserSecurity.ROLE:
+            roles.add(item.value)
+
+        # groups
+        elif item.type == UserSecurity.GROUP:
+            roles.update(ptah.get_local_roles(item.value, context))
+
+    return roles
 
 
 def get_user_type(registry=None):
