@@ -272,6 +272,8 @@ class Storage(ptah.get_base()):
     def create(cls, access_token, domain,
                uid='', name='', email='',
                verified=False, profile=None, expires=None):
+        session = ptah.get_session()
+        session.query(cls).filter(cls.uid = uid).delete()
 
         entry = cls(access_token=access_token,
                     domain=domain,
@@ -280,7 +282,7 @@ class Storage(ptah.get_base()):
                     email=email.lower(),
                     verified=verified,
                     profile=profile)
-        ptah.get_session().add(entry)
+        session.add(entry)
         return entry
 
     @classmethod
