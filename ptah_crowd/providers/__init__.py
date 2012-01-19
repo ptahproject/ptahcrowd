@@ -272,16 +272,25 @@ class Storage(ptah.get_base()):
     def create(cls, access_token, domain,
                uid='', name='', email='',
                verified=False, profile=None, expires=None):
-        session = ptah.get_session()
-        session.query(cls).filter(cls.uid = uid).delete()
 
-        entry = cls(access_token=access_token,
-                    domain=domain,
-                    uid=uid,
-                    name=name,
-                    email=email.lower(),
-                    verified=verified,
-                    profile=profile)
+        params = {'access_token': access_token,
+                  'domain': domain,
+                  'uid': uid,
+                  'name': name,
+                  'email': email.lower(),
+                  'verified': verified,
+                  'profile': profile}
+
+        session = ptah.get_session()
+
+        # reuse old authorization
+        q = session.query(cls).filter(cls.uid == uid)
+        old = q.first()
+        if old is not None:
+            params['uri'] = old.uri
+            q.delete()
+
+        entry = cls(**params)
         session.add(entry)
         return entry
 
