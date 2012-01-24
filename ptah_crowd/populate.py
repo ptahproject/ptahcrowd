@@ -30,5 +30,6 @@ def create_admin_user(registry):
             login=crowd_cfg['admin-login'],
             email=ptah_cfg['email_from_address'])
         user.password = ptah.pwd_tool.encode(crowd_cfg['admin-password'])
+        user.properties.validated = True
 
         ptah_crowd.CrowdFactory().add(user)
