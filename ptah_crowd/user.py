@@ -10,7 +10,6 @@ from ptah.password import passwordValidator
 import ptah_crowd
 from ptah_crowd.settings import _
 from ptah_crowd.module import CrowdModule
-from ptah_crowd.provider import UserSecurity
 from ptah_crowd.provider import CrowdUser, CrowdGroup, CrowdFactory
 from ptah_crowd.schemas import UserSchema, ManagerChangePasswordSchema
 
@@ -130,19 +129,13 @@ class ModifyUserForm(form.Form):
         user = self.context
         props = ptah_crowd.get_properties(user.__uri__)
 
-        sdata = ptah.get_session().query(UserSecurity).filter(
-                      UserSecurity.user == user.__uri__).all()
-
-        roles = [r.value for r in sdata if r.type == 0]
-        groups = [r.value for r in sdata if r.type == 1]
-
         return {'name': user.name,
                 'login': user.login,
                 'password': '',
                 'validated': props.validated,
                 'suspended': props.suspended,
-                'roles': roles,
-                'groups': groups}
+                'roles': user.__annotations__.get('ptah_crowd:roles',()),
+                'groups': user.__annotations__.get('ptah_crowd:groups',())}
 
     @form.button(_('Modify'), actype=form.AC_PRIMARY)
     def modify(self):
@@ -166,18 +159,9 @@ class ModifyUserForm(form.Form):
         props.validated = data['validated']
         props.suspended = data['suspended']
 
-        # remove user security mapping
-        session = ptah.get_session()
-        session.query(UserSecurity).filter(
-            UserSecurity.user == user.__uri__).delete()
-
-        # add roles info
-        for role in data['roles']:
-            session.add(UserSecurity(user=user.__uri__, type=0, value=role))
-
-        # add groups info
-        for grp in data['groups']:
-            session.add(UserSecurity(user=user.__uri__, type=1, value=grp))
+        # add roles and groups info
+        user.__annotations__['ptah_crowd:roles'] = data['roles']
+        user.__annotations__['ptah_crowd:groups'] = data['groups']
 
         self.message("User properties has been updated.", 'info')
 

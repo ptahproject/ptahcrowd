@@ -81,6 +81,12 @@ ptah.register_settings(
         default = '12345',
         tint = True),
 
+    ptah.form.TextField(
+        'admin-role',
+        title = 'Admin role',
+        description = 'Default admin role.',
+        default = ''),
+
     title = 'Ptah crowd settings',
     )
 

@@ -1,6 +1,7 @@
 import logging
 import ptah
 import ptah_crowd
+from ptah.settings import SettingRecord
 
 
 @ptah.populate(ptah_crowd.POPULATE_CREATE_ADMIN,
@@ -11,11 +12,18 @@ def create_admin_user(registry):
     if not crowd_cfg['admin-login']:
         return
 
-    Session = ptah.get_session()
+    session = ptah.get_session()
     ptah_cfg = ptah.get_settings(ptah.CFG_ID_PTAH, registry)
 
-    user = Session.query(ptah_crowd.CrowdUser).\
-        filter(ptah_crowd.CrowdUser.login==crowd_cfg['admin-login']).first()
+    rec = session.query(SettingRecord).filter(
+        SettingRecord.name == 'ptah_crowd.admin-uri').first()
+    if rec is not None:
+        user = ptah.resolve(rec.value)
+        if user is not None:
+            return
+
+    user = session.query(ptah_crowd.CrowdUser).\
+           filter(ptah_crowd.CrowdUser.login==crowd_cfg['admin-login']).first()
 
     if user is None:
         tinfo = ptah_crowd.get_user_type(registry)
@@ -33,3 +41,10 @@ def create_admin_user(registry):
         user.properties.validated = True
 
         ptah_crowd.CrowdFactory().add(user)
+
+        if crowd_cfg['admin-role']:
+            user.__annotations__['ptah_crowd:roles'] = crowd_cfg['admin-role'],
+
+        session.add(
+            SettingRecord(name='ptah_crowd.admin-uri',
+                          value=user.__uri__))

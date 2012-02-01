@@ -79,18 +79,6 @@ def group_searcher(term):
     return _sql_group_search.all(term = '%%%s%%'%term)
 
 
-class UserSecurity(ptah.get_base()):
-
-    __tablename__ = 'ptah_crowd_usersecurity'
-
-    ROLE = 0
-    GROUP = 1
-
-    user = sqla.Column(sqla.String(255), primary_key=True)
-    type = sqla.Column(sqla.Integer(), default=0)
-    value = sqla.Column(sqla.String(255), primary_key=True)
-
-
 @ptah.roles_provider('crowd')
 def crowd_user_roles(context, uid, registry):
     """ crowd roles provider
@@ -98,17 +86,12 @@ def crowd_user_roles(context, uid, registry):
     return user default roles and user group roles"""
     roles = set()
 
-    data = ptah.get_session().query(UserSecurity).filter(
-        UserSecurity.user == uid).all()
+    user = ptah.resolve(uid)
+    if user is not None:
+        roles.update(user.__annotations__.get('ptah_crowd:roles',()))
 
-    for item in data:
-        # default roles
-        if item.type == UserSecurity.ROLE:
-            roles.add(item.value)
-
-        # groups
-        elif item.type == UserSecurity.GROUP:
-            roles.update(ptah.get_local_roles(item.value, context))
+        for grp in user.__annotations__.get('ptah_crowd:groups',()):
+            roles.update(ptah.get_local_roles(grp, context))
 
     return roles
 
