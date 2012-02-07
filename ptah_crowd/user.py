@@ -134,8 +134,8 @@ class ModifyUserForm(form.Form):
                 'password': '',
                 'validated': props.validated,
                 'suspended': props.suspended,
-                'roles': user.__annotations__.get('ptah_crowd:roles',()),
-                'groups': user.__annotations__.get('ptah_crowd:groups',())}
+                'roles': props.data.get('roles'),
+                'groups': props.data.get('groups')}
 
     @form.button(_('Modify'), actype=form.AC_PRIMARY)
     def modify(self):
@@ -155,13 +155,13 @@ class ModifyUserForm(form.Form):
             user.password = ptah.pwd_tool.encode(data['password'])
 
         # update props
-        props = ptah_crowd.get_properties(user.__uri__)
+        props = user.properties
         props.validated = data['validated']
         props.suspended = data['suspended']
 
         # add roles and groups info
-        user.__annotations__['ptah_crowd:roles'] = data['roles']
-        user.__annotations__['ptah_crowd:groups'] = data['groups']
+        props.data['roles'] = data['roles']
+        props.data['groups'] = data['groups']
 
         self.message("User properties has been updated.", 'info')
 

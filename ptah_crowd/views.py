@@ -11,7 +11,6 @@ from ptah_crowd.provider import CrowdUser, CrowdGroup, CrowdFactory
 from ptah_crowd.providers import Storage
 from ptah_crowd.memberprops import UserProperties
 
-
 @view_config(
     context=CrowdModule,
     wrapper=ptah.wrap_layout(),
@@ -46,6 +45,9 @@ class CrowdApplicationView(form.Form):
 
         Session = ptah.get_session()
         uids = request.POST.getall('uid')
+
+        if 'create' in request.POST:
+            return HTTPFound('create.html')
 
         if 'activate' in request.POST and uids:
             Session.query(UserProperties)\

@@ -73,7 +73,7 @@
       <input type="submit" class="btn" value="Validate" name="validate" />
       <input type="submit" class="btn btn-danger" value="Remove" name="remove" />
     </tal:block>
-    <a href="create.html" class="btn btn-info">Create</a>
+    <input type="submit" class="btn btn-info" value="Create" name="create" />
   </div>
 </form>
 

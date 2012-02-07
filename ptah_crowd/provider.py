@@ -1,11 +1,12 @@
 import sqlalchemy as sqla
+from pyramid.decorator import reify
 from pyramid.config import Configurator
 from pyramid.events import ApplicationCreated
 
 import ptah
 from ptah.password import ID_PASSWORD_CHANGER
 from ptah_crowd.settings import CFG_ID_CROWD
-from ptah_crowd.memberprops import get_properties
+from ptah_crowd.memberprops import get_properties, query_properties
 
 CROWD_APP_ID = 'ptah-crowd'
 
@@ -39,7 +40,7 @@ class CrowdUser(ptah.cms.BaseContent):
     def name(self):
         return self.title
 
-    @property
+    @reify
     def properties(self):
         return get_properties(self.__uri__)
 
@@ -86,11 +87,11 @@ def crowd_user_roles(context, uid, registry):
     return user default roles and user group roles"""
     roles = set()
 
-    user = ptah.resolve(uid)
-    if user is not None:
-        roles.update(user.__annotations__.get('ptah_crowd:roles',()))
+    props = query_properties(uid)
+    if props is not None:
+        roles.update(props.data.get('roles',()))
 
-        for grp in user.__annotations__.get('ptah_crowd:groups',()):
+        for grp in props.data.get('groups',()):
             roles.update(ptah.get_local_roles(grp, context))
 
     return roles

@@ -43,8 +43,7 @@ def create_admin_user(registry):
         ptah_crowd.CrowdFactory().add(user)
 
         if crowd_cfg['admin-role']:
-            user.__annotations__['ptah_crowd:roles'] = crowd_cfg['admin-role'],
+            user.properties.data['roles'] = crowd_cfg['admin-role'],
 
         session.add(
-            SettingRecord(name='ptah_crowd.admin-uri',
-                          value=user.__uri__))
+            SettingRecord(name='ptah_crowd.admin-uri', value=user.__uri__))
