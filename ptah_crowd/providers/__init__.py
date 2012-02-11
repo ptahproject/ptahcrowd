@@ -31,7 +31,7 @@ def settings_initialized(ev):
     config = Configurator(registry, autocommit=True)
 
     for provider in providers:
-        log.info('Loaging "{0}" auth provider'.format(provider))
+        log.info('Loading "{0}" auth provider'.format(provider))
         config.include(
             'ptah_crowd.providers.{0}'.format(provider),
             route_prefix='/crowd-auth-provider')
