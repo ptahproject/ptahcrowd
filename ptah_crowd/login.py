@@ -46,8 +46,9 @@ class LoginForm(form.Form):
             location = came_from
         elif cfg['success-url']:
             location = cfg['success-url']
+            print (app_url, location)
             if location.startswith('/'):
-                location = '%s/%s'%(app_url, location)
+                location = '%s%s'%(app_url, location)
         else:
             location = self.request.route_url('ptah-login-success')
 
