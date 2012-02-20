@@ -35,9 +35,11 @@ def includeme(config):
 
     # reset password
     config.add_route(
-        'ptah-resetpassword', '/resetpassword.html')
+        'ptah-resetpassword',
+        '/resetpassword.html', use_global_views=True)
     config.add_route(
-        'ptah-resetpassword-form', '/resetpassword.html/*subpath')
+        'ptah-resetpassword-form',
+        '/resetpassword.html/*subpath', use_global_views=True)
 
     # registration
     config.add_route(
