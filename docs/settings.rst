@@ -18,6 +18,10 @@ Listed are a following of .ini attributes you can override.
 ``ptah_crowd.login-url``
 
    Custom login form url.
+
+``ptah_crowd.success-url``
+
+   Successfull login redirect url.
   
 ``ptah_crowd.password``
 

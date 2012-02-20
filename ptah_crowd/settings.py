@@ -44,6 +44,12 @@ ptah.register_settings(
         description = 'Custom login form url.',
         default = ''),
 
+    ptah.form.TextField(
+        'success-url',
+        title = 'Successfull login url',
+        description = 'Successfull logig redirect url.',
+        default = ''),
+
     ptah.form.BoolField(
         'password',
         title = 'User password',
