@@ -2,12 +2,13 @@
 
 app: https://dev.twitter.com/apps/
 """
-import requests
-import oauth2 as oauth
-
-from pyramid.compat import urlparse
 from pyramid.httpexceptions import HTTPFound
+from pyramid.compat import urlparse, PY3
 
+if not PY3:  # Temporarily disabling oauth under Python 3.
+    import oauth2 as oauth
+
+import requests
 import ptah
 import ptah_crowd
 from ptah_crowd.providers import AuthenticationComplete
