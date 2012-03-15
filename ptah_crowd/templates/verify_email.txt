@@ -1,8 +1,8 @@
 Hi!
 
-You're close to completing the registration process.  Once you click this link,
-your email will be activated.
+You're close to completing the registration process. Once you click this link,
+your account will be activated.
 
 ${view.url}
 
-Thanks
+Thanks!
