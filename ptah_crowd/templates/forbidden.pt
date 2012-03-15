@@ -1,8 +1,10 @@
 <div class="page-header">
-  <h1>Your are not allowed to access this part of site.</h1>
+  <h1 i18n:translate="">Your are not allowed to access this part of site.</h1>
 </div>
 
-<p>
-You do not have sufficient privileges to view this page. 
-If you believe you are receiving this message in error, 
-contact the <a href="mailto:${view.email_address}">site administration</a>.</p>
+<p><tal:block i18n:translate="">
+  You do not have sufficient privileges to view this page.
+  If you believe you are receiving this message in error,
+  contact the</tal:block>
+  <a href="mailto:${view.email_address}" i18n:translate="">site administration.</a>
+</p>

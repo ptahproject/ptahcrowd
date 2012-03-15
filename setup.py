@@ -47,4 +47,10 @@ setup(name='ptah_crowd',
       test_suite='nose.collector',
       include_package_data=True,
       zip_safe=False,
+      message_extractors={'ptah_crowd': [
+        ('static/**', 'ignore', None),
+        ('tests/**.py', 'ignore', None),
+        ('**.py', 'python', None),
+        ('**.pt', 'lingua_xml', None),
+      ]},
       )

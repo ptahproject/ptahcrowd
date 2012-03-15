@@ -6,6 +6,7 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
 import ptah_crowd
+from ptah_crowd import const
 from ptah_crowd.settings import _, CFG_ID_CROWD
 from ptah_crowd.memberprops import get_properties
 
@@ -14,7 +15,6 @@ from ptah_crowd.memberprops import get_properties
     route_name='ptah-login',
     wrapper=ptah.wrap_layout('ptah-page'),
     renderer="ptah_crowd:templates/login.pt")
-
 class LoginForm(form.Form):
     """ Login form """
 
@@ -24,17 +24,15 @@ class LoginForm(form.Form):
     fields = form.Fieldset(
         form.fields.TextField(
             'login',
-            title = _('Login Name'),
-            description = _('Login names are case sensitive, '\
-                                'make sure the caps lock key is not enabled.'),
-            default = ''),
+            title=const.LOGIN_TITLE,
+            description=const.CASE_WARN,
+            default=''),
 
         form.fields.PasswordField(
             'password',
-            title = _('Password'),
-            description = _('Case sensitive, make sure caps '\
-                                'lock is not enabled.'),
-            default = ''),
+            title=const.PASSWORD_TITLE,
+            description=const.CASE_WARN,
+            default=''),
         )
 
     def get_success_url(self):
@@ -47,7 +45,7 @@ class LoginForm(form.Form):
         elif cfg['success-url']:
             location = cfg['success-url']
             if location.startswith('/'):
-                location = '%s%s'%(app_url, location)
+                location = '%s%s' % (app_url, location)
         else:
             location = self.request.route_url('ptah-login-success')
 
@@ -82,7 +80,7 @@ class LoginForm(form.Form):
             self.message(info.message, 'warning')
             return
 
-        self.message(_('You enter wrong login or password.'), 'error')
+        self.message(const.WRONG_CREDENTIALS, 'error')
 
     def update(self):
         cfg = ptah.get_settings(CFG_ID_CROWD, self.request.registry)
@@ -107,7 +105,6 @@ class LoginForm(form.Form):
 @view_config(
     route_name='ptah-login-success', wrapper=ptah.wrap_layout('ptah-page'),
     renderer='ptah_crowd:templates/login-success.pt')
-
 class LoginSuccess(ptah.View):
     """ Login successful information page. """
 
@@ -118,8 +115,8 @@ class LoginSuccess(ptah.View):
             headers = security.forget(request)
 
             return HTTPFound(
-                headers = headers,
-                location = '%s/login.html'%request.application_url)
+                headers=headers,
+                location='%s/login.html' % request.application_url)
         else:
             self.user = user.name or user.login
 
@@ -127,7 +124,6 @@ class LoginSuccess(ptah.View):
 @view_config(
     route_name='ptah-login-suspended', wrapper=ptah.wrap_layout('ptah-page'),
     renderer="ptah_crowd:templates/login-suspended.pt")
-
 class LoginSuspended(ptah.View):
     """ Suspended account information page. """
 
@@ -156,10 +152,10 @@ def logout(request):
         request.registry.notify(
             ptah.events.LoggedOutEvent(ptah.resolve(uid)))
 
-        view.add_message(request, _('Logout successful!'), 'info')
+        view.add_message(request, const.LOGOUT_SUCCESSFUL, 'info')
         headers = security.forget(request)
         return HTTPFound(
-            headers = headers,
-            location = request.application_url)
+            headers=headers,
+            location=request.application_url)
     else:
-        return HTTPFound(location = request.application_url)
+        return HTTPFound(location=request.application_url)
