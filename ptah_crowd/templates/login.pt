@@ -1,4 +1,4 @@
-<div>
+<div i18n:domain='ptah_crowd'>
   <div class="page-header">
     <h1 i18n:translate="">Please log in</h1>
   </div>
