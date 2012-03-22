@@ -1,12 +1,12 @@
 """ forbidden view """
 from pyramid.compat import url_encode
-from pyramid.view import view_config
-from pyramid.view import render_view_to_response
+from pyramid import security
 from pyramid.response import Response
 from pyramid.renderers import render
 from pyramid.interfaces import IRootFactory
 from pyramid.traversal import DefaultRootFactory
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
+from pyramid.view import view_config, render_view_to_response
 
 import ptah
 import ptah_crowd
@@ -33,6 +33,11 @@ class Forbidden(ptah.View):
         CFG = ptah.get_settings(ptah_crowd.CFG_ID_CROWD, self.request.registry)
 
         user = ptah.auth_service.get_userid()
+        if user is not None:
+            user = ptah.auth_service.get_current_principal()
+            if user is None:
+                request.response.headers = security.forget(request)
+
         if user is None:
             loginurl = CFG['login-url']
             if loginurl and not loginurl.startswith(('http://', 'https://')):
