@@ -5,6 +5,7 @@ import ptah
 from ptah import form
 from ptah.password import passwordValidator
 
+from ptah_crowd import const
 from ptah_crowd.settings import _
 
 
@@ -21,27 +22,23 @@ def checkLoginValidator(field, login):
         return
 
     if ptah.auth_service.get_principal_bylogin(login) is not None:
-        raise form.Invalid(field, _('Login already is in use.'))
+        raise form.Invalid(field, _("This login is already in use."))
 
 
 RegistrationSchema = form.Fieldset(
 
     form.TextField(
         'name',
-        title=_('Full Name'),
-        description=_("e.g. John Smith. This is how users "
-                      "on the site will identify you."),
+        title=const.NAME_TITLE,
+        description=const.NAME_DESCR,
         ),
 
     form.TextField(
         'login',
-        title = _('E-mail/Login'),
-        description = _('This is the username you will use to log in. '
-                        'It must be an email address. <br /> Your email address '
-                        'will not be displayed to any user or be shared with '
-                        'anyone else.'),
-        preparer = lower,
-        validator = form.All(form.Email(), checkLoginValidator),
+        title=const.LOGIN_TITLE,
+        description=const.LOGIN_DESCR,
+        preparer=lower,
+        validator=form.All(form.Email(), checkLoginValidator),
         )
     )
 
@@ -50,10 +47,10 @@ ResetPasswordSchema = form.Fieldset(
 
     form.TextField(
         'login',
-        title = _('Login Name'),
-        description = _('Login names are not case sensitive.'),
-        missing = '',
-        default = '')
+        title=const.LOGIN_TITLE,
+        description=const.CASE_DESCR,
+        missing='',
+        default='')
     )
 
 
@@ -61,40 +58,34 @@ UserSchema = form.Fieldset(
 
     form.fields.TextField(
         'name',
-        title=_('Full Name'),
-        description=_("e.g. John Smith. This is how users "
-                      "on the site will identify you."),
+        title=const.NAME_TITLE,
+        description=const.NAME_DESCR,
         ),
 
     form.fields.TextField(
         'login',
-        title = _('E-mail/Login'),
-        description=_('This is the username you will use to log in. '
-                      'It must be an email address. <br /> Your email address '
-                      'will not be displayed to any user or be shared with '
-                      'anyone else.'),
-        preparer = lower,
-        validator = form.All(form.Email(), checkLoginValidator),
+        title=const.LOGIN_TITLE,
+        description=const.LOGIN_DESCR,
+        preparer=lower,
+        validator=form.All(form.Email(), checkLoginValidator),
         ),
 
     form.fields.TextField(
         'password',
-        title = _('Password'),
-        description = _('Enter password. '\
-                        'No spaces or special characters, should contain '\
-                        'digits and letters in mixed case.'),
-        validator = passwordValidator),
+        title=const.PASSWORD_TITLE,
+        description=const.PASSWORD_DESCR,
+        validator=passwordValidator),
 
     form.fields.BoolField(
         'validated',
-        title = _('Validated'),
-        default = True,
+        title=_('Validated'),
+        default=True,
         ),
 
     form.fields.BoolField(
         'suspended',
-        title = _('Suspended'),
-        default = False,
+        title=_('Suspended'),
+        default=False,
         ),
 
     )
@@ -104,9 +95,7 @@ ManagerChangePasswordSchema = form.Fieldset(
 
     form.PasswordField(
         'password',
-        title = _('New password'),
-        description = _('Enter new password. '\
-                        'No spaces or special characters, should contain '\
-                        'digits and letters in mixed case.'),
-        validator = passwordValidator)
+        title=const.PASSWORD_TITLE,
+        description=const.PASSWORD_DESCR,
+        validator=passwordValidator)
     )

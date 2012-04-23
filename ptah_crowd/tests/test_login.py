@@ -238,7 +238,7 @@ class TestLogin(PtahTestCase):
         form.update()
         form.login_handler()
 
-        self.assertIn('You enter wrong login or password',
+        self.assertIn("You have entered the wrong login or password.",
                       ptah.render_messages(request))
 
     def test_login_unvalidated(self):

@@ -12,11 +12,11 @@ from ptah_crowd.provider import CrowdUser, CrowdGroup, CrowdFactory
 from ptah_crowd.providers import Storage
 from ptah_crowd.memberprops import UserProperties
 
+
 @view_config(
     context=CrowdModule,
     wrapper=ptah.wrap_layout(),
     renderer='ptah_crowd:templates/users.pt')
-
 class CrowdApplicationView(form.Form):
     __doc__ = 'List/search users view'
 
@@ -24,10 +24,10 @@ class CrowdApplicationView(form.Form):
     fields = form.Fieldset(
         form.TextField(
             'term',
-            title = _('Search term'),
-            description = _('Ptah searches users by login and email'),
-            missing = '',
-            default = '')
+            title=_('Search term'),
+            description=_('Ptah searches users by login and email'),
+            missing='',
+            default='')
         )
 
     users = None
@@ -54,19 +54,22 @@ class CrowdApplicationView(form.Form):
             Session.query(UserProperties)\
                 .filter(UserProperties.uri.in_(uids))\
                 .update({'suspended': False}, False)
-            self.message("Selected accounts have been activated.", 'info')
+            self.message(_("The selected accounts have been activated."),
+                         'info')
 
         if 'suspend' in request.POST and uids:
             Session.query(UserProperties).filter(
                 UserProperties.uri.in_(uids))\
                 .update({'suspended': True}, False)
-            self.message("Selected accounts have been suspended.", 'info')
+            self.message(_("The selected accounts have been suspended."),
+                         'info')
 
         if 'validate' in request.POST and uids:
             Session.query(UserProperties).filter(
                 UserProperties.uri.in_(uids))\
                 .update({'validated': True}, False)
-            self.message("Selected accounts have been validated.", 'info')
+            self.message(_("The selected accounts have been validated."),
+                         'info')
 
         if 'remove' in request.POST and uids:
             crowd = CrowdFactory()
@@ -74,14 +77,15 @@ class CrowdApplicationView(form.Form):
                 CrowdUser.__uri__.in_(uids)):
                 Session.delete(ptah_crowd.get_properties(user.__uri__))
                 del crowd[user.__name__]
-            self.message("Selected accounts have been removed.", 'info')
+            self.message(_("The selected accounts have been removed."),
+                         'info')
 
         term = request.session.get('ptah-search-term', '')
         if term:
             self.users = Session.query(CrowdUser) \
                 .filter(sqla.sql.or_(
-                    CrowdUser.email.contains('%%%s%%'%term),
-                    CrowdUser.title.contains('%%%s%%'%term)))\
+                    CrowdUser.email.contains('%%%s%%' % term),
+                    CrowdUser.title.contains('%%%s%%' % term)))\
                 .order_by(sqla.sql.asc('name')).all()
         else:
             self.size = Session.query(CrowdUser).count()
@@ -99,10 +103,11 @@ class CrowdApplicationView(form.Form):
 
             self.current = current
 
-            self.pages, self.prev, self.next = self.page(self.size,self.current)
+            self.pages, self.prev, self.next = \
+                self.page(self.size, self.current)
 
             offset, limit = self.page.offset(current)
-            self.users = Session.query(CrowdUser)\
+            self.users = Session.query(CrowdUser) \
                     .offset(offset).limit(limit).all()
 
             auths = Session.query(Storage).filter(
@@ -137,7 +142,6 @@ class CrowdApplicationView(form.Form):
     context=CrowdModule,
     wrapper=ptah.wrap_layout(),
     renderer='ptah_crowd:templates/groups.pt')
-
 class CrowdGroupsView(ptah.View):
     __doc__ = 'List groups view'
 
@@ -156,7 +160,7 @@ class CrowdGroupsView(ptah.View):
             for grp in Session.query(CrowdGroup).\
                     filter(CrowdGroup.__uri__.in_(uids)):
                 del crowd[grp.__name__]
-            self.message("Selected groups have been removed.", 'info')
+            self.message(_("The selected groups have been removed."), 'info')
 
         self.size = Session.query(CrowdGroup).count()
 
@@ -182,7 +186,6 @@ class CrowdGroupsView(ptah.View):
 @view_config('create-grp.html',
              context=CrowdModule,
              wrapper=ptah.wrap_layout())
-
 class CreateGroupForm(form.Form):
 
     csrf = True
@@ -207,5 +210,5 @@ class CreateGroupForm(form.Form):
         crowd = CrowdFactory()
         crowd.add(grp)
 
-        self.message('Group has been created.', 'success')
+        self.message(_('The group has been created.'), 'success')
         return HTTPFound(location='groups.html')

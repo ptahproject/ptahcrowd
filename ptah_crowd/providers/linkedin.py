@@ -1,8 +1,9 @@
 """LinkedIn Authentication Views"""
 from json import loads
-from urlparse import parse_qs
+from pyramid.compat import urlparse, PY3
 
-import oauth2 as oauth
+if not PY3:  # Temporarily disabling oauth under Python 3.
+    import oauth2 as oauth
 import requests
 
 from pyramid.httpexceptions import HTTPFound
@@ -81,7 +82,7 @@ def linkedin_process(request):
     resp, content = client.request(ACCESS_URL, "POST")
     if resp['status'] != '200':
         raise ThirdPartyFailure("Status %s: %s" % (resp['status'], content))
-    access_token = dict(parse_qs(content))
+    access_token = dict(urlparse.parse_qs(content))
 
     cred = {'oauthAccessToken': access_token['oauth_token'][0],
             'oauthAccessTokenSecret': access_token['oauth_token_secret'][0]}

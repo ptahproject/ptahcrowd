@@ -8,6 +8,7 @@ from ptah import form
 from ptah.password import passwordValidator
 
 import ptah_crowd
+from ptah_crowd import const
 from ptah_crowd.settings import _
 from ptah_crowd.module import CrowdModule
 from ptah_crowd.provider import CrowdUser, CrowdGroup, CrowdFactory
@@ -40,7 +41,6 @@ def get_groups_vocabulary(context):
 @view_config('create.html',
              context=CrowdModule,
              wrapper=ptah.wrap_layout())
-
 class CreateUserForm(form.Form):
 
     csrf = True
@@ -89,7 +89,6 @@ class CreateUserForm(form.Form):
 @view_config(context=CrowdUser,
              wrapper=ptah.wrap_layout(),
              route_name=ptah_crowd.CROWD_APP_ID)
-
 class ModifyUserForm(form.Form):
 
     csrf = True
@@ -99,30 +98,28 @@ class ModifyUserForm(form.Form):
         UserSchema['login'],
         form.fields.TextField(
             'password',
-            title = _('Password'),
-            description = _('Enter password. '\
-                            'No spaces or special characters, should contain '\
-                            'digits and letters in mixed case.'),
-            missing = ptah.form.null,
-            validator = passwordValidator),
+            title=const.PASSWORD_TITLE,
+            description=const.PASSWORD_DESCR,
+            missing=ptah.form.null,
+            validator=passwordValidator),
         UserSchema['validated'],
         UserSchema['suspended'],
 
         form.fields.MultiChoiceField(
             'roles',
-            title = _('Roles'),
-            description = _('Choose user default roles.'),
-            missing = (),
-            required = False,
-            voc_factory = get_roles_vocabulary),
+            title=_('Roles'),
+            description=_("Choose user default roles."),
+            missing=(),
+            required=False,
+            voc_factory=get_roles_vocabulary),
 
         form.fields.MultiChoiceField(
             'groups',
-            title = _('Groups'),
-            description = _('Choose user groups.'),
-            missing = (),
-            required = False,
-            voc_factory = get_groups_vocabulary)
+            title=_("Groups"),
+            description=_("Choose user groups."),
+            missing=(),
+            required=False,
+            voc_factory=get_groups_vocabulary)
         )
 
     def form_content(self):
@@ -163,7 +160,7 @@ class ModifyUserForm(form.Form):
         props.data['roles'] = data['roles']
         props.data['groups'] = data['groups']
 
-        self.message("User properties has been updated.", 'info')
+        self.message(_("User properties have been updated."), 'info')
 
     @form.button(_('Remove'), actype=form.AC_DANGER)
     def remove(self):
@@ -174,7 +171,7 @@ class ModifyUserForm(form.Form):
         Session.delete(user)
         Session.flush()
 
-        self.message("User has been removed.", 'info')
+        self.message(_("User has been removed."), 'info')
         return HTTPFound(location='..')
 
     @form.button(_('Back'))

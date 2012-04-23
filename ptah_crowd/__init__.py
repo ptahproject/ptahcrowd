@@ -64,3 +64,5 @@ def includeme(config):
 
     # scan
     config.scan('ptah_crowd')
+
+    config.add_translation_dirs('ptah_crowd:locale')
