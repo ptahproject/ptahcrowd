@@ -7,7 +7,8 @@ from setuptools import setup, find_packages
 version='0.2dev'
 
 install_requires = ['setuptools',
-                    'ptah >= 0.3.1',
+                    'ptah >= 0.5.0',
+                    'ptahcms >= 0.5.0',
                     "oauth2 >= 1.1.3",
                     "requests >= 0.6.6",
                     ]

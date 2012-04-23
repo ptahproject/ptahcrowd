@@ -4,6 +4,7 @@ from pyramid.config import Configurator
 from pyramid.events import ApplicationCreated
 
 import ptah
+import ptahcms
 from ptah.password import ID_PASSWORD_CHANGER
 from ptah_crowd.settings import CFG_ID_CROWD
 from ptah_crowd.memberprops import get_properties, query_properties
@@ -11,7 +12,7 @@ from ptah_crowd.memberprops import get_properties, query_properties
 CROWD_APP_ID = 'ptah-crowd'
 
 
-class CrowdUser(ptah.cms.BaseContent):
+class CrowdUser(ptahcms.BaseContent):
     """Default crowd user
 
     ``name``: User name.
@@ -29,7 +30,7 @@ class CrowdUser(ptah.cms.BaseContent):
 
     __tablename__ = 'ptah_crowd'
 
-    __type__ = ptah.cms.Type(
+    __type__ = ptahcms.Type(
         'ptah-crowd-user', 'Crowd user', global_allow = False)
 
     login = sqla.Column(sqla.Unicode(255), unique=True)
@@ -51,7 +52,7 @@ class CrowdUser(ptah.cms.BaseContent):
         return '%s<%s:%s>'%(self.__class__.__name__, self.title, self.__uri__)
 
 
-class CrowdGroup(ptah.cms.BaseContent):
+class CrowdGroup(ptahcms.BaseContent):
     """Crowd group
 
     ``name``: User name.
@@ -62,7 +63,7 @@ class CrowdGroup(ptah.cms.BaseContent):
 
     login = ''
 
-    __type__ = ptah.cms.Type(
+    __type__ = ptahcms.Type(
         'ptah-crowd-group', 'Crowd group', global_allow = False)
 
     @property
@@ -111,15 +112,15 @@ def get_allowed_content_types(context, registry=None):
     return (cfg['type'],)
 
 
-class CrowdApplication(ptah.cms.BaseApplicationRoot,ptah.cms.BaseContainer):
+class CrowdApplication(ptahcms.BaseApplicationRoot, ptahcms.BaseContainer):
     """Ptah crowd application, you should never directly create
     instances of this class. Use :py:data:`ptah_crowd.CrowdFactory` instead.
     """
 
-    __type__ = ptah.cms.Type('ptah-crowd-provider',
-                             'Ptah user management',
-                             filter_content_types = True,
-                             allowed_content_types = get_allowed_content_types)
+    __type__ = ptahcms.Type('ptah-crowd-provider',
+                            'Ptah user management',
+                            filter_content_types = True,
+                            allowed_content_types = get_allowed_content_types)
 
     def add(self, user):
         """ Add user to crowd application. """
@@ -173,7 +174,7 @@ class CrowdAuthProvider(object):
         principal.password = password
 
 
-CrowdFactory = ptah.cms.ApplicationFactory(
+CrowdFactory = ptahcms.ApplicationFactory(
     CrowdApplication,
     name = CROWD_APP_ID,
     title = 'Ptah user management')

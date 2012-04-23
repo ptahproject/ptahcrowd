@@ -19,7 +19,7 @@ There are two way of user customization.
 New user content
 ----------------
 
-First of all CrowdUser is just :py:class:`ptah.cms.Content` object.
+First of all CrowdUser is just :py:class:`ptahcms.Content` object.
 So all you need if just create new content type and provide this information
 to ptah crowd provider. There is one restriction:
 

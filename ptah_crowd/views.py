@@ -3,6 +3,7 @@ from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
 import ptah
+import ptahcms
 import ptah_crowd
 from ptah import form
 from ptah_crowd.settings import _
@@ -186,7 +187,7 @@ class CreateGroupForm(form.Form):
 
     csrf = True
     label = _('Create new group')
-    fields = ptah.cms.ContentSchema
+    fields = ptahcms.ContentSchema
 
     @form.button(_('Back'))
     def back(self):
