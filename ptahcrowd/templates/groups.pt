@@ -1,0 +1,60 @@
+<div class="page-header">
+  <h2>Groups</h2>
+</div>
+
+<form method="post" action="${view.manage_url}/crowd/">
+  <div tal:condition="not view.groups">
+    There are no groups.
+  </div>
+  <table class="table table-striped"
+         tal:define="uids request.params.getall('uid')"
+         tal:condition="view.groups">
+    <thead>
+      <tr>
+        <th>&nbsp; </th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr tal:repeat="grp view.groups">
+        <td><input type="checkbox" name="uid" value="${grp.id}"
+                   tal:attributes="checked str(grp.id) in uids" /></td>
+        <td>
+          <a href="${view.manage_url}/crowd/grp${grp.id}/">
+            ${grp.title}</a>
+        </td>
+        <td>${grp.description}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination" tal:condition="len(view.pages)>1">
+    <ul>
+      <li class="${'prev' if view.prev else 'prev disabled'}">
+        <a href="?batch=${view.prev}">&larr; Previous</a>
+      </li>
+
+      <tal:block repeat="idx view.pages">
+        <li tal:define="klass '' if idx else 'disabled'"
+            tal:attributes="class 'active' if idx==view.current else klass">
+          <a href="?batch=${idx}">${idx if idx else '...'}</a>
+        </li>
+      </tal:block>
+
+      <li class="${'next' if view.next else 'next disabled'}">
+        <a href="?batch=${view.next}">
+          Next &rarr;
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="form-actions">
+    <tal:block condition="view.groups">
+      <input type="submit" value="Remove" name="remove"
+             class="btn btn-danger" />
+    </tal:block>
+    <a href="create-grp.html" class="btn btn-info">Create</a>
+  </div>
+</form>

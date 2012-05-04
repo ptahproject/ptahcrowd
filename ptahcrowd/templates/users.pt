@@ -1,0 +1,82 @@
+<div class="page-header">
+  <h2>Users</h2>
+</div>
+
+<form method="post" action="${view.manage_url}/crowd/">
+  <table class="table table-striped"
+         tal:define="uids request.params.getall('uid')">
+    <thead tal:condition="view.users">
+      <tr>
+        <th>&nbsp; </th>
+        <th>Name</th>
+        <th>Login/Email</th>
+        <th>Validated</th>
+        <th>Suspended</th>
+        <th>Joined</th>
+        <th>External</th>
+      </tr>
+    </thead>
+    <tbody tal:condition="not: view.users">
+      <tr>
+        <td>No users found.</td>
+      </tr>
+    </tbody>
+    <tbody tal:condition="view.users">
+      <tr tal:repeat="user view.users">
+        <td><input type="checkbox" name="uid" value="${user.id}"
+                   tal:attributes="checked str(user.id) in uids" /></td>
+        <td>
+          <a href="${view.manage_url}/crowd/${user.id}/">
+            ${user.name}</a>
+        </td>
+        <td>${user.login}</td>
+        <td tal:content="user.validated"></td>
+        <td tal:content="user.suspended"></td>
+        <td>${view.format.datetime(user.joined, 'short')}</td>
+        <td>
+          <tal:block repeat="item view.external.get(user.__uri__,())">
+            <img src="${request.static_url('ptahcrowd:static/buttons/%s_32.png'%item)}"
+                 title="${item}" />
+          </tal:block>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination" tal:condition="len(view.pages)>1">
+    <ul>
+      <li class="${'prev' if view.prev else 'prev disabled'}">
+        <a href="?batch=${view.prev}">&larr; Previous</a>
+      </li>
+
+      <tal:block repeat="idx view.pages">
+        <li tal:define="klass '' if idx else 'disabled'"
+            tal:attributes="class 'active' if idx==view.current else klass">
+          <a href="?batch=${idx}">${idx if idx else '...'}</a>
+        </li>
+      </tal:block>
+
+      <li class="${'next' if view.next else 'next disabled'}">
+        <a href="?batch=${view.next}">
+          Next &rarr;
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="form-actions">
+    <tal:block condition="view.users">
+      <input type="submit" class="btn" value="Activate" name="activate" />
+      <input type="submit" class="btn" value="Suspend" name="suspend" />
+      <input type="submit" class="btn" value="Validate" name="validate" />
+      <input type="submit" class="btn btn-danger" value="Remove" name="remove" />
+    </tal:block>
+    <input type="submit" class="btn btn-info" value="Create" name="create" />
+  </div>
+</form>
+
+<div class="page-header">
+  <h3>Search users</h3>
+</div>
+
+<tal:block content="structure view.snippet('form-view', view)" />

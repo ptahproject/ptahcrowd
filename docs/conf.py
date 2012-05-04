@@ -37,7 +37,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General substitutions.
-project = 'ptah_crowd'
+project = 'ptahcrowd'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.

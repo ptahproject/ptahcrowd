@@ -1,8 +1,8 @@
-``ptah_crowd`` README
+``ptahcrowd`` README
 =====================
 
 You can read the `ptah_crowd` documentation on-line at 
-`http://ptah_crowd.readthedocs.org <http://ptah_crowd.readthedocs.org/en/latest/index.html>`_.
+`http://ptahcrowd.readthedocs.org <http://ptahcrowd.readthedocs.org/en/latest/index.html>`_.
 
 This packages provides a nearly-complete user registration and management
 facility.  It is similar to ``cartouche`` in feature set.  The `ptah_crowd` 

@@ -8,8 +8,6 @@ version = '0.2dev'
 
 install_requires = ['setuptools',
                     'ptah >= 0.5.0',
-                    'ptahcms >= 0.5.0',
-                    "oauth2 >= 1.1.3",
                     "requests >= 0.6.6",
                     ]
 PY2 = sys.version_info[0] == 2
@@ -25,7 +23,7 @@ def read(f):
     return open(os.path.join(os.path.dirname(__file__), f)).read().strip()
 
 
-setup(name='ptah_crowd',
+setup(name='ptahcrowd',
       version=version,
       description=('User management for Ptah.'),
       long_description='\n\n'.join((read('README.rst'), read('CHANGES.txt'))),
@@ -41,7 +39,7 @@ setup(name='ptah_crowd',
           'Topic :: Internet :: WWW/HTTP :: WSGI'],
       author='Ptah Project',
       author_email='ptahproject@googlegroups.com',
-      url='https://github.com/ptahproject/ptah_crowd/',
+      url='https://github.com/ptahproject/ptahcrowd/',
       license='BSD-derived',
       packages=find_packages(),
       install_requires=install_requires,
@@ -49,7 +47,7 @@ setup(name='ptah_crowd',
       test_suite='nose.collector',
       include_package_data=True,
       zip_safe=False,
-      message_extractors={'ptah_crowd': [
+      message_extractors={'ptahcrowd': [
         ('static/**', 'ignore', None),
         ('tests/**.py', 'ignore', None),
         ('**.py', 'python', None),

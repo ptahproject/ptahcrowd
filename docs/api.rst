@@ -7,15 +7,6 @@ Users
 ~~~~~
 
   .. autoclass:: CrowdUser
-  
-Properties
-~~~~~~~~~~
- 
-  .. autofunction:: get_properties
-
-  .. autofunction:: query_properties
-
-  .. autoclass:: ptah_crowd.memberprops.UserProperties
 
 
 Validation

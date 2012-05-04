@@ -1,0 +1,318 @@
+#
+# Nando Florestan <nandoflorestan@gmail.com>, 2012.
+msgid ""
+msgstr ""
+"Project-Id-Version: ptahcrowd 0.2dev\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2012-03-14 22:34-0300\n"
+"PO-Revision-Date: 2012-03-14 22:03-0300\n"
+"Last-Translator: Nando Florestan <nandoflorestan@gmail.com>\n"
+"Language-Team: Portuguese <>\n"
+"Plural-Forms: nplurals=2; plural=(n!=1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 0.9.6\n"
+
+#: ptahcrowd/const.py:11
+msgid "This is not case sensitive."
+msgstr "Maiúsculas e minúsculas não fazem diferença."
+
+#: ptahcrowd/const.py:12
+msgid "Case sensitive. Make sure the Caps Lock key is off."
+msgstr "Maiúsculas e minúsculas importam. Mantenha a tecla Caps Lock desligada."
+
+#: ptahcrowd/const.py:13
+msgid "Email"
+msgstr "Email"
+
+#: ptahcrowd/const.py:14
+msgid ""
+"This is what you will use to log in. It must be an email address.<br "
+"/>Your email will not be displayed to any user or be shared with anyone "
+"else."
+msgstr ""
+"Isto é o que você usará para entrar. Precisa ser um endereço de email.<br"
+" />Seu email não será divulgado a nenhum usuário nem compartilhado com "
+"mais ninguém."
+
+#: ptahcrowd/const.py:18
+msgid "You have been logged out."
+msgstr "Você saiu do sistema."
+
+#: ptahcrowd/const.py:19
+msgid "Full name"
+msgstr "Nome completo"
+
+#: ptahcrowd/const.py:20
+msgid "e.g. John Smith. This is how users on the site will identify you."
+msgstr "exemplo: João da Silva. Será a sua identificação no site."
+
+#: ptahcrowd/const.py:22
+msgid "Password"
+msgstr "Senha"
+
+#: ptahcrowd/const.py:23
+msgid ""
+"Enter your password. No spaces or special characters; should contain "
+"digits and letters in mixed case."
+msgstr ""
+"Digite sua senha. Sem espaços ou caracteres especiais; deve conter "
+"dígitos, maiúsculas e minúsculas."
+
+#: ptahcrowd/const.py:26
+msgid ""
+"We have started resetting your password. Please check your email for "
+"further instructions."
+msgstr "Começamos a resetar sua senha. Verifique o seu email para instruções."
+
+#: ptahcrowd/const.py:28
+msgid "Password reset confirmation"
+msgstr "Confirmação de nova senha"
+
+#: ptahcrowd/const.py:29
+msgid "You have entered the wrong login or password."
+msgstr "Você digitou o login ou senha errado."
+
+#: ptahcrowd/login.py:22
+msgid "Login"
+msgstr "Login"
+
+#: ptahcrowd/login.py:54
+msgid "Log in"
+msgstr "Entrar"
+
+#: ptahcrowd/registration.py:25
+msgid "Registration"
+msgstr "Registro"
+
+#: ptahcrowd/registration.py:53
+msgid "Register"
+msgstr "Registrar"
+
+#: ptahcrowd/resetpassword.py:41
+msgid "Start password reset"
+msgstr "Começar reset da senha"
+
+#: ptahcrowd/resetpassword.py:66
+msgid "The system can't restore the password for this user."
+msgstr "O sistema não pode restaurar a senha para este usuário."
+
+#: ptahcrowd/resetpassword.py:68
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: ptahcrowd/resetpassword.py:92
+msgid "Passcode is invalid."
+msgstr "O passcode é inválido."
+
+#: ptahcrowd/resetpassword.py:98
+msgid "Change password"
+msgstr "Trocar senha"
+
+#: ptahcrowd/resetpassword.py:120
+msgid "You have successfully changed your password."
+msgstr "Você trocou a sua senha."
+
+#: ptahcrowd/schemas.py:25
+msgid "This login is already in use."
+msgstr "Este login já está em uso."
+
+#: ptahcrowd/schemas.py:81
+msgid "Validated"
+msgstr "Validado"
+
+#: ptahcrowd/schemas.py:87
+msgid "Suspended"
+msgstr "Suspenso"
+
+#: ptahcrowd/user.py:47
+msgid "Create new user"
+msgstr "Criar novo usuário"
+
+#: ptahcrowd/user.py:50 ptahcrowd/user.py:177 ptahcrowd/views.py:194
+msgid "Back"
+msgstr "Voltar"
+
+#: ptahcrowd/user.py:54 ptahcrowd/views.py:198
+msgid "Create"
+msgstr "Criar"
+
+#: ptahcrowd/user.py:110
+msgid "Roles"
+msgstr "Papéis"
+
+#: ptahcrowd/user.py:111
+msgid "Choose user default roles."
+msgstr "Escolha os papéis padrão do usuário."
+
+#: ptahcrowd/user.py:118
+msgid "Groups"
+msgstr "Grupos"
+
+#: ptahcrowd/user.py:119
+msgid "Choose user groups."
+msgstr "Escolha os grupos do usuário."
+
+#: ptahcrowd/user.py:137
+msgid "Modify"
+msgstr "Modificar"
+
+#: ptahcrowd/user.py:163
+msgid "User properties have been updated."
+msgstr "As propriedades do usuário foram atualizadas."
+
+#: ptahcrowd/user.py:165
+msgid "Remove"
+msgstr "Remover"
+
+#: ptahcrowd/user.py:174
+msgid "User has been removed."
+msgstr "O usuário foi removido."
+
+#: ptahcrowd/views.py:26
+msgid "Search term"
+msgstr "Termo a buscar"
+
+#: ptahcrowd/views.py:27
+msgid "Ptah searches users by login and email"
+msgstr "Ptah busca usuários por login e email"
+
+#: ptahcrowd/views.py:56
+msgid "The selected accounts have been activated."
+msgstr "As contas selecionadas foram ativadas."
+
+#: ptahcrowd/views.py:63
+msgid "The selected accounts have been suspended."
+msgstr "As contas selecionadas foram suspensas."
+
+#: ptahcrowd/views.py:70
+msgid "The selected accounts have been validated."
+msgstr "As contas selecionadas foram validadas."
+
+#: ptahcrowd/views.py:79
+msgid "The selected accounts have been removed."
+msgstr "As contas selecionadas foram removidas."
+
+#: ptahcrowd/views.py:123
+msgid "Search"
+msgstr "Buscar"
+
+#: ptahcrowd/views.py:133
+msgid "Clear term"
+msgstr "Limpar termo"
+
+#: ptahcrowd/views.py:162
+msgid "The selected groups have been removed."
+msgstr "Os grupos selecionados foram removidos."
+
+#: ptahcrowd/views.py:191
+msgid "Create new group"
+msgstr "Criar novo grupo"
+
+#: ptahcrowd/views.py:212
+msgid "The group has been created."
+msgstr "O grupo foi criado."
+
+#: ptahcrowd/templates/forbidden.pt:2
+msgid "Your are not allowed to access this part of site."
+msgstr "Você não tem permissão para acessar esta parte do site."
+
+#: ptahcrowd/templates/login-success.pt:3
+msgid "You are now logged in."
+msgstr "Você entrou no sistema."
+
+#: ptahcrowd/templates/login-success.pt:6
+msgid "You are now logged in as <dynamic element>."
+msgstr "Você se logou como <dynamic element>."
+
+#: ptahcrowd/templates/login-success.pt:8
+msgid ""
+"Note: If you do not remain logged in after leaving this page, it is "
+"because you need to enable cookies in your browser."
+msgstr ""
+"Nota: Se você não permanecer logado após esta página, é porque precisa "
+"habilitar os cookies no seu navegador."
+
+#: ptahcrowd/templates/login-success.pt:14
+#: ptahcrowd/templates/login-suspended.pt:15
+msgid "Continue to the main page."
+msgstr "Continuar para a página principal."
+
+#: ptahcrowd/templates/login-suspended.pt:3
+msgid "Your account is suspended."
+msgstr "Sua conta está suspensa."
+
+#: ptahcrowd/templates/login-suspended.pt:6
+msgid "Contact the admin <dynamic element>"
+msgstr "Contacte o admin <dynamic element>"
+
+#: ptahcrowd/templates/login.pt:3
+msgid "Please log in"
+msgstr "Por favor entre"
+
+#: ptahcrowd/templates/login.pt:5
+msgid ""
+"To access this part of the site, you need to log in with your user name "
+"and password."
+msgstr ""
+"Para acessar esta parte do site, você precisa se logar com suas "
+"credenciais."
+
+#: ptahcrowd/templates/login.pt:10
+msgid "If you have forgotten your password,"
+msgstr "Se você esqueceu a sua senha,"
+
+#: ptahcrowd/templates/login.pt:11
+msgid "click here to retrieve it."
+msgstr "clique aqui para trocá-la."
+
+#: ptahcrowd/templates/login.pt:18
+msgid "New user? If you do not have an account here,"
+msgstr "Novo usuário? Se você não tem uma conta aqui,"
+
+#: ptahcrowd/templates/login.pt:19
+msgid "head over to the registration form."
+msgstr "vá para a tela de registro."
+
+#: ptahcrowd/templates/resetpassword.pt:3
+msgid "Lost Password"
+msgstr "Senha Perdida"
+
+#: ptahcrowd/templates/resetpassword.pt:6
+msgid ""
+"For security reasons, we store your password encrypted, and cannot mail "
+"it to you. If you would like to reset your password, please fill out the "
+"form below and we will immediately send you an email at the address you "
+"gave when you registered."
+msgstr ""
+"Por razões de segurança, gravamos sua senha criptografada e não podemos "
+"enviá-la por email. Se quiser redefinir sua senha, por favor preencha "
+"este formulário e imediatamente lhe enviaremos um email no endereço que "
+"você deu quando se registrou."
+
+#: ptahcrowd/templates/resetpassword.pt:7
+msgid ""
+"If this will not work for you (for example, if you forgot your member "
+"name or your email address has changed) send an email to ${link}."
+msgstr ""
+"Se assim não estiver bom para você (por exemplo, esqueceu seu login ou "
+"seu email mudou), envie um email para ${link}."
+
+#: ptahcrowd/templates/resetpasswordform.pt:2
+msgid "Reset password"
+msgstr "Redefinir senha"
+
+#: ptahcrowd/templates/resetpasswordform.pt:3
+msgid "Password reset confirmation for ${view.title}"
+msgstr "Confirmação de nova senha para ${view.title}"
+
+#: ptahcrowd/templates/resetpasswordmail.pt:1
+msgid ""
+"The password resetting process has been initiated. You must visit the "
+"link\n"
+"below to complete it:"
+msgstr ""
+"O processo de redefinição da senha foi iniciado. Você precisa visitar o\n"
+"link abaixo para completá-lo:"
+
