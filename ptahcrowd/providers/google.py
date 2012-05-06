@@ -1,4 +1,4 @@
-"""Github Authentication
+"""Google Authentication
 
 Docs: http://code.google.com/apis/accounts/docs/OAuth2Login.html
 OAuth App: https://code.google.com/apis/console   'Api Access'
