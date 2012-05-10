@@ -5,10 +5,10 @@ from ptah.testing import PtahTestCase
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 
-import ptahcrowd
-
 
 class TestJoin(PtahTestCase):
+
+    _includes = ('ptahcrowd',)
 
     def test_join_auth(self):
         from ptahcrowd.registration import Registration
@@ -24,6 +24,7 @@ class TestJoin(PtahTestCase):
             res.headers['location'], 'http://example.com')
 
     def test_join_disabled(self):
+        import ptahcrowd
         from ptahcrowd.registration import Registration
 
         cfg = ptah.get_settings(ptahcrowd.CFG_ID_CROWD)
@@ -35,11 +36,12 @@ class TestJoin(PtahTestCase):
         self.assertIsInstance(res, HTTPForbidden)
 
     def test_join_error(self):
+        from ptahcrowd.provider import CrowdUser
         from ptahcrowd.registration import Registration
-        from ptahcrowd.provider import CrowdUser, CrowdFactory
 
-        user = CrowdUser(title='name', login='login', email='email')
-        CrowdFactory().add(user)
+        user = CrowdUser(name='name', login='login', email='email')
+        ptah.get_session().add(user)
+        ptah.get_session().flush()
 
         uri = user.__uri__
 
@@ -71,12 +73,12 @@ class TestJoin(PtahTestCase):
         self.assertEqual(len(errors), 0)
 
     def test_join(self):
-        import ptah
+        from ptahcrowd.provider import CrowdUser
         from ptahcrowd.registration import Registration
-        from ptahcrowd.provider import CrowdUser, CrowdFactory
 
-        user = CrowdUser(title='name', login='login', email='email')
-        CrowdFactory().add(user)
+        user = CrowdUser(name='name', login='login', email='email')
+        ptah.get_session().add(user)
+        ptah.get_session().flush()
 
         uri = user.__uri__
 
@@ -108,11 +110,13 @@ class TestJoin(PtahTestCase):
         self.assertEqual(user.name, 'Test user')
 
     def test_join_unvalidated(self):
+        import ptahcrowd
+        from ptahcrowd.provider import CrowdUser
         from ptahcrowd.registration import Registration
-        from ptahcrowd.provider import CrowdUser, CrowdFactory
 
-        user = CrowdUser(title='name', login='login', email='email')
-        CrowdFactory().add(user)
+        user = CrowdUser(name='name', login='login', email='email')
+        ptah.get_session().add(user)
+        ptah.get_session().flush()
 
         uri = user.__uri__
 

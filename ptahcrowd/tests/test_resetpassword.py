@@ -1,5 +1,6 @@
 import sys
 import ptah
+import transaction
 from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 

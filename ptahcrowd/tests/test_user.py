@@ -10,6 +10,8 @@ import ptahcrowd
 
 class TestCreateUser(PtahTestCase):
 
+    _includes = ('ptahcrowd',)
+
     def test_create_user_back(self):
         from ptahcrowd.module import CrowdModule
         from ptahcrowd.user import CreateUserForm
@@ -61,27 +63,27 @@ class TestCreateUser(PtahTestCase):
 
         view = CreateUserForm(mod, request)
         res = view.update()
-
+        
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'], '.')
-        self.assertIn(
-            'User has been created.', ptah.render_messages(request))
+        self.assertIn('User has been created.', ptah.render_messages(request))
+        transaction.commit()
 
         user = ptah.auth_service.get_principal_bylogin('ptah@ptahproject.org')
         self.assertEqual(user.name, 'NKim')
         self.assertEqual(user.login, 'ptah@ptahproject.org')
-
-        props = ptahcrowd.query_properties(user.__uri__)
-        self.assertTrue(props.suspended)
-        self.assertFalse(props.validated)
+        self.assertTrue(user.suspended)
+        self.assertFalse(user.validated)
 
 
 class TestModifyUser(PtahTestCase):
 
+    _includes = ('ptahcrowd',)
+
     def _user(self):
-        from ptahcrowd.provider import CrowdUser, CrowdFactory
-        user = CrowdUser(title='name', login='ptah@local', email='ptah@local')
-        CrowdFactory().add(user)
+        from ptahcrowd.provider import CrowdUser
+        user = CrowdUser(name='name', login='ptah@local', email='ptah@local')
+        user.__type__.add(user)
         return user
 
     def test_modify_user_back(self):
@@ -97,20 +99,6 @@ class TestModifyUser(PtahTestCase):
 
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'], '..')
-
-    def test_modify_user_changepwd(self):
-        from ptahcrowd.user import ModifyUserForm
-
-        user = self._user()
-
-        request = DummyRequest(
-            POST = {'form.buttons.changepwd': 'Change'})
-
-        view = ModifyUserForm(user, request)
-        res = view.update()
-
-        self.assertIsInstance(res, HTTPFound)
-        self.assertEqual(res.headers['location'], 'password.html')
 
     def test_modify_user_forbidden(self):
         from ptahcrowd.user import ModifyUserForm
@@ -191,80 +179,3 @@ class TestModifyUser(PtahTestCase):
 
         user = ptah.resolve(user.__uri__)
         self.assertIsNone(user)
-
-
-class TestChangePassword(PtahTestCase):
-
-    def _user(self):
-        from ptahcrowd.provider import CrowdUser, CrowdFactory
-        user = CrowdUser(title='name', login='ptah@local', email='ptah@local')
-        CrowdFactory().add(user)
-        return user
-
-    def test_change_password_user_back(self):
-        from ptahcrowd.user import ChangePasswordForm
-
-        user = self._user()
-
-        request = DummyRequest(
-            POST = {'form.buttons.back': 'Back'})
-
-        view = ChangePasswordForm(user, request)
-        res = view.update()
-
-        self.assertIsInstance(res, HTTPFound)
-        self.assertEqual(res.headers['location'], '..')
-
-    def test_change_password_forbidden(self):
-        from ptahcrowd.user import ChangePasswordForm
-
-        user = self._user()
-
-        request = DummyRequest(
-            POST = {'form.buttons.change': 'Change',
-                    'password': '12345',
-                    })
-
-        view = ChangePasswordForm(user, request)
-        res = None
-        try:
-            view.update()
-        except Exception as err:
-            res = err
-
-        self.assertIsInstance(res, HTTPForbidden)
-        self.assertEqual(str(res), 'Form authenticator is not found.')
-
-    def test_change_password_error(self):
-        from ptahcrowd.user import ChangePasswordForm
-
-        user = self._user()
-        f = ChangePasswordForm(None, None)
-
-        request = DummyRequest(
-            POST = {'form.buttons.change': 'Change'})
-
-        view = ChangePasswordForm(user, request)
-        view.csrf = False
-        view.update()
-
-        self.assertIn(
-            'Please fix indicated errors.', ptah.render_messages(request))
-
-    def test_change_password(self):
-        from ptahcrowd.user import ChangePasswordForm
-
-        user = self._user()
-        f = ChangePasswordForm(None, None)
-
-        request = DummyRequest(
-            POST = {'form.buttons.change': 'Change',
-                    'password': '12345'})
-
-        request.POST[ChangePasswordForm.csrfname] = \
-                                             request.session.get_csrf_token()
-
-        view = ChangePasswordForm(user, request)
-        view.update()
-
-        self.assertEqual(user.password, '{plain}12345')

@@ -139,7 +139,7 @@ class ModifyUserForm(form.Form):
         user = self.context
 
         # update attrs
-        user.title = data['name']
+        user.name = data['name']
         user.login = data['login']
         user.email = data['login']
         user.validated = data['validated']

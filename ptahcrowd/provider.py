@@ -67,7 +67,9 @@ class CrowdUser(ptah.get_base()):
 class CrowdGroup(ptah.get_base()):
     """Crowd group
 
-    ``name``: User name.
+    ``title``: Group title.
+
+    ``description``: Group description.
 
     ``users``: Users list.
 
@@ -140,9 +142,9 @@ class CrowdAuthProvider(object):
     _sql_search = ptah.QueryFreezer(
         lambda: ptah.get_session().query(CrowdUser) \
             .filter(sqla.sql.or_(
-                CrowdUser.email.contains(sqla.sql.bindparam('term')),
-                CrowdUser.title.contains(sqla.sql.bindparam('term'))))\
-            .order_by(sqla.sql.asc('title')))
+                CrowdUser.name.contains(sqla.sql.bindparam('term')),
+                CrowdUser.email.contains(sqla.sql.bindparam('term'))))\
+            .order_by(sqla.sql.asc('name')))
 
     def authenticate(self, creds):
         login, password = creds['login'], creds['password']

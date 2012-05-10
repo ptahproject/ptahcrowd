@@ -41,13 +41,12 @@ class Registration(form.Form):
 
         # create user
         user = tinfo.create(
-            title=data['name'], login=data['login'], email=data['login'])
+            name=data['name'], login=data['login'], email=data['login'])
 
         # set password
         user.password = ptah.pwd_tool.encode(data['password'])
-        CrowdFactory().add(user)
 
-        return user
+        return tinfo.add(user)
 
     @form.button(_("Register"), actype=form.AC_PRIMARY)
     def register_handler(self):

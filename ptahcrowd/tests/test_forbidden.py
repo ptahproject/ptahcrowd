@@ -67,7 +67,18 @@ class TestForbiddenView(ptah.PtahTestCase):
         request.root = Context()
         ptah.auth_service.set_userid('user')
 
+        class Principal(object):
+            pass
+
+        def get_principal():
+            return Principal()
+
+        orig = ptah.auth_service.get_current_principal
+        ptah.auth_service.get_current_principal = get_principal
+
         res = render_view_to_response(HTTPForbidden(), request)
+        ptah.auth_service.get_current_principal = orig
+
         self.assertEqual(text_(res.status), '403 Forbidden')
         self.assertIn(
             '<h1>Your are not allowed to access this part of site.</h1>',

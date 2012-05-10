@@ -57,13 +57,6 @@ def principalRegistered(ev):
         ev.principal.validated = True
 
 
-@ptah.subscriber(ptah.events.PrincipalAddedEvent)
-def principalAdded(ev):
-    principal = ev.principal
-    principal.joined = datetime.utcnow()
-    principal.validated = True
-
-
 class ValidationTemplate(ptah.mail.MailTemplate):
 
     subject = 'Activate Your Account'

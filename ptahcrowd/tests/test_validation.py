@@ -98,26 +98,6 @@ class TestValidation(ptah.PtahTestCase):
 
         self.assertTrue(user.validated)
 
-    def test_validation_added(self):
-        from ptahcrowd.provider import CrowdUser
-
-        user = CrowdUser(name='name', login='login', email='email')
-        CrowdUser.__type__.add(user)
-
-        cfg = ptah.get_settings(ptahcrowd.CFG_ID_CROWD)
-        cfg['validation'] = False
-        self.registry.notify(ptah.events.PrincipalAddedEvent(user))
-
-        self.assertTrue(user.validated)
-
-        user = CrowdUser(name='name', login='login2', email='email2')
-        CrowdUser.__type__.add(user)
-        
-        cfg['validation'] = True
-        self.registry.notify(ptah.events.PrincipalAddedEvent(user))
-
-        self.assertTrue(user.validated)
-
     def test_validation_initiate(self):
         from ptahcrowd import validation
         from ptahcrowd.provider import CrowdUser
