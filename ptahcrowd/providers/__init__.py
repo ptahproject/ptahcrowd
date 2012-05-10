@@ -55,7 +55,7 @@ def auth_complete_view(context, request):
                 tinfo = ptahcrowd.get_user_type()
 
                 user = tinfo.create(
-                    title=entry.name,
+                    name=entry.name,
                     login=entry.email,
                     email=entry.email,
                     password=entry.access_token)

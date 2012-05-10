@@ -10,12 +10,6 @@ install_requires = ['setuptools',
                     'ptah >= 0.5.0',
                     "requests >= 0.6.6",
                     ]
-PY2 = sys.version_info[0] == 2
-if PY2:
-    # Temporarily switching off oauth2 for Python 3.2.
-    # This impacts the twitter and linkedin providers.
-    install_requires.append("oauth2 >= 1.1.3")
-
 tests_require = install_requires + ['nose']
 
 
