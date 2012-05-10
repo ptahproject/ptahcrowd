@@ -59,7 +59,8 @@ def auth_complete_view(context, request):
                     login=entry.email,
                     email=entry.email,
                     password=entry.access_token)
-                ptahcrowd.CrowdFactory().add(user)
+                session.add(user)
+                session.flush()
                 entry.uri = user.__uri__
             user.properties.validated = True
         else:
