@@ -102,7 +102,7 @@ class LoginForm(form.Form):
 
 
 @view_config(
-    route_name='ptah-login-success', 
+    route_name='ptah-login-success',
     wrapper=ptah.wrap_layout('ptah-page'),
     renderer='ptahcrowd:templates/login-success.pt')
 class LoginSuccess(ptah.View):

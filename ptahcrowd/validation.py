@@ -27,7 +27,7 @@ def initiate_email_validation(email, principal, request):
 @ptah.auth_checker
 def validationAndSuspendedChecker(info):
     principal = info.principal
-    
+
     if principal.suspended:
         info.message = 'Account is suspended.'
         info.arguments['suspended'] = True

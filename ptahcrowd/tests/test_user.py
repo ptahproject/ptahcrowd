@@ -63,7 +63,7 @@ class TestCreateUser(PtahTestCase):
 
         view = CreateUserForm(mod, request)
         res = view.update()
-        
+
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'], '.')
         self.assertIn('User has been created.', ptah.render_messages(request))

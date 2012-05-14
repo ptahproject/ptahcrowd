@@ -44,11 +44,14 @@ class CrowdUser(ptah.get_base()):
     def __init__(self, **kw):
         self.joined = datetime.utcnow()
         self.properties = {}
-        
+
         super(CrowdUser, self).__init__(**kw)
 
     def __str__(self):
         return self.name
+
+    def __name__(self):
+        return str(self.id)
 
     def __repr__(self):
         return '%s<%s:%s>'%(self.__class__.__name__, self.name, self.__uri__)
@@ -74,7 +77,7 @@ class CrowdGroup(ptah.get_base()):
     ``users``: Users list.
 
     """
-    
+
     __tablename__ = 'ptahcrowd_groups'
 
     id = sqla.Column(sqla.Integer, primary_key=True)
