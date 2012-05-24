@@ -1,6 +1,9 @@
 ``ptahcrowd`` README
 =====================
 
+.. image :: https://secure.travis-ci.org/ptahproject/ptahcrowd.png 
+  :target:  https://secure.travis-ci.org/ptahproject/ptahcrowd
+
 You can read the `ptah_crowd` documentation on-line at 
 `http://ptahcrowd.readthedocs.org <http://ptahcrowd.readthedocs.org/en/latest/index.html>`_.
 
