@@ -19,7 +19,6 @@ class LoginForm(form.Form):
 
     id = 'login-form'
     title = _('Login')
-    csrf = True
     
     fields = form.Fieldset(
         form.fields.TextField(
