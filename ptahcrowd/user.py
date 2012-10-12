@@ -38,7 +38,7 @@ def get_groups_vocabulary(context):
     return form.SimpleVocabulary(*[term for _t, term in sorted(groups)])
 
 
-@view_config('create.html',
+@view_config(name='create.html',
              context=CrowdModule,
              wrapper=ptah.wrap_layout())
 class CreateUserForm(form.Form):

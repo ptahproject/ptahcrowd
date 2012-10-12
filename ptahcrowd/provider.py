@@ -12,7 +12,7 @@ from ptahcrowd.settings import CFG_ID_CROWD
 CROWD_APP_ID = 'ptah-crowd'
 
 
-@ptah.type('ptah-crowd-user', 'Crowd user')
+@ptah.tinfo('ptah-crowd-user', 'Crowd user')
 
 class CrowdUser(ptah.get_base()):
     """Default crowd user
@@ -65,7 +65,7 @@ class CrowdUser(ptah.get_base()):
         return cls._sql_get_id.first(id=id)
 
 
-@ptah.type('ptah-crowd-group', 'Crowd group')
+@ptah.tinfo('ptah-crowd-group', 'Crowd group')
 
 class CrowdGroup(ptah.get_base()):
     """Crowd group

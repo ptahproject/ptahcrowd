@@ -126,7 +126,7 @@ class CrowdModuleView(form.Form):
 
 
 @view_config(
-    'groups.html',
+    name='groups.html',
     context=CrowdModule,
     wrapper=ptah.wrap_layout(),
     renderer='ptahcrowd:templates/groups.pt')
@@ -171,7 +171,7 @@ class CrowdGroupsView(ptah.View):
                       .offset(offset).limit(limit).all()
 
 
-@view_config('create-grp.html',
+@view_config(name='create-grp.html',
              context=CrowdModule,
              wrapper=ptah.wrap_layout())
 class CreateGroupForm(form.Form):
