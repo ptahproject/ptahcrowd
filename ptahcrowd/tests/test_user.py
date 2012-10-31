@@ -16,7 +16,7 @@ class TestCreateUser(PtahTestCase):
         from ptahcrowd.module import CrowdModule
         from ptahcrowd.user import CreateUserForm
 
-        request = DummyRequest(
+        request = self.make_request(
             POST = {'form.buttons.back': 'Back'})
         mod = CrowdModule(None, request)
 
@@ -31,7 +31,7 @@ class TestCreateUser(PtahTestCase):
 
         f = CreateUserForm(None, None)
 
-        request = DummyRequest(
+        request = self.make_request(
             POST = {'form.buttons.create': 'Create'})
         request.POST[CreateUserForm.csrfname] = \
             request.session.get_csrf_token()
@@ -49,7 +49,7 @@ class TestCreateUser(PtahTestCase):
 
         f = CreateUserForm(None, None)
 
-        request = DummyRequest(
+        request = self.make_request(
             POST = {'name': 'NKim',
                     'login': 'ptah@ptahproject.org',
                     'password': '12345',
@@ -91,7 +91,7 @@ class TestModifyUser(PtahTestCase):
 
         user = self._user()
 
-        request = DummyRequest(
+        request = self.make_request(
             POST = {'form.buttons.back': 'Back'})
 
         view = ModifyUserForm(user, request)
@@ -105,7 +105,7 @@ class TestModifyUser(PtahTestCase):
 
         user = self._user()
 
-        request = DummyRequest(
+        request = self.make_request(
             POST = {'form.buttons.modify': 'Modify',
                     'name': 'NKim',
                     'login': 'ptah@ptahproject.org',
@@ -129,7 +129,7 @@ class TestModifyUser(PtahTestCase):
 
         user = self._user()
 
-        request = DummyRequest(
+        request = self.make_request(
             POST = {'form.buttons.modify': 'Modify'})
 
         view = ModifyUserForm(user, request)
@@ -146,7 +146,7 @@ class TestModifyUser(PtahTestCase):
         user = self._user()
         f = ModifyUserForm(None, None)
 
-        request = DummyRequest(
+        request = self.make_request(
             POST = {'form.buttons.modify': 'Modify',
                     'name': 'NKim',
                     'login': 'ptah@ptahproject.org',
@@ -167,7 +167,7 @@ class TestModifyUser(PtahTestCase):
 
         user = self._user()
 
-        request = DummyRequest(
+        request = self.make_request(
             POST = {'form.buttons.remove': 'Remove'})
 
         view = ModifyUserForm(user, request)

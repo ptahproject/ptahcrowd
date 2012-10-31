@@ -17,6 +17,8 @@ POPULATE_CREATE_ADMIN = 'ptah-crowd-admin'
 
 # ptahcrowd include
 def includeme(config):
+    config.include('ptah')
+
     config.add_route(
         'ptah-principal-validate', '/validateaccount.html')
 
@@ -55,6 +57,14 @@ def includeme(config):
     # for management module
     config.add_route(
         CROWD_APP_ID, '# {0}'.format(CROWD_APP_ID), use_global_views=True)
+
+    # templates
+    config.add_layer('ptah-crowd', path='ptahcrowd:templates')
+
+    # layout
+    config.ptah_layout(
+        'crowd', renderer='ptah-crowd:layout.lt', parent="workspace",
+        use_global_views=True)
 
     # static assets
     config.add_static_view('_ptahcrowd', 'ptahcrowd:static')

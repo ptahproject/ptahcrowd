@@ -16,7 +16,7 @@ class TestCheckLogin(PtahTestCase):
         user = CrowdUser(name='name', login='login', email='email')
         CrowdUser.__type__.add(user)
 
-        request = DummyRequest()
+        request = self.make_request()
 
         self.assertRaises(
             form.Invalid, ptahcrowd.checkLoginValidator, None, 'login')

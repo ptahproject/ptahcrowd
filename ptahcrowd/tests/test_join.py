@@ -13,7 +13,7 @@ class TestJoin(PtahTestCase):
     def test_join_auth(self):
         from ptahcrowd.registration import Registration
 
-        request = DummyRequest()
+        request = self.make_request()
         ptah.auth_service.set_userid('test')
 
         form = Registration(None, request)
@@ -30,7 +30,7 @@ class TestJoin(PtahTestCase):
         cfg = ptah.get_settings(ptahcrowd.CFG_ID_CROWD)
         cfg['join'] = False
 
-        request = DummyRequest()
+        request = self.make_request()
         form = Registration(None, request)
         res = form.update()
         self.assertIsInstance(res, HTTPForbidden)
@@ -45,7 +45,7 @@ class TestJoin(PtahTestCase):
 
         uri = user.__uri__
 
-        request = DummyRequest(
+        request = self.make_request(
             POST = {'name': 'Test user',
                     'login': 'custom login',
                     'password': '12345',
@@ -62,7 +62,7 @@ class TestJoin(PtahTestCase):
         self.assertIn('Please fix indicated errors.',
                       ptah.render_messages(request))
 
-        request = DummyRequest(
+        request = self.make_request(
             POST = {'name': 'Test user',
                     'login': 'test@example.com',
                     'password': '12345',
@@ -90,7 +90,7 @@ class TestJoin(PtahTestCase):
         MAIL = ptah.get_settings(ptah.CFG_ID_PTAH)
         MAIL['Mailer'] = Stub()
 
-        request = DummyRequest(
+        request = self.make_request(
             POST = {'name': 'Test user',
                     'login': 'test@example.com',
                     'password': '12345',
@@ -131,7 +131,7 @@ class TestJoin(PtahTestCase):
         CROWD = ptah.get_settings(ptahcrowd.CFG_ID_CROWD)
         CROWD['allow-unvalidated'] = False
 
-        request = DummyRequest(
+        request = self.make_request(
             POST = {'name': 'Test user',
                     'login': 'test@example.com',
                     'password': '12345',

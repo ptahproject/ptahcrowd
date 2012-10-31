@@ -56,7 +56,7 @@ class CreateUserForm(form.Form):
         data, errors = self.extract()
 
         if errors:
-            self.message(errors, 'form-error')
+            self.add_error_message(errors)
             return
 
         # create user
@@ -77,7 +77,7 @@ class CreateUserForm(form.Form):
         # notify system
         self.request.registry.notify(ptah.events.PrincipalAddedEvent(user))
 
-        self.message('User has been created.', 'success')
+        self.request.add_message('User has been created.', 'success')
         return HTTPFound(location='.')
 
 
@@ -133,7 +133,7 @@ class ModifyUserForm(form.Form):
         data, errors = self.extract()
 
         if errors:
-            self.message(errors, 'form-error')
+            self.add_error_message(errors)
             return
 
         user = self.context
@@ -150,7 +150,7 @@ class ModifyUserForm(form.Form):
         if data['password'] is not ptah.form.null:
             user.password = ptah.pwd_tool.encode(data['password'])
 
-        self.message(_("User properties have been updated."), 'info')
+        self.request.add_message(_("User properties have been updated."), 'info')
 
     @form.button(_('Remove'), actype=form.AC_DANGER)
     def remove(self):
@@ -161,7 +161,7 @@ class ModifyUserForm(form.Form):
         Session.delete(user)
         Session.flush()
 
-        self.message(_("User has been removed."), 'info')
+        self.request.add_message(_("User has been removed."), 'info')
         return HTTPFound(location='..')
 
     @form.button(_('Back'))

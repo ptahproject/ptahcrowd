@@ -16,7 +16,7 @@ from ptahcrowd.validation import initiate_email_validation
 
 @view_config(
     route_name='ptah-join',
-    wrapper=ptah.wrap_layout('ptah-page'))
+    wrapper=ptah.wrap_layout('crowd'))
 
 class Registration(form.Form):
     """ Ptah crowd registration form """
@@ -52,7 +52,7 @@ class Registration(form.Form):
     def register_handler(self):
         data, errors = self.extract()
         if errors:
-            self.message(errors, 'form-error')
+            self.add_error_message(errors)
             return
 
         user = self.create(data)
@@ -61,7 +61,7 @@ class Registration(form.Form):
         # validation
         if self.cfg['validation']:
             initiate_email_validation(user.email, user, self.request)
-            self.message('Validation email has been sent.')
+            self.request.add_message('Validation email has been sent.')
             if not self.cfg['allow-unvalidated']:
                 return HTTPFound(location=self.request.application_url)
 
@@ -74,4 +74,4 @@ class Registration(form.Form):
                 location='%s/login-success.html'%self.request.application_url,
                 headers = headers)
         else:
-            self.message(info.message) # pragma: no cover
+            self.request.add_message(info.message) # pragma: no cover

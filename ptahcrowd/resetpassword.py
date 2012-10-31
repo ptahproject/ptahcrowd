@@ -15,8 +15,8 @@ from ptahcrowd.settings import _
 
 @view_config(
     route_name='ptah-resetpassword',
-    wrapper=ptah.wrap_layout('ptah-page'),
-    renderer='ptahcrowd:templates/resetpassword.pt')
+    wrapper=ptah.wrap_layout('crowd'),
+    renderer='ptah-crowd:resetpassword.lt')
 class ResetPassword(ptah.form.Form):
 
     fields = ptah.form.Fieldset(
@@ -60,10 +60,10 @@ class ResetPassword(ptah.form.Form):
                 self.request.registry.notify(
                     ResetPasswordInitiatedEvent(principal))
 
-                self.message(const.PASSWORD_RESET_START)
+                self.request.add_message(const.PASSWORD_RESET_START)
                 return HTTPFound(location=request.application_url)
 
-        self.message(_("The system can't restore the password for this user."))
+        self.request.add_message(_("The system can't restore the password for this user."))
 
     @ptah.form.button(_('Cancel'))
     def cancel(self):
@@ -72,8 +72,8 @@ class ResetPassword(ptah.form.Form):
 
 @view_config(
     route_name='ptah-resetpassword-form',
-    wrapper=ptah.wrap_layout('ptah-page'),
-    renderer='ptahcrowd:templates/resetpasswordform.pt')
+    wrapper=ptah.wrap_layout('crowd'),
+    renderer='ptah-crowd:resetpasswordform.lt')
 class ResetPasswordForm(ptah.form.Form):
 
     fields = PasswordSchema
@@ -89,7 +89,7 @@ class ResetPasswordForm(ptah.form.Form):
             self.passcode = passcode
             self.title = principal.name or principal.login
         else:
-            self.message(_("Passcode is invalid."), 'warning')
+            self.request.add_message(_("Passcode is invalid."), 'warning')
             return HTTPFound(
                 location='%s/resetpassword.html' % request.application_url)
 
@@ -101,7 +101,7 @@ class ResetPasswordForm(ptah.form.Form):
         data, errors = self.extract()
 
         if errors:
-            self.message(errors, 'form-error')
+            self.add_error_message(errors)
         else:
             principal = ptah.pwd_tool.get_principal(self.passcode)
             ptah.pwd_tool.change_password(self.passcode, data['password'])
@@ -116,7 +116,7 @@ class ResetPasswordForm(ptah.form.Form):
             if info.status:
                 headers = security.remember(self.request, info.__uri__)
 
-            self.message(
+            self.request.add_message(
                 _('You have successfully changed your password.'), 'success')
             return HTTPFound(
                 headers=headers,
@@ -126,7 +126,7 @@ class ResetPasswordForm(ptah.form.Form):
 class ResetPasswordTemplate(ptah.mail.MailTemplate):
 
     subject = const.PASSWORD_RESET_SUBJECT
-    template = 'ptahcrowd:templates/resetpasswordmail.pt'
+    template = 'ptah-crowd:resetpasswordmail.lt'
 
     def update(self):
         super(ResetPasswordTemplate, self).update()

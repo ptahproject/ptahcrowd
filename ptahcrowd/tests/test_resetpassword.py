@@ -16,7 +16,7 @@ class TestResetPassword(ptah.PtahTestCase):
 
     def test_resetpassword_cancel(self):
         from ptahcrowd.resetpassword import ResetPassword
-        request = DummyRequest(
+        request = self.make_request(
             POST={'form.buttons.cancel': 'Cancel'})
 
         form = ResetPassword(None, request)
@@ -27,7 +27,7 @@ class TestResetPassword(ptah.PtahTestCase):
 
     def test_resetpassword_required(self):
         from ptahcrowd.resetpassword import ResetPassword
-        request = DummyRequest(
+        request = self.make_request(
             POST={'form.buttons.reset': 'Reset'})
 
         form = ResetPassword(None, request)
@@ -52,7 +52,7 @@ class TestResetPassword(ptah.PtahTestCase):
 
         ResetPasswordTemplate.send = send
 
-        request = DummyRequest(
+        request = self.make_request(
             POST={'login': 'login',
                   'form.buttons.reset': 'Reset'})
 
@@ -75,7 +75,7 @@ class TestResetPassword(ptah.PtahTestCase):
     def test_resetpassword_form_unknown_passcode(self):
         from ptahcrowd.resetpassword import ResetPasswordForm
 
-        request = DummyRequest(subpath=('unknown',))
+        request = self.make_request(subpath=('unknown',))
 
         form = ResetPasswordForm(None, request)
         res = form.update()
@@ -94,7 +94,7 @@ class TestResetPassword(ptah.PtahTestCase):
 
         passcode = ptah.pwd_tool.generate_passcode(user)
 
-        request = DummyRequest(subpath=(passcode,))
+        request = self.make_request(subpath=(passcode,))
 
         form = ResetPasswordForm(None, request)
         form.update()
@@ -111,7 +111,7 @@ class TestResetPassword(ptah.PtahTestCase):
 
         passcode = ptah.pwd_tool.generate_passcode(user)
 
-        request = DummyRequest(
+        request = self.make_request(
             subpath=(passcode,),
             POST = {'password': '12345', 'confirm_password': '123456',
                     'form.buttons.change': 'Change'})
@@ -132,7 +132,7 @@ class TestResetPassword(ptah.PtahTestCase):
 
         passcode = ptah.pwd_tool.generate_passcode(user)
 
-        request = DummyRequest(
+        request = self.make_request(
             subpath=(passcode,),
             POST = {'password': '123456', 'confirm_password': '123456',
                     'form.buttons.change': 'Change'})
@@ -153,7 +153,7 @@ class TestResetPassword(ptah.PtahTestCase):
         user = CrowdUser(name='name', login='login', email='email')
         CrowdUser.__type__.add(user)
 
-        request = DummyRequest()
+        request = self.make_request()
         passcode = ptah.pwd_tool.generate_passcode(user)
 
         template = ResetPasswordTemplate(user, request)

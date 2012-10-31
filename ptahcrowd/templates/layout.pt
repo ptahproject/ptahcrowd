@@ -1,0 +1,7 @@
+<div class="row">
+  <div class="span8 offset2">
+    ${structure: request.render_messages()}
+
+    ${structure: wrapped_content}
+  </div>
+</div>

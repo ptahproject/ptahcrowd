@@ -74,5 +74,5 @@ class Forbidden(ptah.View):
         request.wrapped_body = render(
             'ptahcrowd:templates/forbidden.pt', result, request)
 
-        name = ptah.wrap_layout('ptah-page')
+        name = ptah.wrap_layout('crowd')
         return render_view_to_response(self.__parent__, request, name)

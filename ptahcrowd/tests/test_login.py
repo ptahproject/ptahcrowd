@@ -15,7 +15,7 @@ class TestSuspended(PtahTestCase):
     def test_suspended_anon(self):
         from ptahcrowd import login
 
-        request = DummyRequest()
+        request = self.make_request()
         view = login.LoginSuspended(None, request)
         res = view.update()
         self.assertIsInstance(res, HTTPFound)
@@ -31,10 +31,10 @@ class TestSuspended(PtahTestCase):
         uri = user.__uri__
         user.suspended = False
 
-        request = DummyRequest()
+        request = self.make_request()
         ptah.auth_service.set_userid(uri)
 
-        request = DummyRequest()
+        request = self.make_request()
         res = self.render_route_view(None, request, 'ptah-login-suspended')
         self.assertIsInstance(res, HTTPFound)
 
@@ -51,7 +51,7 @@ class TestSuspended(PtahTestCase):
 
         ptah.auth_service.set_userid(user.__uri__)
 
-        request = DummyRequest()
+        request = self.make_request()
         res = self.render_route_view(None, request, 'ptah-login-suspended')
 
         self.assertIn('Your account is suspended', res.text)
@@ -64,7 +64,7 @@ class TestLogout(PtahTestCase):
     def test_logout_anon(self):
         from ptahcrowd import login
 
-        request = DummyRequest()
+        request = self.make_request()
         res = login.logout(request)
         self.assertIsInstance(res, HTTPFound)
 
@@ -78,7 +78,7 @@ class TestLogout(PtahTestCase):
 
         uri = user.__uri__
 
-        request = DummyRequest()
+        request = self.make_request()
         request.environ['HTTP_HOST'] = 'example.com'
         ptah.auth_service.set_userid(uri)
 
@@ -94,7 +94,7 @@ class TestLogoutSuccess(PtahTestCase):
     def test_login_success_anon(self):
         from ptahcrowd import login
 
-        request = DummyRequest()
+        request = self.make_request()
         request.environ['HTTP_HOST'] = 'example.com'
 
         res = self.render_route_view(None, request, 'ptah-login-success')
@@ -125,7 +125,7 @@ class TestLogin(PtahTestCase):
     def test_login_auth(self):
         from ptahcrowd import login
 
-        request = DummyRequest()
+        request = self.make_request()
 
         ptah.auth_service.set_userid('test')
 
@@ -138,7 +138,7 @@ class TestLogin(PtahTestCase):
     def test_login_update(self):
         from ptahcrowd import login
 
-        request = DummyRequest()
+        request = self.make_request()
 
         cfg = ptah.get_settings(ptahcrowd.CFG_ID_CROWD)
         cfg['join'] = False
@@ -155,7 +155,7 @@ class TestLogin(PtahTestCase):
     def test_login_update_join(self):
         from ptahcrowd import login
 
-        request = DummyRequest()
+        request = self.make_request()
         request.registry = self.registry
 
         cfg = ptah.get_settings(ptahcrowd.CFG_ID_CROWD, self.registry)
@@ -179,7 +179,7 @@ class TestLogin(PtahTestCase):
 
         uri = user.__uri__
 
-        request = DummyRequest()
+        request = self.make_request()
 
         form = login.LoginForm(None, request)
         form.update()
@@ -190,7 +190,7 @@ class TestLogin(PtahTestCase):
         self.assertIn('Please fix indicated errors.',
                       ptah.render_messages(request))
 
-        request = DummyRequest(
+        request = self.make_request(
             POST={'login': 'login', 'password': '12345'})
         request.environ['HTTP_HOST'] = 'example.com'
 
@@ -212,7 +212,7 @@ class TestLogin(PtahTestCase):
 
         uri = user.__uri__
 
-        request = DummyRequest(
+        request = self.make_request(
             POST={'login': 'login', 'password': '12345'},
             GET={'came_from': 'http://example.com/ptah-manage/'})
         request.environ['HTTP_HOST'] = 'example.com'
@@ -234,7 +234,7 @@ class TestLogin(PtahTestCase):
 
         uri = user.__uri__
 
-        request = DummyRequest(
+        request = self.make_request(
             POST={'login': 'login1', 'password': '123456'})
         request.environ['HTTP_HOST'] = 'example.com'
 
@@ -259,7 +259,7 @@ class TestLogin(PtahTestCase):
         cfg = ptah.get_settings(ptahcrowd.CFG_ID_CROWD)
         cfg['allow-unvalidated'] = False
 
-        request = DummyRequest(
+        request = self.make_request(
             POST={'login': 'login', 'password': '12345'})
         request.environ['HTTP_HOST'] = 'example.com'
 
@@ -280,7 +280,7 @@ class TestLogin(PtahTestCase):
         uri = user.__uri__
         user.suspended = True
 
-        request = DummyRequest(
+        request = self.make_request(
             POST={'login': 'login', 'password': '12345'})
         request.environ['HTTP_HOST'] = 'example.com'
 

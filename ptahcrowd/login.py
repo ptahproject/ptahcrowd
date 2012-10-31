@@ -12,8 +12,8 @@ from ptahcrowd.settings import _, CFG_ID_CROWD
 
 @view_config(
     route_name='ptah-login',
-    wrapper=ptah.wrap_layout('ptah-page'),
-    renderer="ptahcrowd:templates/login.pt")
+    wrapper=ptah.wrap_layout('crowd'),
+    renderer="ptah-crowd:login.lt")
 class LoginForm(form.Form):
     """ Login form """
 
@@ -56,7 +56,7 @@ class LoginForm(form.Form):
 
         data, errors = self.extract()
         if errors:
-            self.message(errors, 'form-error')
+            self.add_error_message(errors)
             return
 
         info = ptah.auth_service.authenticate(data)
@@ -76,10 +76,10 @@ class LoginForm(form.Form):
             return HTTPFound(request.route_url('ptah-login-suspended'))
 
         if info.message:
-            self.message(info.message, 'warning')
+            self.request.add_message(info.message, 'warning')
             return
 
-        self.message(const.WRONG_CREDENTIALS, 'error')
+        self.request.add_message(const.WRONG_CREDENTIALS, 'error')
 
     def update(self):
         cfg = ptah.get_settings(CFG_ID_CROWD, self.request.registry)
@@ -103,8 +103,8 @@ class LoginForm(form.Form):
 
 @view_config(
     route_name='ptah-login-success',
-    wrapper=ptah.wrap_layout('ptah-page'),
-    renderer='ptahcrowd:templates/login-success.pt')
+    wrapper=ptah.wrap_layout('crowd'),
+    renderer='ptah-crowd:login-success.lt')
 class LoginSuccess(ptah.View):
     """ Login successful information page. """
 
@@ -122,8 +122,8 @@ class LoginSuccess(ptah.View):
 
 
 @view_config(
-    route_name='ptah-login-suspended', wrapper=ptah.wrap_layout('ptah-page'),
-    renderer="ptahcrowd:templates/login-suspended.pt")
+    route_name='ptah-login-suspended', wrapper=ptah.wrap_layout('crowd'),
+    renderer="ptah-crowd:login-suspended.lt")
 class LoginSuspended(ptah.View):
     """ Suspended account information page. """
 

@@ -95,7 +95,7 @@ def login(uri, request):
 
 @view_config(
     route_name='ptah-crowd-verify-email',
-    wrapper=ptah.wrap_layout('ptah-page'))
+    wrapper=ptah.wrap_layout('crowd'))
 class VerifyEmail(ptah.form.Form):
     """ verify email """
 
@@ -130,7 +130,7 @@ class VerifyEmail(ptah.form.Form):
         data, errors = self.extract()
 
         if errors:
-            self.message(errors, 'form-error')
+            self.add_error_message(errors)
             return
 
         entry = self.entry
@@ -172,7 +172,7 @@ class VerifyEmail(ptah.form.Form):
 
         # login
         if new_user:
-            self.message('Email verification email has been sent.')
+            self.request.add_message('Email verification email has been sent.')
             cfg = ptah.get_settings(ptahcrowd.CFG_ID_CROWD, request.registry)
             if cfg['validation']:
                 if cfg['allow-unvalidated']:
@@ -182,8 +182,9 @@ class VerifyEmail(ptah.form.Form):
                 entry.uri = uri
                 return login(uri, request)
         else:
-            self.message('User with this email already exists. '
-                         'You have to verify email before you can login.')
+            self.request.add_message(
+                'User with this email already exists. '
+                'You have to verify email before you can login.')
 
         return HTTPFound(location=request.application_url)
 

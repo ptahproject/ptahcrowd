@@ -18,7 +18,7 @@ class TestModule(PtahTestCase):
         from ptah.manage.manage import PtahManageRoute
         from ptahcrowd.module import CrowdModule
 
-        request = DummyRequest()
+        request = self.make_request()
 
         ptah.auth_service.set_userid('test')
 
@@ -38,7 +38,7 @@ class TestModule(PtahTestCase):
 
         uri = user.__uri__
 
-        mod = CrowdModule(None, DummyRequest())
+        mod = CrowdModule(None, self.make_request())
 
         self.assertRaises(KeyError, mod.__getitem__, 'unkown')
 
@@ -54,7 +54,7 @@ class TestModuleView(PtahTestCase):
 
     def _make_mod(self):
         from ptahcrowd.module import CrowdModule
-        return CrowdModule(None, DummyRequest())
+        return CrowdModule(None, self.make_request())
 
     def _make_user(self):
         from ptahcrowd.provider import CrowdUser
@@ -67,7 +67,7 @@ class TestModuleView(PtahTestCase):
 
         mod = self._make_mod()
 
-        form = CrowdModuleView(mod, DummyRequest(
+        form = CrowdModuleView(mod, self.make_request(
                 POST=MultiDict((('form.buttons.search', 'Search'),
                                 ('term', 'search term')))))
         form.csrf = False
@@ -82,7 +82,7 @@ class TestModuleView(PtahTestCase):
 
         mod = self._make_mod()
 
-        form = CrowdModuleView(mod, DummyRequest(
+        form = CrowdModuleView(mod, self.make_request(
                 session = {'ptah-search-term': 'test'},
                 POST=MultiDict((('form.buttons.clear', 'Clear'),))))
         form.csrf = False
@@ -95,7 +95,7 @@ class TestModuleView(PtahTestCase):
 
         mod = self._make_mod()
 
-        form = CrowdModuleView(mod, DummyRequest(
+        form = CrowdModuleView(mod, self.make_request(
                 POST=MultiDict((('form.buttons.search', 'Search'),))))
         form.csrf = False
         form.update()
@@ -109,7 +109,7 @@ class TestModuleView(PtahTestCase):
         mod = self._make_mod()
         user = self._make_user()
 
-        request = DummyRequest(
+        request = self.make_request(
             params = MultiDict(), POST = MultiDict())
         request.session['ptah-search-term'] = 'email'
 
@@ -119,20 +119,20 @@ class TestModuleView(PtahTestCase):
 
         res = render_view_to_response(
             mod,
-            DummyRequest(params = MultiDict(), POST = MultiDict()), '')
+            self.make_request(params = MultiDict(), POST = MultiDict()), '')
 
         self.assertIn('value="%s"'%user.id, res.text)
 
         res = render_view_to_response(
             mod,
-            DummyRequest(params = MultiDict({'batch': 1}),
+            self.make_request(params = MultiDict({'batch': 1}),
                          POST = MultiDict()), '')
 
         self.assertIn('value="%s"'%user.id, res.text)
 
         res = render_view_to_response(
             mod,
-            DummyRequest(params = MultiDict({'batch': 0}),
+            self.make_request(params = MultiDict({'batch': 0}),
                          POST = MultiDict()), '')
 
         self.assertIn('value="%s"'%user.id, res.text)
@@ -147,7 +147,7 @@ class TestModuleView(PtahTestCase):
 
         id = user.id
 
-        form = CrowdModuleView(mod, DummyRequest(
+        form = CrowdModuleView(mod, self.make_request(
                 POST=MultiDict((('uid', id),
                                 ('validate', 'validate')))))
 
@@ -171,7 +171,7 @@ class TestModuleView(PtahTestCase):
         user.suspended = False
         id = user.id
 
-        form = CrowdModuleView(mod, DummyRequest(
+        form = CrowdModuleView(mod, self.make_request(
                 POST=MultiDict((('uid', id),
                                 ('suspend', 'suspend')))))
         form.request.POST[form.csrfname] = form.request.session.get_csrf_token()
@@ -195,7 +195,7 @@ class TestModuleView(PtahTestCase):
 
         id = user.id
 
-        form = CrowdModuleView(mod, DummyRequest(
+        form = CrowdModuleView(mod, self.make_request(
                 POST=MultiDict((('uid', user.id),
                                 ('activate', 'activate')))))
 
@@ -218,7 +218,7 @@ class TestModuleView(PtahTestCase):
 
         uri = user.__uri__
 
-        form = CrowdModuleView(mod, DummyRequest(
+        form = CrowdModuleView(mod, self.make_request(
                 POST=MultiDict((('uid', user.id),
                                 ('remove', 'remove')))))
         form.update()

@@ -15,7 +15,7 @@ class TestForbiddenView(ptah.PtahTestCase):
         class Context(object):
             """ """
 
-        request = DummyRequest()
+        request = self.make_request()
         request.url = 'http://example.com'
         request.application_url = 'http://example.com'
         request.root = Context()
@@ -44,7 +44,7 @@ class TestForbiddenView(ptah.PtahTestCase):
             def __init__(self, request):
                 self.request = request
 
-        request = DummyRequest()
+        request = self.make_request()
         request.url = 'http://example.com'
         request.application_url = 'http://example.com'
 
@@ -91,7 +91,7 @@ class TestForbiddenView(ptah.PtahTestCase):
         class Context(object):
             """ """
 
-        request = DummyRequest()
+        request = self.make_request()
         request.url = 'http://example.com'
         request.root = Context()
 
@@ -116,7 +116,7 @@ class TestForbiddenView(ptah.PtahTestCase):
         class Context(object):
             """ """
 
-        request = DummyRequest()
+        request = self.make_request()
         request.url = 'http://example.com'
         request.root = Context()
 
