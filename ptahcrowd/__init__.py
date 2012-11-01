@@ -62,9 +62,8 @@ def includeme(config):
     config.add_layer('ptah-crowd', path='ptahcrowd:templates')
 
     # layout
-    config.ptah_layout(
-        'crowd', renderer='ptah-crowd:layout.lt', parent="workspace",
-        use_global_views=True)
+    config.add_layout(
+        'crowd', renderer='ptah-crowd:layout.lt', parent="workspace")
 
     # static assets
     config.add_static_view('_ptahcrowd', 'ptahcrowd:static')
