@@ -158,7 +158,7 @@ class TestValidation(ptah.PtahTestCase):
         res = validation.validate(self.request)
         self.assertIsInstance(res, HTTPFound)
         self.assertIn(
-            "Can't validate email address.", ptah.render_messages(self.request))
+            "Can't validate email address.", self.request.render_messages())
 
         user.validated = False
         self.request.GET['token'] = t
@@ -166,6 +166,6 @@ class TestValidation(ptah.PtahTestCase):
 
         res = validation.validate(self.request)
         self.assertIn("Account has been successfully validated.",
-                      ptah.render_messages(self.request))
+                      self.request.render_messages())
 
         self.assertTrue(user.validated)

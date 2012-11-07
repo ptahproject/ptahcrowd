@@ -89,7 +89,7 @@ def login(uri, request):
         return HTTPFound(
             location='%s/login-suspended.html'%request.application_url)
 
-    ptah.add_message(request, info.message, 'warning')
+    request.add_message(info.message, 'warning')
     return HTTPFound(location = '%s/login.html'%request.application_url)
 
 
@@ -207,12 +207,12 @@ def verify(request):
         entry.email = data['email']
 
         ptah.token.service.remove(t)
-        ptah.add_message(request,"Email has been successfully verified.")
+        request.add_message("Email has been successfully verified.")
 
         headers = security.remember(request, principal.__uri__)
         return HTTPFound(location=request.application_url, headers=headers)
 
-    ptah.add_message(request, "Can't verify email address.", 'warning')
+    request.add_message("Can't verify email address.", 'warning')
     return HTTPFound(location=request.application_url)
 
 

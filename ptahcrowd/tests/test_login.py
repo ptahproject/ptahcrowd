@@ -188,7 +188,7 @@ class TestLogin(PtahTestCase):
 
         form.login_handler()
         self.assertIn('Please fix indicated errors.',
-                      ptah.render_messages(request))
+                      request.render_messages())
 
         request = self.make_request(
             POST={'login': 'login', 'password': '12345'})
@@ -243,7 +243,7 @@ class TestLogin(PtahTestCase):
         form.login_handler()
 
         self.assertIn("You have entered the wrong login or password.",
-                      ptah.render_messages(request))
+                      request.render_messages())
 
     def test_login_unvalidated(self):
         from ptahcrowd import login
@@ -267,7 +267,7 @@ class TestLogin(PtahTestCase):
         form.update()
         form.login_handler()
 
-        self.assertIn('Account is not validated.',ptah.render_messages(request))
+        self.assertIn('Account is not validated.',request.render_messages())
 
     def test_login_suspended(self):
         from ptahcrowd import login

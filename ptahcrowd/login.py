@@ -14,12 +14,12 @@ from ptahcrowd.settings import _, CFG_ID_CROWD
     route_name='ptah-login',
     wrapper=ptah.wrap_layout('crowd'),
     renderer="ptah-crowd:login.lt")
-class LoginForm(form.Form):
+class LoginForm(form.Form, ptah.View):
     """ Login form """
 
     id = 'login-form'
     title = _('Login')
-    
+
     fields = form.Fieldset(
         form.fields.TextField(
             'login',
@@ -151,7 +151,7 @@ def logout(request):
         request.registry.notify(
             ptah.events.LoggedOutEvent(ptah.resolve(uid)))
 
-        view.add_message(request, const.LOGOUT_SUCCESSFUL, 'info')
+        request.add_message(const.LOGOUT_SUCCESSFUL, 'info')
         headers = security.forget(request)
         return HTTPFound(
             headers=headers,

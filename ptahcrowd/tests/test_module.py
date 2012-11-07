@@ -101,7 +101,7 @@ class TestModuleView(PtahTestCase):
         form.update()
 
         self.assertIn('Please specify search term',
-                      ptah.render_messages(form.request))
+                      form.request.render_messages())
 
     def test_module_list(self):
         from ptahcrowd.views import CrowdModuleView
@@ -156,7 +156,7 @@ class TestModuleView(PtahTestCase):
         transaction.commit()
 
         self.assertIn('The selected accounts have been validated.',
-                      ptah.render_messages(form.request))
+                      form.request.render_messages())
 
         user = ptah.get_session().query(CrowdUser)\
             .filter(CrowdUser.id==id).first()
@@ -178,7 +178,7 @@ class TestModuleView(PtahTestCase):
         form.update()
 
         self.assertIn('The selected accounts have been suspended.',
-                      ptah.render_messages(form.request))
+                      form.request.render_messages())
         transaction.commit()
 
         user = ptah.get_session().query(CrowdUser)\
@@ -204,7 +204,7 @@ class TestModuleView(PtahTestCase):
         transaction.commit()
 
         self.assertIn('The selected accounts have been activated.',
-                      ptah.render_messages(form.request))
+                      form.request.render_messages())
         user = ptah.get_session().query(CrowdUser)\
             .filter(CrowdUser.id==id).first()
         self.assertFalse(user.suspended)
@@ -224,7 +224,7 @@ class TestModuleView(PtahTestCase):
         form.update()
 
         self.assertIn('The selected accounts have been removed.',
-                      ptah.render_messages(form.request))
+                      form.request.render_messages())
         transaction.commit()
 
         user = ptah.resolve(uri)

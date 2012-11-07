@@ -33,7 +33,7 @@ class TestResetPassword(ptah.PtahTestCase):
         form = ResetPassword(None, request)
         form.update()
 
-        msg = ptah.render_messages(request)
+        msg = request.render_messages()
         self.assertIn(
             "The system can't restore the password for this user.", msg)
 
@@ -59,7 +59,7 @@ class TestResetPassword(ptah.PtahTestCase):
         form = ResetPassword(None, request)
         res = form.update()
 
-        msg = ptah.render_messages(request)
+        msg = request.render_messages()
         self.assertIn("We have started resetting your password.", msg)
 
         self.assertIsInstance(res, HTTPFound)
@@ -80,7 +80,7 @@ class TestResetPassword(ptah.PtahTestCase):
         form = ResetPasswordForm(None, request)
         res = form.update()
 
-        msg = ptah.render_messages(request)
+        msg = request.render_messages()
         self.assertIn("Passcode is invalid.", msg)
         self.assertEqual(
             res.headers['location'], 'http://example.com/resetpassword.html')
@@ -120,7 +120,7 @@ class TestResetPassword(ptah.PtahTestCase):
         form = ResetPasswordForm(None, request)
         form.update()
 
-        msg = ptah.render_messages(request)
+        msg = request.render_messages()
         self.assertIn("Please fix indicated errors.", msg)
 
     def test_resetpassword_form_change(self):
@@ -141,7 +141,7 @@ class TestResetPassword(ptah.PtahTestCase):
         form = ResetPasswordForm(None, request)
         res = form.update()
 
-        msg = ptah.render_messages(request)
+        msg = request.render_messages()
         self.assertIn("You have successfully changed your password.", msg)
         self.assertEqual(res.headers['location'], 'http://example.com')
         self.assertTrue(ptah.pwd_tool.check(user.password, '123456'))

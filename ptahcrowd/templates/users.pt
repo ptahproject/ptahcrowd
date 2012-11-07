@@ -32,7 +32,7 @@
         <td>${user.login}</td>
         <td tal:content="user.validated"></td>
         <td tal:content="user.suspended"></td>
-        <td>${view.format.datetime(user.joined, 'short')}</td>
+        <td>${request.fmt.datetime(user.joined, 'short')}</td>
         <td>
           <tal:block repeat="item view.external.get(user.__uri__,())">
             <img src="${request.static_url('ptahcrowd:static/buttons/%s_32.png'%item)}"

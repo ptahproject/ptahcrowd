@@ -60,7 +60,7 @@ class TestJoin(PtahTestCase):
 
         form.register_handler()
         self.assertIn('Please fix indicated errors.',
-                      ptah.render_messages(request))
+                      request.render_messages())
 
         request = self.make_request(
             POST = {'name': 'Test user',
@@ -148,4 +148,4 @@ class TestJoin(PtahTestCase):
         self.assertEqual(user.name, 'Test user')
 
         self.assertIn('Validation email has been sent.',
-                      ptah.render_messages(request))
+                      request.render_messages())

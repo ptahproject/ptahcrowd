@@ -41,7 +41,7 @@ class TestCreateUser(PtahTestCase):
         view.update()
         self.assertIn(
             'Please fix indicated errors.',
-            ptah.render_messages(request))
+            request.render_messages())
 
     def test_create_user(self):
         from ptahcrowd.module import CrowdModule
@@ -66,7 +66,7 @@ class TestCreateUser(PtahTestCase):
 
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'], '.')
-        self.assertIn('User has been created.', ptah.render_messages(request))
+        self.assertIn('User has been created.', request.render_messages())
         transaction.commit()
 
         user = ptah.auth_service.get_principal_bylogin('ptah@ptahproject.org')
@@ -138,7 +138,7 @@ class TestModifyUser(PtahTestCase):
 
         self.assertIn(
             'Please fix indicated errors.',
-            ptah.render_messages(request))
+            request.render_messages())
 
     def test_modify_user(self):
         from ptahcrowd.user import ModifyUserForm

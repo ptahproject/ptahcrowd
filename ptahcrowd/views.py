@@ -1,7 +1,7 @@
 import sqlalchemy as sqla
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
-from pyramid_layer import renderer
+from player import renderer
 
 import ptah
 import ptahcrowd

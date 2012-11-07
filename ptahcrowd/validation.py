@@ -83,12 +83,12 @@ def validate(request):
         if user is not None:
             user.validated = True
             ptah.token.service.remove(t)
-            ptah.add_message(request,"Account has been successfully validated.")
+            request.add_message("Account has been successfully validated.")
 
             request.registry.notify(ptah.events.PrincipalValidatedEvent(user))
 
             headers = remember(request, user.__uri__)
             return HTTPFound(location=request.application_url, headers=headers)
 
-    ptah.add_message(request, "Can't validate email address.", 'warning')
+    request.add_message("Can't validate email address.", 'warning')
     return HTTPFound(location=request.application_url)
