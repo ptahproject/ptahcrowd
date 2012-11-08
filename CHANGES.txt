@@ -3,7 +3,7 @@ CHANGES
 =======
 
 
-0.2 (Unreleased)
+0.2 (2012-11-08)
 ----------------
 
 - Added Groups.
@@ -13,8 +13,6 @@ CHANGES
 - Added HTTPForbidden view.
 
 - Added `admin` user auto creation.
-
-- Rename settings group `ptah-crowd` to `ptah_crowd`.
 
 
 0.1 (2011-12-22)
