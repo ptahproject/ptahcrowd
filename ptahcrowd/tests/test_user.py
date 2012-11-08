@@ -1,11 +1,7 @@
 import transaction
 import ptah
-from ptah import config
 from ptah.testing import PtahTestCase
-from pyramid.testing import DummyRequest
-from pyramid.httpexceptions import HTTPException, HTTPFound, HTTPForbidden
-
-import ptahcrowd
+from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 
 
 class TestCreateUser(PtahTestCase):
@@ -29,8 +25,6 @@ class TestCreateUser(PtahTestCase):
         from ptahcrowd.module import CrowdModule
         from ptahcrowd.user import CreateUserForm
 
-        f = CreateUserForm(None, None)
-
         request = self.make_request(
             POST = {'form.buttons.create': 'Create'})
         request.POST[CreateUserForm.csrfname] = \
@@ -46,8 +40,6 @@ class TestCreateUser(PtahTestCase):
     def test_create_user(self):
         from ptahcrowd.module import CrowdModule
         from ptahcrowd.user import CreateUserForm
-
-        f = CreateUserForm(None, None)
 
         request = self.make_request(
             POST = {'name': 'NKim',
@@ -144,8 +136,6 @@ class TestModifyUser(PtahTestCase):
         from ptahcrowd.user import ModifyUserForm
 
         user = self._user()
-        f = ModifyUserForm(None, None)
-
         request = self.make_request(
             POST = {'form.buttons.modify': 'Modify',
                     'name': 'NKim',
@@ -163,7 +153,6 @@ class TestModifyUser(PtahTestCase):
 
     def test_modify_user_remove(self):
         from ptahcrowd.user import ModifyUserForm
-        from ptahcrowd.provider import CrowdUser
 
         user = self._user()
 

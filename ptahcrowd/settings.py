@@ -1,4 +1,5 @@
 import ptah
+import pform
 import translationstring
 
 _ = translationstring.TranslationStringFactory('ptahcrowd')
@@ -6,88 +7,88 @@ _ = translationstring.TranslationStringFactory('ptahcrowd')
 CFG_ID_AUTH = 'auth'
 CFG_ID_CROWD = 'ptahcrowd'
 
-providers = ptah.form.SimpleVocabulary(
-    ptah.form.SimpleTerm('bitbucket', 'bitbucket', 'Bitbucket'),
-    ptah.form.SimpleTerm('facebook', 'facebook', 'Facebook'),
-    ptah.form.SimpleTerm('github', 'github', 'GitHub'),
-    ptah.form.SimpleTerm('google', 'google', 'Google'),
-    ptah.form.SimpleTerm('linkedin', 'linkedin', 'LinkedIn'),
-    ptah.form.SimpleTerm('live', 'live', 'Windows Live'),
-    ptah.form.SimpleTerm('twitter', 'twitter', 'Twitter'),
+providers = pform.SimpleVocabulary(
+    pform.SimpleTerm('bitbucket', 'bitbucket', 'Bitbucket'),
+    pform.SimpleTerm('facebook', 'facebook', 'Facebook'),
+    pform.SimpleTerm('github', 'github', 'GitHub'),
+    pform.SimpleTerm('google', 'google', 'Google'),
+    pform.SimpleTerm('linkedin', 'linkedin', 'LinkedIn'),
+    pform.SimpleTerm('live', 'live', 'Windows Live'),
+    pform.SimpleTerm('twitter', 'twitter', 'Twitter'),
     )
 
 
 ptah.register_settings(
     CFG_ID_CROWD,
 
-    ptah.form.TextField(
+    pform.TextField(
         'type',
         title = 'User content type',
         description = 'User content type for crowd user provider.',
         default = 'ptah-crowd-user'),
 
-    ptah.form.BoolField(
+    pform.BoolField(
         'join',
         title = 'Site registration',
         description = 'Enable/Disable site registration.',
         default = True),
 
-    ptah.form.TextField(
+    pform.TextField(
         'join-url',
         title = 'Join url',
         description = 'Custom join form url.',
         default = ''),
 
-    ptah.form.TextField(
+    pform.TextField(
         'login-url',
         title = 'Login url',
         description = 'Custom login form url.',
         default = ''),
 
-    ptah.form.TextField(
+    pform.TextField(
         'success-url',
         title = 'Successfull login url',
         description = 'Successfull logig redirect url.',
         default = ''),
 
-    ptah.form.BoolField(
+    pform.BoolField(
         'password',
         title = 'User password',
         description = 'Allow user to select password during registration.',
         default = False),
 
-    ptah.form.BoolField(
+    pform.BoolField(
         'validation',
         title = 'Email validation',
         description = 'Validate user account by email.',
         default = True),
 
-    ptah.form.BoolField(
+    pform.BoolField(
         'allow-unvalidated',
         title = 'Allow unvalidated',
         description = 'Allow login for unvalidated users.',
         default = True),
 
-    ptah.form.TextField(
+    pform.TextField(
         'admin-name',
         title = 'Admin name',
         description = 'Default admin name.',
         default = 'Ptah admin'),
 
-    ptah.form.TextField(
+    pform.TextField(
         'admin-login',
         title = 'Admin login',
         description = 'Default admin login.',
         default = ''),
 
-    ptah.form.TextField(
+    pform.TextField(
         'admin-password',
         title = 'Admin password',
         description = 'Default admin password.',
         default = '12345',
         tint = True),
 
-    ptah.form.TextField(
+    pform.TextField(
         'admin-role',
         title = 'Admin role',
         description = 'Default admin role.',
@@ -100,83 +101,83 @@ ptah.register_settings(
 ptah.register_settings(
     CFG_ID_AUTH,
 
-    ptah.form.LinesField(
+    pform.LinesField(
         'providers',
         title = 'Providers',
         description = 'Enable external auth providers (github, facebook, etc).',
         default = ()),
 
-    ptah.form.TextField(
+    pform.TextField(
         'github_id',
         title = 'Client id',
         description = 'Github client id.',
         default = ''),
 
-    ptah.form.TextField(
+    pform.TextField(
         'github_secret',
         title = 'Secret',
         description = 'Github client secret.',
         default = '',
         tint = True),
 
-    ptah.form.TextField(
+    pform.TextField(
         'github_scope',
         title = 'Scope',
         description = 'Github access oauth scope.',
         default = ''),
 
-    ptah.form.TextField(
+    pform.TextField(
         'facebook_id',
         title = 'Id',
         description = 'Facebook client id.',
         default = ''),
 
-    ptah.form.TextField(
+    pform.TextField(
         'facebook_secret',
         title = 'Secret',
         description = 'Facebook client secret.',
         default = '',
         tint = True),
 
-    ptah.form.TextField(
+    pform.TextField(
         'facebook_scope',
         title = 'Scope',
         description = 'Facebook access oauth scope.',
         default = 'email'),
 
-    ptah.form.TextField(
+    pform.TextField(
         'google_id',
         title = 'Id',
         description = 'Google client id.',
         default = ''),
 
-    ptah.form.TextField(
+    pform.TextField(
         'google_secret',
         title = 'Secret',
         description = 'Google client secret.',
         default = '',
         tint = True),
 
-    ptah.form.TextField(
+    pform.TextField(
         'live_id',
         title = 'Id',
         description = 'Windows Live client id.',
         default = ''),
 
-    ptah.form.TextField(
+    pform.TextField(
         'live_secret',
         title = 'Secret',
         description = 'Windows Live client secret.',
         default = '',
         tint = True),
 
-    ptah.form.TextField(
+    pform.TextField(
         'twitter_key',
         title = 'Key',
         description = 'Twitter consumer key.',
         default = ''),
 
-    ptah.form.TextField(
+    pform.TextField(
         'twitter_secret',
         title = 'Secret',
         description = 'Twitter consumer secret.',

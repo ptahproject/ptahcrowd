@@ -1,9 +1,6 @@
-import transaction
 import ptah
-from ptah import config
 from ptah.testing import PtahTestCase
-from pyramid.testing import DummyRequest
-from pyramid.httpexceptions import HTTPException, HTTPFound
+from pyramid.httpexceptions import HTTPFound
 
 import ptahcrowd
 
@@ -21,7 +18,6 @@ class TestSuspended(PtahTestCase):
         self.assertIsInstance(res, HTTPFound)
 
     def test_suspended_not(self):
-        from ptahcrowd import login
         from ptahcrowd.provider import CrowdUser
 
         user = CrowdUser(name='name', login='login',
@@ -39,14 +35,12 @@ class TestSuspended(PtahTestCase):
         self.assertIsInstance(res, HTTPFound)
 
     def test_suspended(self):
-        from ptahcrowd import login
         from ptahcrowd.provider import CrowdUser
 
         user = CrowdUser(name='name', login='login',
                          email='email', password='{plain}12345')
         CrowdUser.__type__.add(user)
 
-        uri = user.__uri__
         user.suspended = True
 
         ptah.auth_service.set_userid(user.__uri__)
@@ -92,8 +86,6 @@ class TestLogoutSuccess(PtahTestCase):
     _includes = ('ptahcrowd',)
 
     def test_login_success_anon(self):
-        from ptahcrowd import login
-
         request = self.make_request()
         request.environ['HTTP_HOST'] = 'example.com'
 
@@ -103,7 +95,6 @@ class TestLogoutSuccess(PtahTestCase):
             res.headers['location'], 'http://example.com/login.html')
 
     def test_login_success(self):
-        from ptahcrowd import login
         from ptahcrowd.provider import CrowdUser
 
         user = CrowdUser(name='name', login='login',
@@ -177,8 +168,6 @@ class TestLogin(PtahTestCase):
                          email='email', password='{plain}12345')
         CrowdUser.__type__.add(user)
 
-        uri = user.__uri__
-
         request = self.make_request()
 
         form = login.LoginForm(None, request)
@@ -210,8 +199,6 @@ class TestLogin(PtahTestCase):
                          email='email', password='{plain}12345')
         CrowdUser.__type__.add(user)
 
-        uri = user.__uri__
-
         request = self.make_request(
             POST={'login': 'login', 'password': '12345'},
             GET={'came_from': 'http://example.com/ptah-manage/'})
@@ -232,8 +219,6 @@ class TestLogin(PtahTestCase):
                          email='email', password='{plain}12345')
         CrowdUser.__type__.add(user)
 
-        uri = user.__uri__
-
         request = self.make_request(
             POST={'login': 'login1', 'password': '123456'})
         request.environ['HTTP_HOST'] = 'example.com'
@@ -253,7 +238,6 @@ class TestLogin(PtahTestCase):
                          email='email', password='{plain}12345')
         CrowdUser.__type__.add(user)
 
-        uri = user.__uri__
         user.validated = False
 
         cfg = ptah.get_settings(ptahcrowd.CFG_ID_CROWD)
@@ -277,7 +261,6 @@ class TestLogin(PtahTestCase):
                          email='email', password='{plain}12345')
         CrowdUser.__type__.add(user)
 
-        uri = user.__uri__
         user.suspended = True
 
         request = self.make_request(

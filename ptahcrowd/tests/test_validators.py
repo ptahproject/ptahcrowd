@@ -1,8 +1,6 @@
-import transaction
-import ptah, ptahcrowd
-from ptah import form
+import pform
+import ptahcrowd
 from ptah.testing import PtahTestCase
-from pyramid.testing import DummyRequest
 
 
 class TestCheckLogin(PtahTestCase):
@@ -10,16 +8,13 @@ class TestCheckLogin(PtahTestCase):
     _includes = ('ptahcrowd',)
 
     def test_check_login(self):
-        from ptahcrowd import login
         from ptahcrowd.provider import CrowdUser
 
         user = CrowdUser(name='name', login='login', email='email')
         CrowdUser.__type__.add(user)
 
-        request = self.make_request()
-
         self.assertRaises(
-            form.Invalid, ptahcrowd.checkLoginValidator, None, 'login')
+            pform.Invalid, ptahcrowd.checkLoginValidator, None, 'login')
 
         class Field(object):
             """ """
@@ -30,7 +25,7 @@ class TestCheckLogin(PtahTestCase):
 
         field.value = 'other-login'
         self.assertRaises(
-            form.Invalid, ptahcrowd.checkLoginValidator, field, 'login')
+            pform.Invalid, ptahcrowd.checkLoginValidator, field, 'login')
 
     def test_lower(self):
         from ptahcrowd.schemas import lower

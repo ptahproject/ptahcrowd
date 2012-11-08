@@ -1,10 +1,9 @@
 """ add/edit user """
-from zope import interface
+import pform
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
 import ptah
-from ptah import form
 from ptah.password import passwordValidator
 
 import ptahcrowd
@@ -12,7 +11,7 @@ from ptahcrowd import const
 from ptahcrowd.settings import _
 from ptahcrowd.module import CrowdModule
 from ptahcrowd.provider import CrowdUser, CrowdGroup
-from ptahcrowd.schemas import UserSchema, ManagerChangePasswordSchema
+from ptahcrowd.schemas import UserSchema
 
 
 def get_roles_vocabulary(context):
@@ -22,9 +21,9 @@ def get_roles_vocabulary(context):
             continue
 
         roles.append([role.title,
-                      form.SimpleTerm(role.id, role.id, role.title)])
+                      pform.SimpleTerm(role.id, role.id, role.title)])
 
-    return form.SimpleVocabulary(*[term for _t, term in sorted(roles)])
+    return pform.SimpleVocabulary(*[term for _t, term in sorted(roles)])
 
 
 def get_groups_vocabulary(context):
@@ -32,26 +31,26 @@ def get_groups_vocabulary(context):
     for grp in ptah.get_session().query(CrowdGroup).all():
         groups.append(
             (grp.title,
-             form.SimpleTerm(grp.__uri__, grp.__uri__, grp.title)))
+             pform.SimpleTerm(grp.__uri__, grp.__uri__, grp.title)))
 
     groups.sort()
-    return form.SimpleVocabulary(*[term for _t, term in sorted(groups)])
+    return pform.SimpleVocabulary(*[term for _t, term in sorted(groups)])
 
 
 @view_config(name='create.html',
              context=CrowdModule,
              wrapper=ptah.wrap_layout())
-class CreateUserForm(form.Form):
+class CreateUserForm(pform.Form):
 
     csrf = True
     label = _('Create new user')
     fields = UserSchema
 
-    @form.button(_('Back'))
+    @pform.button(_('Back'))
     def back(self):
         return HTTPFound(location='.')
 
-    @form.button(_('Create'), actype=form.AC_PRIMARY)
+    @pform.button(_('Create'), actype=pform.AC_PRIMARY)
     def create(self):
         data, errors = self.extract()
 
@@ -84,23 +83,23 @@ class CreateUserForm(form.Form):
 @view_config(context=CrowdUser,
              wrapper=ptah.wrap_layout(),
              route_name=ptahcrowd.CROWD_APP_ID)
-class ModifyUserForm(form.Form):
+class ModifyUserForm(pform.Form):
 
     csrf = True
     label = 'Update user'
-    fields = form.Fieldset(
+    fields = pform.Fieldset(
         UserSchema['name'],
         UserSchema['login'],
-        form.fields.TextField(
+        pform.fields.TextField(
             'password',
             title=const.PASSWORD_TITLE,
             description=const.PASSWORD_DESCR,
-            missing=ptah.form.null,
+            missing=pform.null,
             validator=passwordValidator),
         UserSchema['validated'],
         UserSchema['suspended'],
 
-        form.fields.MultiChoiceField(
+        pform.fields.MultiChoiceField(
             'roles',
             title=_('Roles'),
             description=_("Choose user default roles."),
@@ -108,7 +107,7 @@ class ModifyUserForm(form.Form):
             required=False,
             voc_factory=get_roles_vocabulary),
 
-        form.fields.MultiChoiceField(
+        pform.fields.MultiChoiceField(
             'groups',
             title=_("Groups"),
             description=_("Choose user groups."),
@@ -128,7 +127,7 @@ class ModifyUserForm(form.Form):
                 'roles': user.properties.get('roles', ()),
                 'groups': user.properties.get('groups', ())}
 
-    @form.button(_('Modify'), actype=form.AC_PRIMARY)
+    @pform.button(_('Modify'), actype=pform.AC_PRIMARY)
     def modify(self):
         data, errors = self.extract()
 
@@ -147,12 +146,12 @@ class ModifyUserForm(form.Form):
         user.properties['roles'] = data['roles']
         user.properties['groups'] = data['groups']
 
-        if data['password'] is not ptah.form.null:
+        if data['password'] is not pform.null:
             user.password = ptah.pwd_tool.encode(data['password'])
 
         self.request.add_message(_("User properties have been updated."), 'info')
 
-    @form.button(_('Remove'), actype=form.AC_DANGER)
+    @pform.button(_('Remove'), actype=pform.AC_DANGER)
     def remove(self):
         self.validate_csrf_token()
 
@@ -164,6 +163,6 @@ class ModifyUserForm(form.Form):
         self.request.add_message(_("User has been removed."), 'info')
         return HTTPFound(location='..')
 
-    @form.button(_('Back'))
+    @pform.button(_('Back'))
     def back(self):
         return HTTPFound(location='..')

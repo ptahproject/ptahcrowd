@@ -1,12 +1,8 @@
 import sqlalchemy as sqla
 from datetime import datetime
-from pyramid.decorator import reify
-from pyramid.config import Configurator
-from pyramid.events import ApplicationCreated
 from pyramid.compat import text_type
 
 import ptah
-from ptah.password import ID_PASSWORD_CHANGER
 from ptahcrowd.settings import CFG_ID_CROWD
 
 CROWD_APP_ID = 'ptah-crowd'

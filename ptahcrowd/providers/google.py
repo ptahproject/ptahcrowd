@@ -35,8 +35,6 @@ def google_login(request):
 
     client_id = cfg['google_id']
 
-    scope = 'https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email'
-
     go_url = '{0}?{1}&scope=https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email'.format(
         'https://accounts.google.com/o/oauth2/auth',
         url_encode({'client_id': client_id,

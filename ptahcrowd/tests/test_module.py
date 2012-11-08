@@ -1,13 +1,8 @@
 import transaction
 import ptah
-from ptah import config
 from ptah.testing import PtahTestCase
 from webob.multidict import MultiDict
-from pyramid.testing import DummyRequest
 from pyramid.view import render_view_to_response
-from pyramid.httpexceptions import HTTPFound, HTTPForbidden
-
-import ptahcrowd
 
 
 class TestModule(PtahTestCase):
@@ -71,7 +66,7 @@ class TestModuleView(PtahTestCase):
                 POST=MultiDict((('form.buttons.search', 'Search'),
                                 ('term', 'search term')))))
         form.csrf = False
-        res = form.update()
+        form.update()
 
         self.assertIn('ptah-search-term', form.request.session)
         self.assertEqual(
@@ -104,8 +99,6 @@ class TestModuleView(PtahTestCase):
                       form.request.render_messages())
 
     def test_module_list(self):
-        from ptahcrowd.views import CrowdModuleView
-
         mod = self._make_mod()
         user = self._make_user()
 

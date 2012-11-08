@@ -4,7 +4,6 @@ doc: http://msdn.microsoft.com/en-us/library/hh243647.aspx
 app: https://manage.dev.live.com/Applications/Index
 """
 import json
-import datetime
 import requests
 
 from pyramid.compat import url_encode

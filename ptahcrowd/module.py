@@ -1,5 +1,5 @@
 """ crowd module """
-from pyramid.interfaces import IRequest, IRouteRequest
+from pyramid.interfaces import IRouteRequest
 
 import ptah
 import ptahcrowd

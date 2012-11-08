@@ -1,13 +1,10 @@
 import os
-import sys
-import logging
-import multiprocessing  # atexit exception
 from setuptools import setup, find_packages
 
-version = '0.2dev'
+version = '0.2'
 
 install_requires = ['setuptools',
-                    'ptah >= 0.5.0',
+                    'ptah >= 0.8.0',
                     "requests >= 0.6.6",
                     ]
 tests_require = install_requires + ['nose']

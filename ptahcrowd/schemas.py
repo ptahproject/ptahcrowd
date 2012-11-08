@@ -1,8 +1,8 @@
 """ schemas """
+import pform
 from pyramid.compat import string_types
 
 import ptah
-from ptah import form
 from ptah.password import passwordValidator
 
 from ptahcrowd import const
@@ -22,30 +22,30 @@ def checkLoginValidator(field, login):
         return
 
     if ptah.auth_service.get_principal_bylogin(login) is not None:
-        raise form.Invalid(field, _("This login is already in use."))
+        raise pform.Invalid(field, _("This login is already in use."))
 
 
-RegistrationSchema = form.Fieldset(
+RegistrationSchema = pform.Fieldset(
 
-    form.TextField(
+    pform.TextField(
         'name',
         title=const.NAME_TITLE,
         description=const.NAME_DESCR,
         ),
 
-    form.TextField(
+    pform.TextField(
         'login',
         title=const.LOGIN_TITLE,
         description=const.LOGIN_DESCR,
         preparer=lower,
-        validator=form.All(form.Email(), checkLoginValidator),
+        validator=pform.All(pform.Email(), checkLoginValidator),
         )
     )
 
 
-ResetPasswordSchema = form.Fieldset(
+ResetPasswordSchema = pform.Fieldset(
 
-    form.TextField(
+    pform.TextField(
         'login',
         title=const.LOGIN_TITLE,
         description=const.CASE_DESCR,
@@ -54,35 +54,35 @@ ResetPasswordSchema = form.Fieldset(
     )
 
 
-UserSchema = form.Fieldset(
+UserSchema = pform.Fieldset(
 
-    form.fields.TextField(
+    pform.fields.TextField(
         'name',
         title=const.NAME_TITLE,
         description=const.NAME_DESCR,
         ),
 
-    form.fields.TextField(
+    pform.fields.TextField(
         'login',
         title=const.LOGIN_TITLE,
         description=const.LOGIN_DESCR,
         preparer=lower,
-        validator=form.All(form.Email(), checkLoginValidator),
+        validator=pform.All(pform.Email(), checkLoginValidator),
         ),
 
-    form.fields.TextField(
+    pform.fields.TextField(
         'password',
         title=const.PASSWORD_TITLE,
         description=const.PASSWORD_DESCR,
         validator=passwordValidator),
 
-    form.fields.BoolField(
+    pform.fields.BoolField(
         'validated',
         title=_('Validated'),
         default=True,
         ),
 
-    form.fields.BoolField(
+    pform.fields.BoolField(
         'suspended',
         title=_('Suspended'),
         default=False,
@@ -91,9 +91,9 @@ UserSchema = form.Fieldset(
     )
 
 
-ManagerChangePasswordSchema = form.Fieldset(
+ManagerChangePasswordSchema = pform.Fieldset(
 
-    form.PasswordField(
+    pform.PasswordField(
         'password',
         title=const.PASSWORD_TITLE,
         description=const.PASSWORD_DESCR,

@@ -1,5 +1,3 @@
-import os
-from pyramid.testing import DummyRequest
 from pyramid.compat import text_
 from pyramid.httpexceptions import HTTPFound
 
@@ -145,6 +143,8 @@ class TestValidation(ptah.PtahTestCase):
             "You're close to completing the registration process.", res)
         self.assertIn(
             "http://example.com/validateaccount.html?token=test-token", res)
+
+        validation.ValidationTemplate = origValidationTemplate
 
     def test_validate(self):
         from ptahcrowd import validation

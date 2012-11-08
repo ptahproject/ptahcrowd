@@ -1,7 +1,6 @@
 """ account validation/suspending """
 from datetime import timedelta, datetime
 from pyramid.view import view_config
-from pyramid.compat import text_type
 from pyramid.security import remember
 from pyramid.httpexceptions import HTTPFound
 

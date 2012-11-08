@@ -1,6 +1,5 @@
 """Facebook Authentication Views"""
 import json
-import datetime
 import uuid
 import requests
 

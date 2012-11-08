@@ -1,8 +1,5 @@
-import transaction
 import ptah
-from ptah import config
 from ptah.testing import PtahTestCase
-from pyramid.testing import DummyRequest
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
 
 
@@ -43,8 +40,6 @@ class TestJoin(PtahTestCase):
         ptah.get_session().add(user)
         ptah.get_session().flush()
 
-        uri = user.__uri__
-
         request = self.make_request(
             POST = {'name': 'Test user',
                     'login': 'custom login',
@@ -79,8 +74,6 @@ class TestJoin(PtahTestCase):
         user = CrowdUser(name='name', login='login', email='email')
         ptah.get_session().add(user)
         ptah.get_session().flush()
-
-        uri = user.__uri__
 
         class Stub(object):
             status = ''
@@ -117,8 +110,6 @@ class TestJoin(PtahTestCase):
         user = CrowdUser(name='name', login='login', email='email')
         ptah.get_session().add(user)
         ptah.get_session().flush()
-
-        uri = user.__uri__
 
         class Stub(object):
             status = ''

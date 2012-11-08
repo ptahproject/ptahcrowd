@@ -1,7 +1,4 @@
-""" role """
-import transaction
-import ptah, ptahcrowd
-from ptah import config
+import ptah
 from ptah.testing import PtahTestCase
 
 

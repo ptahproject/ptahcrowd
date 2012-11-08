@@ -1,6 +1,5 @@
 import ptah
 from pyramid.compat import text_
-from pyramid.testing import DummyRequest
 from pyramid.view import render_view_to_response
 from pyramid.httpexceptions import HTTPForbidden
 
@@ -57,8 +56,6 @@ class TestForbiddenView(ptah.PtahTestCase):
         self.assertIsInstance(request.root, Root)
 
     def test_forbidden_user(self):
-        from ptahcrowd.forbidden import Forbidden
-
         class Context(object):
             """ """
             __name__ = 'test'

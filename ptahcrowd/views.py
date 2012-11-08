@@ -1,11 +1,11 @@
 import sqlalchemy as sqla
+import pform
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 from player import renderer
 
 import ptah
 import ptahcrowd
-from ptah import form
 from ptahcrowd.settings import _
 from ptahcrowd.module import CrowdModule
 from ptahcrowd.provider import CrowdUser, CrowdGroup
@@ -15,12 +15,12 @@ from ptahcrowd.providers import Storage
 @view_config(
     context=CrowdModule,
     wrapper=ptah.wrap_layout(), renderer='ptah-crowd:users.lt')
-class CrowdModuleView(form.Form, ptah.View):
+class CrowdModuleView(pform.Form, ptah.View):
     __doc__ = 'List/search users view'
 
     csrf = True
-    fields = form.Fieldset(
-        form.TextField(
+    fields = pform.Fieldset(
+        pform.TextField(
             'term',
             title=_('Search term'),
             description=_('Ptah searches users by login and email'),
@@ -113,7 +113,7 @@ class CrowdModuleView(form.Form, ptah.View):
                 data.append(entry.domain)
                 extr[entry.uri] = data
 
-    @form.button(_('Search'), actype=form.AC_PRIMARY)
+    @pform.button(_('Search'), actype=pform.AC_PRIMARY)
     def search(self):
         data, error = self.extract()
 
@@ -123,7 +123,7 @@ class CrowdModuleView(form.Form, ptah.View):
 
         self.request.session['ptah-search-term'] = data['term']
 
-    @form.button(_('Clear term'), name='clear')
+    @pform.button(_('Clear term'), name='clear')
     def clear(self):
         if 'ptah-search-term' in self.request.session:
             del self.request.session['ptah-search-term']
@@ -179,7 +179,7 @@ class CrowdGroupsView(ptah.View):
 @view_config(name='create-grp.html',
              context=CrowdModule,
              wrapper=ptah.wrap_layout())
-class CreateGroupForm(form.Form):
+class CreateGroupForm(pform.Form):
 
     csrf = True
     label = _('Create new group')
@@ -188,11 +188,11 @@ class CreateGroupForm(form.Form):
     def fields(self):
         return CrowdGroup.__type__.fieldset
 
-    @form.button(_('Back'))
+    @pform.button(_('Back'))
     def back(self):
         return HTTPFound(location='groups.html')
 
-    @form.button(_('Create'), actype=form.AC_PRIMARY)
+    @pform.button(_('Create'), actype=pform.AC_PRIMARY)
     def create(self):
         data, errors = self.extract()
 

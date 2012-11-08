@@ -1,6 +1,6 @@
 """ login form """
 import ptah
-from ptah import view, form
+import pform
 from pyramid import security
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
@@ -14,20 +14,20 @@ from ptahcrowd.settings import _, CFG_ID_CROWD
     route_name='ptah-login',
     wrapper=ptah.wrap_layout('crowd'),
     renderer="ptah-crowd:login.lt")
-class LoginForm(form.Form, ptah.View):
+class LoginForm(pform.Form, ptah.View):
     """ Login form """
 
     id = 'login-form'
     title = _('Login')
 
-    fields = form.Fieldset(
-        form.fields.TextField(
+    fields = pform.Fieldset(
+        pform.fields.TextField(
             'login',
             title=const.LOGIN_TITLE,
             description=const.CASE_WARN,
             default=''),
 
-        form.fields.PasswordField(
+        pform.fields.PasswordField(
             'password',
             title=const.PASSWORD_TITLE,
             description=const.CASE_WARN,
@@ -50,7 +50,7 @@ class LoginForm(form.Form, ptah.View):
 
         return location
 
-    @form.button(_("Log in"), name='login', actype=form.AC_PRIMARY)
+    @pform.button(_("Log in"), name='login', actype=pform.AC_PRIMARY)
     def login_handler(self):
         request = self.request
 

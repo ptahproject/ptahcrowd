@@ -2,6 +2,7 @@ import json
 import logging
 import sqlalchemy as sqla
 from datetime import datetime, timedelta
+import pform
 from pyramid import security
 from pyramid.view import view_config
 from pyramid.config import Configurator
@@ -96,13 +97,13 @@ def login(uri, request):
 @view_config(
     route_name='ptah-crowd-verify-email',
     wrapper=ptah.wrap_layout('crowd'))
-class VerifyEmail(ptah.form.Form):
+class VerifyEmail(pform.Form):
     """ verify email """
 
     label = 'Please verify your email'
 
-    fields = ptah.form.Fieldset(
-        ptah.form.TextField(
+    fields = pform.Fieldset(
+        pform.TextField(
             'email',
             title = 'E-mail',
             description = ('Please enter your email address.'
@@ -110,7 +111,7 @@ class VerifyEmail(ptah.form.Form):
                            'any user or be shared with anyone else.'),
             preparer = lower,
             required = True,
-            validator = ptah.form.Email())
+            validator = pform.Email())
         )
 
     def update(self):
@@ -125,7 +126,7 @@ class VerifyEmail(ptah.form.Form):
 
         return super(VerifyEmail, self).update()
 
-    @ptah.form.button('Verify', actype=ptah.form.AC_PRIMARY)
+    @pform.button('Verify', actype=pform.AC_PRIMARY)
     def verify_handler(self):
         data, errors = self.extract()
 
@@ -227,20 +228,6 @@ class VerifyTemplate(ptah.mail.MailTemplate):
         self.url = self.request.route_url(
             'ptah-crowd-verify-email-complete', subpath=(self.token,))
         self.to_address = ptah.mail.formataddr((self.context.name, self.email))
-
-
-#@view_config(context='velruse.exceptions.AuthenticationDenied')
-def auth_denied_view(context, request):
-    endpoint = request.registry.settings.get('velruse.endpoint')
-    token = generate_token()
-    storage = request.registry.velruse_store
-    error_dict = {
-        'code': context.code,
-        'description': context.description,
-    }
-    storage.store(token, error_dict, expires=300)
-    form = redirect_form(endpoint, token)
-    return Response(body=form)
 
 
 class AuthenticationComplete(object):

@@ -1,10 +1,11 @@
 """ reset password form """
-import ptah
+import pform
 from datetime import datetime
 from pyramid import security
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
+import ptah
 from ptah.password import PasswordSchema
 from ptah.events import ResetPasswordInitiatedEvent
 from ptah.events import PrincipalPasswordChangedEvent
@@ -17,10 +18,10 @@ from ptahcrowd.settings import _
     route_name='ptah-resetpassword',
     wrapper=ptah.wrap_layout('crowd'),
     renderer='ptah-crowd:resetpassword.lt')
-class ResetPassword(ptah.form.Form):
+class ResetPassword(pform.Form):
 
-    fields = ptah.form.Fieldset(
-        ptah.form.FieldFactory(
+    fields = pform.Fieldset(
+        pform.FieldFactory(
             'text',
             'login',
             title=const.LOGIN_TITLE,
@@ -38,11 +39,10 @@ class ResetPassword(ptah.form.Form):
 
         return super(ResetPassword, self).update()
 
-    @ptah.form.button(_('Start password reset'),
-                      name='reset', actype=ptah.form.AC_PRIMARY)
+    @pform.button(_('Start password reset'),
+                      name='reset', actype=pform.AC_PRIMARY)
     def reset(self):
         request = self.request
-        registry = request.registry
         data, errors = self.extract()
 
         login = data.get('login')
@@ -65,7 +65,7 @@ class ResetPassword(ptah.form.Form):
 
         self.request.add_message(_("The system can't restore the password for this user."))
 
-    @ptah.form.button(_('Cancel'))
+    @pform.button(_('Cancel'))
     def cancel(self):
         return HTTPFound(location=self.request.application_url)
 
@@ -74,7 +74,7 @@ class ResetPassword(ptah.form.Form):
     route_name='ptah-resetpassword-form',
     wrapper=ptah.wrap_layout('crowd'),
     renderer='ptah-crowd:resetpasswordform.lt')
-class ResetPasswordForm(ptah.form.Form):
+class ResetPasswordForm(pform.Form):
 
     fields = PasswordSchema
 
@@ -95,8 +95,8 @@ class ResetPasswordForm(ptah.form.Form):
 
         return super(ResetPasswordForm, self).update()
 
-    @ptah.form.button(_("Change password"),
-                      name='change', actype=ptah.form.AC_PRIMARY)
+    @pform.button(_("Change password"),
+                      name='change', actype=pform.AC_PRIMARY)
     def changePassword(self):
         data, errors = self.extract()
 
