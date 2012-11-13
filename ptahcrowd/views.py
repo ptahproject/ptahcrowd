@@ -1,5 +1,6 @@
 import sqlalchemy as sqla
 import pform
+import player
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 from player import renderer
@@ -14,7 +15,7 @@ from ptahcrowd.providers import Storage
 
 @view_config(
     context=CrowdModule,
-    wrapper=ptah.wrap_layout(), renderer='ptah-crowd:users.lt')
+    renderer=player.layout('ptah-crowd:users.lt'))
 class CrowdModuleView(pform.Form, ptah.View):
     __doc__ = 'List/search users view'
 
@@ -132,8 +133,7 @@ class CrowdModuleView(pform.Form, ptah.View):
 @view_config(
     name='groups.html',
     context=CrowdModule,
-    wrapper=ptah.wrap_layout(),
-    renderer='ptah-crowd:groups.lt')
+    renderer=player.layout('ptah-crowd:groups.lt'))
 
 class CrowdGroupsView(ptah.View):
     __doc__ = 'List groups view'
@@ -178,7 +178,7 @@ class CrowdGroupsView(ptah.View):
 
 @view_config(name='create-grp.html',
              context=CrowdModule,
-             wrapper=ptah.wrap_layout())
+             renderer=player.layout())
 class CreateGroupForm(pform.Form):
 
     csrf = True

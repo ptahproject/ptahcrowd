@@ -1,5 +1,6 @@
 """ reset password form """
 import pform
+import player
 from datetime import datetime
 from pyramid import security
 from pyramid.view import view_config
@@ -16,8 +17,8 @@ from ptahcrowd.settings import _
 
 @view_config(
     route_name='ptah-resetpassword',
-    wrapper=ptah.wrap_layout('crowd'),
-    renderer='ptah-crowd:resetpassword.lt')
+    renderer=player.layout('ptah-crowd:resetpassword.lt','crowd'))
+
 class ResetPassword(pform.Form):
 
     fields = pform.Fieldset(
@@ -72,8 +73,8 @@ class ResetPassword(pform.Form):
 
 @view_config(
     route_name='ptah-resetpassword-form',
-    wrapper=ptah.wrap_layout('crowd'),
-    renderer='ptah-crowd:resetpasswordform.lt')
+    renderer=player.layout('ptah-crowd:resetpasswordform.lt','crowd'))
+
 class ResetPasswordForm(pform.Form):
 
     fields = PasswordSchema

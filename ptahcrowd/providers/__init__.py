@@ -3,6 +3,7 @@ import logging
 import sqlalchemy as sqla
 from datetime import datetime, timedelta
 import pform
+import player
 from pyramid import security
 from pyramid.view import view_config
 from pyramid.config import Configurator
@@ -96,7 +97,7 @@ def login(uri, request):
 
 @view_config(
     route_name='ptah-crowd-verify-email',
-    wrapper=ptah.wrap_layout('crowd'))
+    renderer=player.layout('', 'crowd'))
 class VerifyEmail(pform.Form):
     """ verify email """
 

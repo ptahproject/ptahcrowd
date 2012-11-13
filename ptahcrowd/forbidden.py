@@ -1,4 +1,5 @@
 """ forbidden view """
+import player
 from pyramid.compat import url_encode
 from pyramid import security
 from pyramid.response import Response
@@ -12,7 +13,9 @@ import ptah
 import ptahcrowd
 
 
-@view_config(context=HTTPForbidden)
+@view_config(
+    context=HTTPForbidden,
+    renderer=player.layout('ptahcrowd:templates/forbidden.pt', 'crowd'))
 class Forbidden(ptah.View):
 
     def update(self):
@@ -63,16 +66,4 @@ class Forbidden(ptah.View):
         if result is None:
             result = {}
 
-        if isinstance(result, Response):
-            return result
-
-        request = self.request
-
-        result['view'] = self
-        result['request'] = request
-        request.wrapped_response = result
-        request.wrapped_body = render(
-            'ptahcrowd:templates/forbidden.pt', result, request)
-
-        name = ptah.wrap_layout('crowd')
-        return render_view_to_response(self.__parent__, request, name)
+        return result

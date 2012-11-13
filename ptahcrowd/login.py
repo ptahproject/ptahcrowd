@@ -1,6 +1,7 @@
 """ login form """
 import ptah
 import pform
+import player
 from pyramid import security
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
@@ -12,8 +13,7 @@ from ptahcrowd.settings import _, CFG_ID_CROWD
 
 @view_config(
     route_name='ptah-login',
-    wrapper=ptah.wrap_layout('crowd'),
-    renderer="ptah-crowd:login.lt")
+    renderer=player.layout("ptah-crowd:login.lt","crowd"))
 class LoginForm(pform.Form, ptah.View):
     """ Login form """
 
@@ -103,8 +103,7 @@ class LoginForm(pform.Form, ptah.View):
 
 @view_config(
     route_name='ptah-login-success',
-    wrapper=ptah.wrap_layout('crowd'),
-    renderer='ptah-crowd:login-success.lt')
+    renderer=player.layout('ptah-crowd:login-success.lt','crowd'))
 class LoginSuccess(ptah.View):
     """ Login successful information page. """
 
@@ -122,8 +121,8 @@ class LoginSuccess(ptah.View):
 
 
 @view_config(
-    route_name='ptah-login-suspended', wrapper=ptah.wrap_layout('crowd'),
-    renderer="ptah-crowd:login-suspended.lt")
+    route_name='ptah-login-suspended',
+    renderer=player.layout("ptah-crowd:login-suspended.lt",'crowd'))
 class LoginSuspended(ptah.View):
     """ Suspended account information page. """
 

@@ -17,7 +17,7 @@ class TestCreateUser(PtahTestCase):
         mod = CrowdModule(None, request)
 
         view = CreateUserForm(mod, request)
-        res = view.update()
+        res = view.update_to_resp()
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'], '.')
 
@@ -54,7 +54,7 @@ class TestCreateUser(PtahTestCase):
         mod = CrowdModule(None, request)
 
         view = CreateUserForm(mod, request)
-        res = view.update()
+        res = view.update_to_resp()
 
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'], '.')
@@ -87,7 +87,7 @@ class TestModifyUser(PtahTestCase):
             POST = {'form.buttons.back': 'Back'})
 
         view = ModifyUserForm(user, request)
-        res = view.update()
+        res = view.update_to_resp()
 
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'], '..')
@@ -161,7 +161,7 @@ class TestModifyUser(PtahTestCase):
 
         view = ModifyUserForm(user, request)
         view.csrf = False
-        res = view.update()
+        res = view.update_to_resp()
 
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'], '..')

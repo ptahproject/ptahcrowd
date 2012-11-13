@@ -2,6 +2,6 @@
   <div class="span8 offset2">
     ${structure: request.render_messages()}
 
-    ${structure: wrapped_content}
+    ${structure: content}
   </div>
 </div>

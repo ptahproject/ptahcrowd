@@ -17,7 +17,7 @@ class TestResetPassword(ptah.PtahTestCase):
             POST={'form.buttons.cancel': 'Cancel'})
 
         form = ResetPassword(None, request)
-        res = form.update()
+        res = form.update_to_resp()
 
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'], 'http://example.com')
@@ -54,7 +54,7 @@ class TestResetPassword(ptah.PtahTestCase):
                   'form.buttons.reset': 'Reset'})
 
         form = ResetPassword(None, request)
-        res = form.update()
+        res = form.update_to_resp()
 
         msg = request.render_messages()
         self.assertIn("We have started resetting your password.", msg)
@@ -136,7 +136,7 @@ class TestResetPassword(ptah.PtahTestCase):
         request.environ['HTTP_HOST'] = 'example.com'
 
         form = ResetPasswordForm(None, request)
-        res = form.update()
+        res = form.update_to_resp()
 
         msg = request.render_messages()
         self.assertIn("You have successfully changed your password.", msg)

@@ -1,5 +1,6 @@
 """ add/edit user """
 import pform
+import player
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
@@ -39,7 +40,8 @@ def get_groups_vocabulary(context):
 
 @view_config(name='create.html',
              context=CrowdModule,
-             wrapper=ptah.wrap_layout())
+             renderer=player.layout())
+
 class CreateUserForm(pform.Form):
 
     csrf = True
@@ -81,7 +83,7 @@ class CreateUserForm(pform.Form):
 
 
 @view_config(context=CrowdUser,
-             wrapper=ptah.wrap_layout(),
+             renderer=player.layout(),
              route_name=ptahcrowd.CROWD_APP_ID)
 class ModifyUserForm(pform.Form):
 
