@@ -19,7 +19,7 @@
     <a href="${view.joinurl}" i18n:translate="">head over to the registration form.</a>
   </p>
 
-  ${structure: request.render_tmpl('form:view', view)}
+  ${structure: request.render_tmpl(view.tmpl_view, view)}
 </div>
 
 
