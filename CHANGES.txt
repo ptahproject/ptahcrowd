@@ -5,6 +5,8 @@ CHANGES
 
 - Use `player.layout` 
 
+- Update to pform 0.4
+
 
 0.2 (2012-11-08)
 ----------------

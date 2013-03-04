@@ -7,14 +7,14 @@ _ = translationstring.TranslationStringFactory('ptahcrowd')
 CFG_ID_AUTH = 'auth'
 CFG_ID_CROWD = 'ptahcrowd'
 
-providers = pform.SimpleVocabulary(
-    pform.SimpleTerm('bitbucket', 'bitbucket', 'Bitbucket'),
-    pform.SimpleTerm('facebook', 'facebook', 'Facebook'),
-    pform.SimpleTerm('github', 'github', 'GitHub'),
-    pform.SimpleTerm('google', 'google', 'Google'),
-    pform.SimpleTerm('linkedin', 'linkedin', 'LinkedIn'),
-    pform.SimpleTerm('live', 'live', 'Windows Live'),
-    pform.SimpleTerm('twitter', 'twitter', 'Twitter'),
+providers = pform.Vocabulary(
+    pform.Term('bitbucket', 'bitbucket', 'Bitbucket'),
+    pform.Term('facebook', 'facebook', 'Facebook'),
+    pform.Term('github', 'github', 'GitHub'),
+    pform.Term('google', 'google', 'Google'),
+    pform.Term('linkedin', 'linkedin', 'LinkedIn'),
+    pform.Term('live', 'live', 'Windows Live'),
+    pform.Term('twitter', 'twitter', 'Twitter'),
     )
 
 

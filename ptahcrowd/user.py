@@ -22,9 +22,9 @@ def get_roles_vocabulary(context):
             continue
 
         roles.append([role.title,
-                      pform.SimpleTerm(role.id, role.id, role.title)])
+                      pform.Term(role.id, role.id, role.title)])
 
-    return pform.SimpleVocabulary(*[term for _t, term in sorted(roles)])
+    return pform.Vocabulary(*[term for _t, term in sorted(roles)])
 
 
 def get_groups_vocabulary(context):
@@ -32,10 +32,10 @@ def get_groups_vocabulary(context):
     for grp in ptah.get_session().query(CrowdGroup).all():
         groups.append(
             (grp.title,
-             pform.SimpleTerm(grp.__uri__, grp.__uri__, grp.title)))
+             pform.Term(grp.__uri__, grp.__uri__, grp.title)))
 
     groups.sort()
-    return pform.SimpleVocabulary(*[term for _t, term in sorted(groups)])
+    return pform.Vocabulary(*[term for _t, term in sorted(groups)])
 
 
 @view_config(name='create.html',
