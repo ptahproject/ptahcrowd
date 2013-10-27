@@ -77,7 +77,7 @@ class CrowdGroup(ptah.get_base()):
     __tablename__ = 'ptahcrowd_groups'
 
     id = sqla.Column(sqla.Integer, primary_key=True)
-    title = sqla.Column(sqla.Unicode(255))
+    name = sqla.Column(sqla.Unicode(255))
     description = sqla.Column(sqla.UnicodeText, default=text_type(''),
                               info = {'missing': '', 'field_type': 'textarea'})
 
@@ -92,8 +92,8 @@ class CrowdGroup(ptah.get_base()):
 
 _sql_group_search = ptah.QueryFreezer(
     lambda: ptah.get_session().query(CrowdGroup) \
-    .filter(CrowdGroup.title.contains(sqla.sql.bindparam('term')))\
-    .order_by(sqla.sql.asc('title')))
+    .filter(CrowdGroup.name.contains(sqla.sql.bindparam('term')))\
+    .order_by(sqla.sql.asc('name')))
 
 @ptah.principal_searcher('crowd-group')
 def group_searcher(term):

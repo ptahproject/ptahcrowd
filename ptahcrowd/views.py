@@ -202,7 +202,7 @@ class CreateGroupForm(pform.Form):
 
         # create grp
         grp = CrowdGroup.__type__.create(
-            title=data['title'], description=data['description'])
+            name=data['name'], description=data['description'])
         CrowdGroup.__type__.add(grp)
 
         self.request.add_message(

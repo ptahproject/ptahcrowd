@@ -22,7 +22,7 @@
                    tal:attributes="checked str(grp.id) in uids" /></td>
         <td>
           <a href="${view.manage_url}/crowd/grp${grp.id}/">
-            ${grp.title}</a>
+            ${grp.name}</a>
         </td>
         <td>${grp.description}</td>
       </tr>

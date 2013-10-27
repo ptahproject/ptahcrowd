@@ -31,8 +31,8 @@ def get_groups_vocabulary(context):
     groups = []
     for grp in ptah.get_session().query(CrowdGroup).all():
         groups.append(
-            (grp.title,
-             pform.Term(grp.__uri__, grp.__uri__, grp.title)))
+            (grp.name,
+             pform.Term(grp.__uri__, grp.__uri__, grp.name)))
 
     groups.sort()
     return pform.Vocabulary(*[term for _t, term in sorted(groups)])
