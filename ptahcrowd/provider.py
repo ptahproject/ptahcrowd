@@ -79,7 +79,8 @@ class CrowdGroup(ptah.get_base()):
     id = sqla.Column(sqla.Integer, primary_key=True)
     name = sqla.Column(sqla.Unicode(255))
     description = sqla.Column(sqla.UnicodeText, default=text_type(''),
-                              info = {'missing': '', 'field_type': 'textarea'})
+                              info = {'missing': '', 'field_type': 'textarea',
+                                      'default': '', 'required': False})
 
     _sql_get_id = ptah.QueryFreezer(
         lambda: ptah.get_session().query(CrowdGroup)\
