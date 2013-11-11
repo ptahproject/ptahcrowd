@@ -5,6 +5,7 @@ from datetime import datetime
 from pyramid import security
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
+from pyramid.decorator import reify
 
 import ptah
 from ptah.password import PasswordSchema
@@ -79,20 +80,20 @@ class ResetPasswordForm(pform.Form):
 
     fields = PasswordSchema
 
-    def update(self):
-        request = self.request
+    @reify
+    def passcode(self):
+        return self.request.subpath[0]
 
-        passcode = request.subpath[0]
-        self.principal = principal = ptah.pwd_tool.get_principal(passcode)
+    def update(self):
+        self.principal = principal = ptah.pwd_tool.get_principal(self.passcode)
 
         if principal is not None and \
                ptah.pwd_tool.can_change_password(principal):
-            self.passcode = passcode
             self.title = principal.name or principal.login
         else:
             self.request.add_message(_("Passcode is invalid."), 'warning')
             return HTTPFound(
-                location='%s/resetpassword.html' % request.application_url)
+                location='%s/resetpassword.html' % self.request.application_url)
 
         return super(ResetPasswordForm, self).update()
 
