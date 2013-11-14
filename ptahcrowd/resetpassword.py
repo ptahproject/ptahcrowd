@@ -95,7 +95,10 @@ class ResetPasswordForm(pform.Form):
 
     @reify
     def passcode(self):
-        return self.request.subpath[0]
+        if self.request.subpath:
+            return self.request.subpath[0]
+        else:
+            return None
 
     def update(self):
         self.principal = principal = ptah.pwd_tool.get_principal(self.passcode)
