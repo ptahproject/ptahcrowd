@@ -57,15 +57,28 @@ class ResetPassword(pform.Form):
 
                 template = ResetPasswordTemplate(
                     principal, request, passcode=passcode)
-                template.send()
+                #template.send()
+
+                from pyramid_mailer import get_mailer
+                from pyramid_mailer.message import Message
+                mailer = get_mailer(self.request)
+                data = template()
+                sender = data['from']
+                recipients = [data['to']]
+                subject = '%s' % data['subject']
+                body = template.render()
+                message = Message(subject, recipients=recipients, body=body,
+                    html=None, sender=sender, cc=None, bcc=None,
+                    extra_headers=None, attachments=None)
+                mailer.send(message)
 
                 self.request.registry.notify(
                     ResetPasswordInitiatedEvent(principal))
 
-                self.request.add_message(const.PASSWORD_RESET_START)
+                self.request.add_message(const.PASSWORD_RESET_START, 'success')
                 return HTTPFound(location=request.application_url)
 
-        self.request.add_message(_("The system can't restore the password for this user."))
+        self.request.add_message(_("The system can't restore the password for this user."), 'error')
 
     @pform.button(_('Cancel'))
     def cancel(self):
