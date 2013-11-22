@@ -22,7 +22,16 @@ def checkLoginValidator(field, login):
         return
 
     if ptah.auth_service.get_principal_bylogin(login) is not None:
-        raise pform.Invalid(field, _("This login is already in use."))
+        raise pform.Invalid(_("This login is already in use."), field)
+
+def checkEmailValidator(field, email):
+    """Ptah field validator, checks if email is already in use."""
+
+    if getattr(field, 'value', None) == email:
+        return
+
+    if ptah.auth_service.get_principal_byemail(email) is not None:
+        raise pform.Invalid(_("This email is already in use."), field)
 
 
 RegistrationSchema = pform.Fieldset(
