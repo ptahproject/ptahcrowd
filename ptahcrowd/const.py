@@ -10,9 +10,10 @@ from ptahcrowd.settings import _
 
 CASE_DESCR = _("This is not case sensitive.")
 CASE_WARN = _("Case sensitive. Make sure the Caps Lock key is off.")
-LOGIN_TITLE = _("Email")
-LOGIN_DESCR = _("This is what you will use to log in. "
-                "It must be an email address.<br />Your email "
+LOGIN_TITLE = _("User name")
+LOGIN_DESCR = _("This is what you will use to log in. ")
+EMAIL_TITLE = _("Email")
+EMAIL_DESCR = _("Your email "
                 "will not be displayed to any user or be shared with "
                 "anyone else.")
 LOGOUT_SUCCESSFUL = _("You have been logged out.")
