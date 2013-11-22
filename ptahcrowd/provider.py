@@ -2,8 +2,15 @@ import sqlalchemy as sqla
 from datetime import datetime
 from pyramid.compat import text_type
 
+import pform
 import ptah
+from ptah.password import passwordValidator
 from ptahcrowd.settings import CFG_ID_CROWD
+from ptahcrowd.schemas import lower
+from ptahcrowd.schemas import checkLoginValidator
+from ptahcrowd.schemas import checkEmailValidator
+from ptahcrowd import const
+from ptahcrowd.settings import _
 
 CROWD_APP_ID = 'ptah-crowd'
 
@@ -28,13 +35,37 @@ class CrowdUser(ptah.get_base()):
     __tablename__ = 'ptahcrowd_users'
 
     id = sqla.Column(sqla.Integer, primary_key=True)
-    name = sqla.Column(sqla.Unicode(255))
-    login = sqla.Column(sqla.Unicode(255), unique=True)
-    email = sqla.Column(sqla.Unicode(255), unique=True)
-    joined = sqla.Column(sqla.DateTime())
-    password = sqla.Column(sqla.Unicode(255))
-    validated = sqla.Column(sqla.Boolean(), default=False)
-    suspended = sqla.Column(sqla.Boolean(), default=False)
+    name = sqla.Column(sqla.Unicode(255), info={
+        'title': const.NAME_TITLE,
+        'description': const.NAME_DESCR,
+    })
+    login = sqla.Column(sqla.Unicode(255), unique=True, info={
+        'title': const.LOGIN_TITLE,
+        'description': const.LOGIN_DESCR,
+        'preparer': lower,
+        'validator': checkLoginValidator,
+    })
+    email = sqla.Column(sqla.Unicode(255), unique=True, info={
+        'title': const.EMAIL_TITLE,
+        'description': const.EMAIL_DESCR,
+        'preparer': lower,
+        'validator': pform.All(pform.Email(), checkEmailValidator),
+    })
+    joined = sqla.Column(sqla.DateTime(), info={'skip': True})
+    password = sqla.Column(sqla.Unicode(255), info={
+        'title': const.PASSWORD_TITLE,
+        'description': const.PASSWORD_DESCR,
+        'validator': passwordValidator,
+        'field_type': 'password'
+    })
+    validated = sqla.Column(sqla.Boolean(), info={
+        'title': _('Validated'),
+        'default': False,
+    })
+    suspended = sqla.Column(sqla.Boolean(), info={
+        'title': _('Suspended'),
+        'default': False,
+    })
     properties = sqla.Column(ptah.JsonDictType(), default={})
 
     def __init__(self, **kw):
@@ -139,6 +170,10 @@ class CrowdAuthProvider(object):
         lambda: ptah.get_session().query(CrowdUser)\
             .filter(CrowdUser.login==sqla.sql.bindparam('login')))
 
+    _sql_get_email = ptah.QueryFreezer(
+        lambda: ptah.get_session().query(CrowdUser)\
+            .filter(CrowdUser.email==sqla.sql.bindparam('email')))
+
     _sql_search = ptah.QueryFreezer(
         lambda: ptah.get_session().query(CrowdUser) \
             .filter(sqla.sql.or_(
@@ -156,6 +191,9 @@ class CrowdAuthProvider(object):
 
     def get_principal_bylogin(self, login):
         return self._sql_get_login.first(login=login)
+
+    def get_principal_byemail(self, email):
+        return self._sql_get_email.first(email=email)
 
     @classmethod
     def search(cls, term):
