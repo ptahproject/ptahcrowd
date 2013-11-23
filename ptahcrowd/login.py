@@ -128,10 +128,7 @@ class LoginSuspended(ptah.View):
 
     def update(self):
         principal = ptah.auth_service.get_current_principal()
-        if not principal:
-            return HTTPFound(location=self.request.application_url)
-
-        if not principal.suspended:
+        if principal and not principal.suspended:
             return HTTPFound(location=self.request.application_url)
 
         MAIL = ptah.get_settings(ptah.CFG_ID_PTAH)
