@@ -12,7 +12,7 @@ class CrowdModule(ptah.manage.PtahModule):
     title = 'User management'
 
     def __getitem__(self, key):
-        if key not in ('create.html',):
+        if key not in ('create.html','groups.html', 'create-grp.html'):
             if key.startswith('grp'):
                 user = ptahcrowd.CrowdGroup.get_byid(key[3:])
             else:

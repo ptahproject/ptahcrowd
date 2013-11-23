@@ -208,3 +208,45 @@ class CreateGroupForm(pform.Form):
         self.request.add_message(
             _('The group has been created.'), 'success')
         return HTTPFound(location='groups.html')
+
+
+@view_config(context=CrowdGroup,
+             renderer=player.layout())
+class ModifyGroupView(pform.Form):
+
+    csrf = True
+    label = _('Update group')
+
+    @property
+    def fields(self):
+        return self.context.__type__.fieldset
+
+    def form_content(self):
+        data = {}
+        for name, field in self.context.__type__.fieldset.items():
+            data[name] = getattr(self.context, name, field.default)
+
+        return data
+
+    @pform.button(_('Modify'), actype=pform.AC_PRIMARY)
+    def modify(self):
+        data, errors = self.extract()
+
+        if errors:
+            self.add_error_message(errors)
+            return
+
+        grp = self.context
+
+        # update attrs
+        grp.name = data['name']
+        grp.description = data['description']
+
+        self.request.add_message(
+            _('The group has been updated.'), 'success')
+        return HTTPFound(location='.')
+
+
+    @pform.button(_('Back'))
+    def back(self):
+        return HTTPFound(location='../groups.html')
