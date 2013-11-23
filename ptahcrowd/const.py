@@ -12,6 +12,7 @@ CASE_DESCR = _("This is not case sensitive.")
 CASE_WARN = _("Case sensitive. Make sure the Caps Lock key is off.")
 LOGIN_TITLE = _("User name")
 LOGIN_DESCR = _("This is what you will use to log in. ")
+LOGIN_EMAIL_TITLE = _("Email or user name")
 EMAIL_TITLE = _("Email")
 EMAIL_DESCR = _("Your email "
                 "will not be displayed to any user or be shared with "

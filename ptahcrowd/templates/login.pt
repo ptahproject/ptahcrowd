@@ -4,7 +4,7 @@
   </div>
   <p i18n:translate="">
     To access this part of the site,
-    you need to log in with your user name and password.
+    you need to log in.
   </p>
   <p>
     <tal:block i18n:translate="">If you have forgotten your password,</tal:block>

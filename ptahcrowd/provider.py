@@ -185,6 +185,9 @@ class CrowdAuthProvider(object):
         login, password = creds['login'], creds['password']
 
         user = self._sql_get_login.first(login=login)
+        if not user:
+            user = self._sql_get_email.first(email=login)
+
         if user is not None:
             if ptah.pwd_tool.check(user.password, password):
                 return user
