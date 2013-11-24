@@ -121,6 +121,9 @@ class CrowdGroup(ptah.get_base()):
     def get_byid(cls, id):
         return cls._sql_get_id.first(id=id)
 
+    def __str__(self):
+        return self.name
+
 
 _sql_group_search = ptah.QueryFreezer(
     lambda: ptah.get_session().query(CrowdGroup) \
