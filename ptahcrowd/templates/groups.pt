@@ -1,3 +1,4 @@
+<div i18n:domain='ptahcrowd'>
 <div class="page-header">
   <h2>Groups</h2>
 </div>
@@ -58,3 +59,4 @@
     <a href="create-grp.html" class="btn btn-info">Create</a>
   </div>
 </form>
+</div>

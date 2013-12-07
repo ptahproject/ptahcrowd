@@ -1,3 +1,4 @@
+<div i18n:domain='ptahcrowd'>
 <div class="page-header">
   <h1 i18n:translate="">Your are not allowed to access this part of site.</h1>
 </div>
@@ -8,3 +9,4 @@
   contact the</tal:block>
   <a href="mailto:${view.email_address}" i18n:translate="">site administration.</a>
 </p>
+</div>
