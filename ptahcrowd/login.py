@@ -23,7 +23,7 @@ class LoginForm(pform.Form, ptah.View):
     fields = pform.Fieldset(
         pform.fields.TextField(
             'login',
-            title=const.LOGIN_EMAIL_TITLE,
+            title=const.LOGIN_TITLE,
             description=const.CASE_WARN,
             default=''),
 

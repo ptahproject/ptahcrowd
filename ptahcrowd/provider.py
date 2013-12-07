@@ -40,8 +40,8 @@ class CrowdUser(ptah.get_base()):
         'description': const.NAME_DESCR,
     })
     login = sqla.Column(sqla.Unicode(255), unique=True, info={
-        'title': const.LOGIN_TITLE,
-        'description': const.LOGIN_DESCR,
+        'title': const.USERNAME_TITLE,
+        'description': const.USERNAME_DESCR,
         'preparer': lower,
         'validator': checkLoginValidator,
     })
