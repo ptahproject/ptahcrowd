@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptahcrowd 0.2\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-12-11 00:01+0100\n"
+"POT-Creation-Date: 2013-12-14 15:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -328,7 +328,7 @@ msgid "Reset password"
 msgstr ""
 
 #: ptahcrowd/templates/resetpasswordform.pt:4
-msgid "Password reset confirmation for ${view.title}"
+msgid "Password reset confirmation for ${user}"
 msgstr ""
 
 #: ptahcrowd/templates/resetpasswordmail.pt:2

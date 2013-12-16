@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptahcrowd 0.2\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-12-11 00:01+0100\n"
-"PO-Revision-Date: 2013-12-11 00:07+0100\n"
+"POT-Creation-Date: 2013-12-14 15:45+0100\n"
+"PO-Revision-Date: 2013-12-17 00:11+0100\n"
 "Last-Translator: Marco Strobel <mail@strobel.ch>\n"
 "Language-Team: de <LL@li.org>\n"
 "Language: de\n"
@@ -71,7 +71,7 @@ msgstr ""
 
 #: ptahcrowd/const.py:25
 msgid "Password reset confirmation"
-msgstr "Bestätigung des Passwort-Resets"
+msgstr "Bestätigung um das Passwort zurückzusetzen"
 
 #: ptahcrowd/const.py:26
 msgid "You have entered the wrong login or password."
@@ -184,7 +184,7 @@ msgstr "Wähle Benutzergruppen."
 
 #: ptahcrowd/user.py:132 ptahcrowd/views.py:231
 msgid "Modify"
-msgstr "Bearbeiten"
+msgstr "Ändern"
 
 #: ptahcrowd/user.py:154
 msgid "User properties have been updated."
@@ -357,8 +357,8 @@ msgid "Reset password"
 msgstr "Passwort zurücksetzen"
 
 #: ptahcrowd/templates/resetpasswordform.pt:4
-msgid "Password reset confirmation for ${view.title}"
-msgstr "Bestätigung das Passwort-Resets für ${view.title}"
+msgid "Password reset confirmation for ${user}"
+msgstr "Bestätigung um das Passwort für ${user} zurückzusetzen."
 
 #: ptahcrowd/templates/resetpasswordmail.pt:2
 msgid ""
@@ -371,3 +371,6 @@ msgstr ""
 #: ptahcrowd/templates/resetpasswordmail.pt:9
 msgid "Requested by IP ${ip} on ${date}"
 msgstr "Verlangt von der IP ${ip} am ${date}"
+
+#~ msgid "Password reset confirmation for ${view.title}"
+#~ msgstr "Bestätigung das Passwort-Resets für ${view.title}"
