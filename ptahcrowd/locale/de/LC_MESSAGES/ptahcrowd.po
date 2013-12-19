@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptahcrowd 0.2\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-12-14 15:45+0100\n"
-"PO-Revision-Date: 2013-12-17 00:11+0100\n"
+"POT-Creation-Date: 2013-12-19 23:46+0100\n"
+"PO-Revision-Date: 2013-12-19 23:48+0100\n"
 "Last-Translator: Marco Strobel <mail@strobel.ch>\n"
 "Language-Team: de <LL@li.org>\n"
 "Language: de\n"
@@ -197,6 +197,26 @@ msgstr "Entfernen"
 #: ptahcrowd/user.py:165
 msgid "User has been removed."
 msgstr "Benutzer wurde entfernt."
+
+#: ptahcrowd/validation.py:32
+msgid "Account is suspended."
+msgstr "Konto wurde gesperrt."
+
+#: ptahcrowd/validation.py:46
+msgid "Account is not validated."
+msgstr "Konto ist nicht validiert."
+
+#: ptahcrowd/validation.py:62
+msgid "Activate Your Account"
+msgstr "Aktivieren Sie Ihr Konto"
+
+#: ptahcrowd/validation.py:86
+msgid "Account has been successfully validated."
+msgstr "Konten wurden erfolgreich validiert."
+
+#: ptahcrowd/validation.py:93
+msgid "Can't validate email address."
+msgstr "E-Mail-Adresse konnte nicht validiert werden."
 
 #: ptahcrowd/views.py:26
 msgid "Search term"

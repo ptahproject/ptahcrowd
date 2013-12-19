@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ptahcrowd 0.2dev\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2013-12-14 15:45+0100\n"
-"PO-Revision-Date: 2013-12-17 00:07+0100\n"
+"POT-Creation-Date: 2013-12-19 23:46+0100\n"
+"PO-Revision-Date: 2013-12-19 23:49+0100\n"
 "Last-Translator: Marco Strobel <mail@strobel.ch>\n"
 "Language-Team: Portuguese <>\n"
 "Language: pt\n"
@@ -188,6 +188,28 @@ msgstr "Remover"
 #: ptahcrowd/user.py:165
 msgid "User has been removed."
 msgstr "O usuário foi removido."
+
+#: ptahcrowd/validation.py:32
+#, fuzzy
+msgid "Account is suspended."
+msgstr "Sua conta está suspensa."
+
+#: ptahcrowd/validation.py:46
+msgid "Account is not validated."
+msgstr ""
+
+#: ptahcrowd/validation.py:62
+msgid "Activate Your Account"
+msgstr ""
+
+#: ptahcrowd/validation.py:86
+#, fuzzy
+msgid "Account has been successfully validated."
+msgstr "As contas selecionadas foram validadas."
+
+#: ptahcrowd/validation.py:93
+msgid "Can't validate email address."
+msgstr ""
 
 #: ptahcrowd/views.py:26
 msgid "Search term"

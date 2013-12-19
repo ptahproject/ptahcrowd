@@ -6,6 +6,7 @@ from pyramid.httpexceptions import HTTPFound
 
 import ptah
 from ptahcrowd.settings import CFG_ID_CROWD
+from ptahcrowd.settings import _
 
 TOKEN_TYPE = ptah.token.TokenType(
     'cd51f14e9b2842608ccadf1a240046c1', timedelta(hours=24))
@@ -28,7 +29,7 @@ def validationAndSuspendedChecker(info):
     principal = info.principal
 
     if principal.suspended:
-        info.message = 'Account is suspended.'
+        info.message = _('Account is suspended.')
         info.arguments['suspended'] = True
         return False
 
@@ -42,7 +43,7 @@ def validationAndSuspendedChecker(info):
     if CROWD['allow-unvalidated'] or principal.validated:
         return True
 
-    info.message = 'Account is not validated.'
+    info.message = _('Account is not validated.')
     info.arguments['validation'] = False
     return False
 
@@ -58,7 +59,7 @@ def principalRegistered(ev):
 
 class ValidationTemplate(ptah.mail.MailTemplate):
 
-    subject = 'Activate Your Account'
+    subject = _('Activate Your Account')
     template = 'ptahcrowd:templates/validate_email.txt'
 
     def update(self):
@@ -82,12 +83,12 @@ def validate(request):
         if user is not None:
             user.validated = True
             ptah.token.service.remove(t)
-            request.add_message("Account has been successfully validated.")
+            request.add_message(_("Account has been successfully validated."))
 
             request.registry.notify(ptah.events.PrincipalValidatedEvent(user))
 
             headers = remember(request, user.__uri__)
             return HTTPFound(location=request.application_url, headers=headers)
 
-    request.add_message("Can't validate email address.", 'warning')
+    request.add_message(_("Can't validate email address."), 'warning')
     return HTTPFound(location=request.application_url)
