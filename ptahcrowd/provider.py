@@ -80,6 +80,10 @@ class CrowdUser(ptah.get_base()):
     def __name__(self):
         return str(self.id)
 
+    @property
+    def __uri__(self):
+        return '%s:%s' % (self.__type__.name, self.id)
+
     def __repr__(self):
         return '%s<%s:%s>'%(self.__class__.__name__, self.name, self.__uri__)
 
