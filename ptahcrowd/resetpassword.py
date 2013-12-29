@@ -95,10 +95,14 @@ class ResetPasswordForm(pform.Form):
 
     @reify
     def passcode(self):
+        passcode = None
         if self.request.subpath:
-            return self.request.subpath[0]
+            passcode = self.request.subpath[0]
         else:
-            return None
+            user = ptah.auth_service.get_current_principal()
+            if user:
+                passcode = ptah.pwd_tool.generate_passcode(user)
+        return passcode
 
     def update(self):
         self.principal = principal = ptah.pwd_tool.get_principal(self.passcode)
@@ -107,7 +111,8 @@ class ResetPasswordForm(pform.Form):
                ptah.pwd_tool.can_change_password(principal):
             self.title = principal.name or principal.login
         else:
-            self.request.add_message(_("Passcode is invalid."), 'warning')
+            if self.passcode:
+                self.request.add_message(_("Passcode is invalid."), 'warning')
             return HTTPFound(
                 location='%s/resetpassword.html' % self.request.application_url)
 
