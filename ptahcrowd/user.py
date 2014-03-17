@@ -40,7 +40,7 @@ def get_groups_vocabulary(context):
 
 @view_config(name='create.html',
              context=CrowdModule,
-             renderer=player.layout('ptah:form.lt'))
+             renderer=player.layout('ptah:form.lt', 'ptah-manage'))
 
 class CreateUserForm(pform.Form):
 
@@ -83,7 +83,7 @@ class CreateUserForm(pform.Form):
 
 
 @view_config(context=CrowdUser,
-             renderer=player.layout('ptah:form.lt'),
+             renderer=player.layout('ptah:form.lt', 'ptah-manage'),
              route_name=ptahcrowd.CROWD_APP_ID)
 class ModifyUserForm(pform.Form):
 
