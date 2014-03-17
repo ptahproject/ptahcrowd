@@ -77,6 +77,7 @@ class CrowdUser(ptah.get_base()):
     def __str__(self):
         return self.name
 
+    @property
     def __name__(self):
         return str(self.id)
 
