@@ -11,6 +11,7 @@ from pyramid.view import view_config, render_view_to_response
 
 import ptah
 import ptahcrowd
+from ptahcrowd.settings import _
 
 
 @view_config(
@@ -50,6 +51,8 @@ class Forbidden(ptah.View):
 
             location = '%s?%s'%(
                 loginurl, url_encode({'came_from': request.url}))
+
+            request.add_message(_('To access this part of the site, you need to log in with your credentials.'), 'info')
 
             response = request.response
             response.status = HTTPFound.code

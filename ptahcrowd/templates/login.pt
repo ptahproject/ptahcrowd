@@ -3,10 +3,6 @@
   <div class="page-header">
     <h1 i18n:translate="">Please log in</h1>
   </div>
-  <p i18n:translate="">
-    To access this part of the site,
-    you need to log in with your credentials.
-  </p>
   <p>
     <tal:block i18n:translate="">If you have forgotten your password,</tal:block>
     <a i18n:translate=""
