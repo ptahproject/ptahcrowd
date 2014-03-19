@@ -37,13 +37,13 @@ ptah.register_settings(
         'join-url',
         title = 'Join url',
         description = 'Custom join form url.',
-        default = ''),
+        default = '/join.html'),
 
     pform.TextField(
         'login-url',
         title = 'Login url',
         description = 'Custom login form url.',
-        default = ''),
+        default = '/login.html'),
 
     pform.TextField(
         'success-url',
