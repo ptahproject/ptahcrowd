@@ -15,7 +15,7 @@ from ptahcrowd.providers import Storage
 
 @view_config(
     context=CrowdModule,
-    renderer=player.layout('ptah-crowd:users.lt', 'ptah-manage'))
+    renderer=player.layout('ptahcrowd:users.lt', 'ptah-manage'))
 class CrowdModuleView(pform.Form, ptah.View):
     __doc__ = 'List/search users view'
 
@@ -133,7 +133,7 @@ class CrowdModuleView(pform.Form, ptah.View):
 @view_config(
     name='groups.html',
     context=CrowdModule,
-    renderer=player.layout('ptah-crowd:groups.lt', 'ptah-manage'))
+    renderer=player.layout('ptahcrowd:groups.lt', 'ptah-manage'))
 
 class CrowdGroupsView(ptah.View):
     __doc__ = 'List groups view'

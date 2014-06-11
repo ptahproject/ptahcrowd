@@ -13,7 +13,7 @@ from ptahcrowd.settings import _, CFG_ID_CROWD
 
 @view_config(
     route_name='ptah-login',
-    renderer=player.layout("ptah-crowd:login.lt","crowd"))
+    renderer=player.layout('ptahcrowd:login.lt', 'ptahcrowd'))
 class LoginForm(pform.Form, ptah.View):
     """ Login form """
 
@@ -103,7 +103,7 @@ class LoginForm(pform.Form, ptah.View):
 
 @view_config(
     route_name='ptah-login-success',
-    renderer=player.layout('ptah-crowd:login-success.lt','crowd'))
+    renderer=player.layout('ptahcrowd:login-success.lt', 'ptahcrowd'))
 class LoginSuccess(ptah.View):
     """ Login successful information page. """
 
@@ -122,7 +122,7 @@ class LoginSuccess(ptah.View):
 
 @view_config(
     route_name='ptah-login-suspended',
-    renderer=player.layout("ptah-crowd:login-suspended.lt",'crowd'))
+    renderer=player.layout('ptahcrowd:login-suspended.lt', 'ptahcrowd'))
 class LoginSuspended(ptah.View):
     """ Suspended account information page. """
 

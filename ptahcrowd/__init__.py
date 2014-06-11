@@ -59,11 +59,11 @@ def includeme(config):
         CROWD_APP_ID, '# {0}'.format(CROWD_APP_ID), use_global_views=True)
 
     # templates
-    config.add_layer('ptah-crowd', path='ptahcrowd:templates')
+    config.add_layer('ptahcrowd', path='ptahcrowd:templates')
 
     # layout
     config.add_layout(
-        'crowd', renderer='ptah-crowd:layout.lt', parent="workspace")
+        'ptahcrowd', renderer='ptahcrowd:layout.lt', parent='ptah')
 
     # static assets
     config.add_static_view('_ptahcrowd', 'ptahcrowd:static')

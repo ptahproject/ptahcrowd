@@ -16,7 +16,7 @@ from ptahcrowd.settings import _
 
 @view_config(
     context=HTTPForbidden,
-    renderer=player.layout('ptahcrowd:templates/forbidden.pt', 'crowd'))
+    renderer=player.layout('ptahcrowd:templates/forbidden.pt', 'ptahcrowd'))
 class Forbidden(ptah.View):
 
     def update(self):
