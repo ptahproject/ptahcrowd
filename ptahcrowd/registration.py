@@ -17,12 +17,11 @@ from ptahcrowd.validation import initiate_email_validation
 
 @view_config(
     route_name='ptah-join',
-    renderer=player.layout('ptah:form.lt', 'ptahcrowd'))
+    renderer=player.layout('ptahcrowd:registration.lt', 'ptahcrowd'))
 
 class Registration(pform.Form):
     """ Ptah crowd registration form """
 
-    label = _("Registration")
     fields = pform.Fieldset(RegistrationSchema, PasswordSchema)
     autocomplete = 'off'
 

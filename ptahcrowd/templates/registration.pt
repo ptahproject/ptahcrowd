@@ -1,0 +1,10 @@
+<tal:block i18n:domain='ptahcrowd'>
+<div>
+  <div class="page-header">
+    <h1 i18n:translate="">Registration</h1>
+  </div>
+
+  ${structure: request.render_tmpl(view.tmpl_view, view)}
+
+</div>
+</tal:block>
