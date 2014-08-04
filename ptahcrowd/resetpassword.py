@@ -101,25 +101,27 @@ class ResetPasswordForm(pform.Form):
         passcode = None
         if self.request.subpath:
             passcode = self.request.subpath[0]
-        else:
-            user = ptah.auth_service.get_current_principal()
-            if user:
-                passcode = ptah.pwd_tool.generate_passcode(user)
         return passcode
 
-    def update(self):
-        self.principal = principal = ptah.pwd_tool.get_principal(self.passcode)
+    @reify
+    def principal(self):
+        principal = None
+        if self.passcode:
+            principal = ptah.pwd_tool.get_principal(self.passcode)
+        else:
+            principal = ptah.auth_service.get_current_principal()
+        return principal
+        
 
-        if principal is not None and \
-               ptah.pwd_tool.can_change_password(principal):
-            self.title = principal.name or principal.login
+    def update(self):
+        principal = self.principal
+        if principal and ptah.pwd_tool.can_change_password(principal):
+            return super(ResetPasswordForm, self).update()
         else:
             if self.passcode:
                 self.request.add_message(_("Passcode is invalid."), 'warning')
             return HTTPFound(
                 location='%s/resetpassword.html' % self.request.application_url)
-
-        return super(ResetPasswordForm, self).update()
 
     @pform.button(_("Change password"),
                       name='change', actype=pform.AC_PRIMARY)
@@ -129,8 +131,11 @@ class ResetPasswordForm(pform.Form):
         if errors:
             self.add_error_message(errors)
         else:
-            principal = ptah.pwd_tool.get_principal(self.passcode)
-            ptah.pwd_tool.change_password(self.passcode, data['password'])
+            principal = self.principal
+            passcode = self.passcode
+            if principal and not passcode:
+                passcode = ptah.pwd_tool.generate_passcode(principal)
+            ptah.pwd_tool.change_password(passcode, data['password'])
 
             self.request.registry.notify(
                 PrincipalPasswordChangedEvent(principal))
@@ -173,3 +178,4 @@ class ResetPasswordTemplate(ptah.mail.MailTemplate):
         info = self.context
 
         self.to_address = ptah.mail.formataddr((info.name, info.email))
+
