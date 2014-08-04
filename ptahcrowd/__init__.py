@@ -24,34 +24,34 @@ def includeme(config):
 
     # login routes
     config.add_route(
-        'ptah-login', '/login.html', use_global_views=True)
+        'ptahcrowd-login', '/login.html', use_global_views=True)
     config.add_route(
-        'ptah-logout', '/logout.html', use_global_views=True)
+        'ptahcrowd-logout', '/logout.html', use_global_views=True)
     config.add_route(
-        'ptah-login-success', '/login-success.html', use_global_views=True)
+        'ptahcrowd-login-success', '/login-success.html', use_global_views=True)
     config.add_route(
-        'ptah-login-suspended', '/login-suspended.html', use_global_views=True)
+        'ptahcrowd-login-suspended', '/login-suspended.html', use_global_views=True)
 
     # reset password
     config.add_route(
-        'ptah-resetpassword',
+        'ptahcrowd-resetpassword',
         '/resetpassword.html', use_global_views=True)
     config.add_route(
-        'ptah-resetpassword-form',
+        'ptahcrowd-resetpassword-form',
         '/resetpassword.html/*subpath', use_global_views=True)
 
     # registration
     config.add_route(
-        'ptah-join', '/join.html', use_global_views=True)
+        'ptahcrowd-join', '/join.html', use_global_views=True)
 
     # verify auth provider email
     config.add_route(
-        'ptah-crowd-verify-email',
+        'ptahcrowd-verify-email',
         '/auth-verify-email/*subpath',
         use_global_views=True)
 
     config.add_route(
-        'ptah-crowd-verify-email-complete',
+        'ptahcrowd-verify-email-complete',
         '/auth-verify-email-complete/*subpath')
 
     # for management module

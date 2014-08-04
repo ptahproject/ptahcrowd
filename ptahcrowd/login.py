@@ -12,7 +12,7 @@ from ptahcrowd.settings import _, CFG_ID_CROWD
 
 
 @view_config(
-    route_name='ptah-login',
+    route_name='ptahcrowd-login',
     renderer=player.layout('ptahcrowd:login.lt', 'ptahcrowd'))
 class LoginForm(pform.Form, ptah.View):
     """ Login form """
@@ -46,7 +46,7 @@ class LoginForm(pform.Form, ptah.View):
             if location.startswith('/'):
                 location = '%s%s' % (app_url, location)
         else:
-            location = self.request.route_url('ptah-login-success')
+            location = self.request.route_url('ptahcrowd-login-success')
 
         return location
 
@@ -73,7 +73,7 @@ class LoginForm(pform.Form, ptah.View):
                 ptah.events.LoginFailedEvent(info.principal, info.message))
 
         if info.arguments.get('suspended'):
-            return HTTPFound(request.route_url('ptah-login-suspended'))
+            return HTTPFound(request.route_url('ptahcrowd-login-suspended'))
 
         if info.message:
             self.request.add_message(info.message, 'warning')
@@ -90,7 +90,7 @@ class LoginForm(pform.Form, ptah.View):
         if joinurl:
             self.joinurl = joinurl
         else:
-            self.joinurl = self.request.route_url('ptah-join')
+            self.joinurl = self.request.route_url('ptahcrowd-join')
 
         if ptah.auth_service.get_userid():
             return HTTPFound(location=self.get_success_url())
@@ -102,7 +102,7 @@ class LoginForm(pform.Form, ptah.View):
 
 
 @view_config(
-    route_name='ptah-login-success',
+    route_name='ptahcrowd-login-success',
     renderer=player.layout('ptahcrowd:login-success.lt', 'ptahcrowd'))
 class LoginSuccess(ptah.View):
     """ Login successful information page. """
@@ -121,7 +121,7 @@ class LoginSuccess(ptah.View):
 
 
 @view_config(
-    route_name='ptah-login-suspended',
+    route_name='ptahcrowd-login-suspended',
     renderer=player.layout('ptahcrowd:login-suspended.lt', 'ptahcrowd'))
 class LoginSuspended(ptah.View):
     """ Suspended account information page. """
@@ -137,7 +137,7 @@ class LoginSuspended(ptah.View):
         self.full_address = MAIL['full_email_address']
 
 
-@view_config(route_name='ptah-logout')
+@view_config(route_name='ptahcrowd-logout')
 def logout(request):
     """Logout action"""
     uid = ptah.auth_service.get_userid()

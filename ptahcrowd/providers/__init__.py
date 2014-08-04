@@ -69,7 +69,7 @@ def auth_complete_view(context, request):
             # verify email
             return HTTPFound(
                 request.route_url(
-                    'ptah-crowd-verify-email', subpath=(entry.uid,)))
+                    'ptahcrowd-verify-email', subpath=(entry.uid,)))
 
     return login(entry.uri, request)
 
@@ -96,7 +96,7 @@ def login(uri, request):
 
 
 @view_config(
-    route_name='ptah-crowd-verify-email',
+    route_name='ptahcrowd-verify-email',
     renderer=player.layout('', 'pthacrowd'))
 class VerifyEmail(pform.Form):
     """ verify email """
@@ -121,7 +121,7 @@ class VerifyEmail(pform.Form):
         entry = session.query(Storage).filter(
             Storage.uid == self.request.subpath[0]).first()
         if entry is None:
-            return HTTPFound(self.request.route_url('ptah-login'))
+            return HTTPFound(self.request.route_url('ptahcrowd-login'))
 
         self.entry = entry
 
@@ -191,7 +191,7 @@ class VerifyEmail(pform.Form):
         return HTTPFound(location=request.application_url)
 
 
-@view_config(route_name='ptah-crowd-verify-email-complete')
+@view_config(route_name='ptahcrowd-verify-email-complete')
 def verify(request):
     """Verify email"""
     t = request.subpath[0]
@@ -227,7 +227,7 @@ class VerifyTemplate(ptah.mail.MailTemplate):
         super(VerifyTemplate, self).update()
 
         self.url = self.request.route_url(
-            'ptah-crowd-verify-email-complete', subpath=(self.token,))
+            'ptahcrowd-verify-email-complete', subpath=(self.token,))
         self.to_address = ptah.mail.formataddr((self.context.name, self.email))
 
 

@@ -17,7 +17,7 @@ from ptahcrowd.settings import _
 
 
 @view_config(
-    route_name='ptah-resetpassword',
+    route_name='ptahcrowd-resetpassword',
     renderer=player.layout('ptahcrowd:resetpassword.lt', 'ptahcrowd'))
 
 class ResetPassword(pform.Form):
@@ -89,7 +89,7 @@ class ResetPassword(pform.Form):
 
 
 @view_config(
-    route_name='ptah-resetpassword-form',
+    route_name='ptahcrowd-resetpassword-form',
     renderer=player.layout('ptahcrowd:resetpasswordform.lt', 'ptahcrowd'))
 
 class ResetPasswordForm(pform.Form):

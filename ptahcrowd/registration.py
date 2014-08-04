@@ -16,7 +16,7 @@ from ptahcrowd.validation import initiate_email_validation
 
 
 @view_config(
-    route_name='ptah-join',
+    route_name='ptahcrowd-join',
     renderer=player.layout('ptahcrowd:registration.lt', 'ptahcrowd'))
 
 class Registration(pform.Form):
