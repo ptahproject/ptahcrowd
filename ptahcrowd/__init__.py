@@ -10,7 +10,8 @@ from ptahcrowd.settings import CFG_ID_CROWD
 from ptahcrowd.validation import initiate_email_validation
 
 from ptahcrowd.schemas import UserSchema
-from ptahcrowd.schemas import checkLoginValidator
+from ptahcrowd.schemas import checkUsernameValidator
+from ptahcrowd.schemas import checkEmailValidator
 
 POPULATE_CREATE_ADMIN = 'ptah-crowd-admin'
 
