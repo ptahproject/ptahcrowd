@@ -23,19 +23,19 @@ def create_admin_user(registry):
             return
 
     user = session.query(ptahcrowd.CrowdUser).\
-           filter(ptahcrowd.CrowdUser.login==crowd_cfg['admin-login']).first()
+           filter(ptahcrowd.CrowdUser.username==crowd_cfg['admin-login']).first()
 
     if user is None:
         tinfo = ptahcrowd.get_user_type(registry)
 
         log = logging.getLogger('ptahcrowd')
-        log.info("Creating admin user `%s` %s",
-                 crowd_cfg['admin-login'], crowd_cfg['admin-name'])
+        log.info("Creating admin user `%s`",
+                 crowd_cfg['admin-login'])
 
         # create user
         user = tinfo.create(
-            name=crowd_cfg['admin-name'],
-            login=crowd_cfg['admin-login'],
+            fullname=crowd_cfg['admin-name'],
+            username=crowd_cfg['admin-login'],
             email=ptah_cfg['email_from_address'])
         user.password = ptah.pwd_tool.encode(crowd_cfg['admin-password'])
         user.validated = True

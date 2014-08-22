@@ -41,7 +41,7 @@ class Registration(pform.Form):
 
         # create user
         user = tinfo.create(
-            name=data['name'], login=data['login'], email=data['login'])
+            username=data['username'], email=data['email'])
 
         # set password
         user.password = ptah.pwd_tool.encode(data['password'])
@@ -57,7 +57,7 @@ class Registration(pform.Form):
 
         user = self.create(data)
         self.request.registry.notify(PrincipalRegisteredEvent(user))
-
+        self.cfg = ptah.get_settings(CFG_ID_CROWD, self.request.registry)
         # validation
         if self.cfg['validation']:
             initiate_email_validation(user.email, user, self.request)
@@ -67,7 +67,7 @@ class Registration(pform.Form):
 
         # authenticate
         info = ptah.auth_service.authenticate(
-            {'login': user.login, 'password': user.password})
+            {'login': user.username, 'password': user.password})
         if info.status:
             headers = security.remember(self.request, info.__uri__)
             return HTTPFound(

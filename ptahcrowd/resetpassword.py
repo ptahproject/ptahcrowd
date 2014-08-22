@@ -45,9 +45,6 @@ class ResetPassword(pform.Form):
         if login:
             principal = ptah.auth_service.get_principal_bylogin(login)
 
-            if not principal:
-                principal = ptah.auth_service.get_principal_byemail(login)
-
             if principal is not None and \
                    ptah.pwd_tool.can_change_password(principal):
                 passcode = ptah.pwd_tool.generate_passcode(principal)
@@ -151,7 +148,7 @@ class ResetPasswordForm(pform.Form):
 class ResetPasswordTemplate(ptah.mail.MailTemplate):
 
     subject = const.PASSWORD_RESET_SUBJECT
-    template = 'ptah-crowd:resetpasswordmail.lt'
+    template = 'ptahcrowd:resetpasswordmail.lt'
 
     def update(self):
         super(ResetPasswordTemplate, self).update()

@@ -117,7 +117,7 @@ class LoginSuccess(ptah.View):
                 headers=headers,
                 location='%s/login.html' % request.application_url)
         else:
-            self.user = user.name or user.login
+            self.user = user.name
 
 
 @view_config(
