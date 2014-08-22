@@ -7,7 +7,7 @@ import ptah
 from ptah.password import passwordValidator
 from ptahcrowd.settings import CFG_ID_CROWD
 from ptahcrowd.schemas import lower
-from ptahcrowd.schemas import checkLoginValidator
+from ptahcrowd.schemas import checkUsernameValidator
 from ptahcrowd.schemas import checkEmailValidator
 from ptahcrowd import const
 from ptahcrowd.settings import _
@@ -20,9 +20,9 @@ CROWD_APP_ID = 'ptah-crowd'
 class CrowdUser(ptah.get_base()):
     """Default crowd user
 
-    ``name``: User name.
+    ``fullname``: User full name.
 
-    ``login``: User login.
+    ``username``: User name.
 
     ``email``: User email.
 
@@ -35,15 +35,15 @@ class CrowdUser(ptah.get_base()):
     __tablename__ = 'ptahcrowd_users'
 
     id = sqla.Column(sqla.Integer, primary_key=True)
-    name = sqla.Column(sqla.Unicode(255), info={
-        'title': const.NAME_TITLE,
-        'description': const.NAME_DESCR,
+    fullname = sqla.Column(sqla.Unicode(255), info={
+        'title': const.FULLNAME_TITLE,
+        'description': const.FULLNAME_DESCR,
     })
-    login = sqla.Column(sqla.Unicode(255), unique=True, info={
+    username = sqla.Column(sqla.Unicode(255), unique=True, info={
         'title': const.USERNAME_TITLE,
         'description': const.USERNAME_DESCR,
         'preparer': lower,
-        'validator': checkLoginValidator,
+        'validator': checkUsernameValidator,
     })
     email = sqla.Column(sqla.Unicode(255), unique=True, info={
         'title': const.EMAIL_TITLE,
@@ -80,6 +80,10 @@ class CrowdUser(ptah.get_base()):
     @property
     def __name__(self):
         return str(self.id)
+
+    @property
+    def name(self):
+        return self.fullname or self.username
 
     def __repr__(self):
         return '%s<%s:%s:%s>'%(self.__class__.__name__, self.name,
@@ -171,9 +175,9 @@ def get_allowed_content_types(context, registry=None):
 @ptah.auth_provider('ptah-crowd-auth')
 class CrowdAuthProvider(object):
 
-    _sql_get_login = ptah.QueryFreezer(
+    _sql_get_username = ptah.QueryFreezer(
         lambda: ptah.get_session().query(CrowdUser)\
-            .filter(CrowdUser.login==sqla.sql.bindparam('login')))
+            .filter(CrowdUser.username==sqla.sql.bindparam('username')))
 
     _sql_get_email = ptah.QueryFreezer(
         lambda: ptah.get_session().query(CrowdUser)\
@@ -189,19 +193,18 @@ class CrowdAuthProvider(object):
     def authenticate(self, creds):
         login, password = creds['login'], creds['password']
 
-        user = self._sql_get_login.first(login=login)
-        if not user:
-            user = self._sql_get_email.first(email=login)
+        user = self.get_principal_bylogin(login=login)
 
         if user is not None:
             if ptah.pwd_tool.check(user.password, password):
                 return user
 
-    def get_principal_bylogin(self, login):
-        return self._sql_get_login.first(login=login)
 
-    def get_principal_byemail(self, email):
-        return self._sql_get_email.first(email=email)
+    def get_principal_bylogin(self, login):
+        user = self.get_principal_byusername(login)
+        if not user:
+            user = get_principal_byemail(login)
+        return user
 
     @classmethod
     def search(cls, term):
@@ -216,9 +219,13 @@ class CrowdAuthProvider(object):
 
         return user
 
-    def get_user_bylogin(self, login):
-        """ Given a login string return a user """
-        return self._sql_get_login.first(login=login)
+    def get_principal_byusername(self, username):
+        """ Given a username string return a user """
+        return self._sql_get_username.first(username=username)
+
+    def get_principal_byemail(self, email):
+        """ Given a email string return a user """
+        return self._sql_get_email.first(email=email)
 
 
 @ptah.password_changer('ptah-crowd-user')
