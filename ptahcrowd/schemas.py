@@ -15,13 +15,13 @@ def lower(s):
     return s
 
 
-def checkLoginValidator(field, login):
-    """Ptah field validator, checks if login is already in use."""
+def checkUsernameValidator(field, username):
+    """Ptah field validator, checks if username is already in use."""
 
-    if getattr(field, 'value', None) == login:
+    if getattr(field, 'value', None) == username:
         return
 
-    if ptah.auth_service.get_principal_bylogin(login) is not None:
+    if ptah.auth_service.get_principal_byusername(username) is not None:
         raise pform.Invalid(_("This login is already in use."), field)
 
 def checkEmailValidator(field, email):
@@ -37,17 +37,18 @@ def checkEmailValidator(field, email):
 RegistrationSchema = pform.Fieldset(
 
     pform.TextField(
-        'name',
-        title=const.NAME_TITLE,
-        description=const.NAME_DESCR,
+        'username',
+        title=const.USERNAME_TITLE,
+        description=const.USERNAME_DESCR,
+        validator=checkUsernameValidator,
         ),
 
     pform.TextField(
-        'login',
-        title=const.LOGIN_TITLE,
-        description=const.LOGIN_DESCR,
+        'email',
+        title=const.EMAIL_TITLE,
+        description=const.EMAIL_DESCR,
         preparer=lower,
-        validator=pform.All(pform.Email(), checkLoginValidator),
+        validator=pform.All(pform.Email(), checkEmailValidator),
         )
     )
 
@@ -57,7 +58,7 @@ ResetPasswordSchema = pform.Fieldset(
     pform.TextField(
         'login',
         title=const.LOGIN_TITLE,
-        description=const.CASE_DESCR,
+        description=' '.join([const.LOGIN_DESCR, const.CASE_DESCR]),
         missing='',
         default='')
     )
@@ -66,17 +67,24 @@ ResetPasswordSchema = pform.Fieldset(
 UserSchema = pform.Fieldset(
 
     pform.fields.TextField(
-        'name',
-        title=const.NAME_TITLE,
-        description=const.NAME_DESCR,
+        'fullname',
+        title=const.FULLNAME_TITLE,
+        description=const.FULLNAME_DESCR,
         ),
 
     pform.fields.TextField(
-        'login',
-        title=const.LOGIN_TITLE,
-        description=const.LOGIN_DESCR,
+        'username',
+        title=const.USERNAME_TITLE,
+        description=const.USERNAME_DESCR,
+        validator=checkUsernameValidator,
+        ),
+
+    pform.fields.TextField(
+        'email',
+        title=const.EMAIL_TITLE,
+        description=const.EMAIL_DESCR,
         preparer=lower,
-        validator=pform.All(pform.Email(), checkLoginValidator),
+        validator=pform.All(pform.Email(), checkEmailValidator),
         ),
 
     pform.fields.TextField(
