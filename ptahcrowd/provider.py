@@ -58,11 +58,11 @@ class CrowdUser(ptah.get_base()):
         'validator': passwordValidator,
         'field_type': 'password'
     })
-    validated = sqla.Column(sqla.Boolean(), info={
+    validated = sqla.Column(sqla.Boolean(), default=False, info={
         'title': _('Validated'),
         'default': False,
     })
-    suspended = sqla.Column(sqla.Boolean(), info={
+    suspended = sqla.Column(sqla.Boolean(), default=False, info={
         'title': _('Suspended'),
         'default': False,
     })
