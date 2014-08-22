@@ -90,16 +90,7 @@ class ModifyUserForm(pform.Form):
     csrf = True
     label = 'Update user'
     fields = pform.Fieldset(
-        UserSchema['name'],
-        UserSchema['login'],
-        pform.fields.TextField(
-            'password',
-            title=const.PASSWORD_TITLE,
-            description=const.PASSWORD_DESCR,
-            missing=pform.null,
-            validator=passwordValidator),
-        UserSchema['validated'],
-        UserSchema['suspended'],
+        UserSchema,
 
         pform.fields.MultiChoiceField(
             'roles',

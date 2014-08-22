@@ -13,6 +13,7 @@ from ptah.events import ResetPasswordInitiatedEvent
 from ptah.events import PrincipalPasswordChangedEvent
 
 from ptahcrowd import const
+from ptahcrowd.schemas import ResetPasswordSchema
 from ptahcrowd.settings import _
 
 
@@ -22,14 +23,7 @@ from ptahcrowd.settings import _
 
 class ResetPassword(pform.Form):
 
-    fields = pform.Fieldset(
-        pform.FieldFactory(
-            'text',
-            'login',
-            title=const.LOGIN_TITLE,
-            description=const.CASE_DESCR,
-            missing='',
-            default=''))
+    fields = ResetPasswordSchema
 
     def form_content(self):
         return {'login': self.request.params.get('login', '')}
