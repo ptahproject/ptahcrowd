@@ -69,7 +69,7 @@ class CreateUserForm(pform.Form):
         tinfo = ptah.resolve(tp)
 
         user = tinfo.create(
-            name=data['name'], login=data['login'], email=data['login'],
+            fullname=data['fullname'], username=data['username'], email=data['email'],
             validated=data['validated'], suspended=data['suspended'])
         user.password = ptah.pwd_tool.encode(data['password'])
 
@@ -112,8 +112,9 @@ class ModifyUserForm(pform.Form):
     def form_content(self):
         user = self.context
 
-        return {'name': user.name,
-                'login': user.login,
+        return {'fullname': user.fullname,
+                'username': user.username,
+                'email': user.email,
                 'password': '',
                 'validated': user.validated,
                 'suspended': user.suspended,
@@ -131,9 +132,9 @@ class ModifyUserForm(pform.Form):
         user = self.context
 
         # update attrs
-        user.name = data['name']
-        user.login = data['login']
-        user.email = data['login']
+        user.fullname = data['fullname']
+        user.username = data['username']
+        user.email = data['email']
         user.validated = data['validated']
         user.suspended = data['suspended']
         user.properties['roles'] = data['roles']
