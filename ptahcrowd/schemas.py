@@ -70,6 +70,7 @@ UserSchema = pform.Fieldset(
         'fullname',
         title=const.FULLNAME_TITLE,
         description=const.FULLNAME_DESCR,
+        required=False
         ),
 
     pform.fields.TextField(

@@ -38,6 +38,7 @@ class CrowdUser(ptah.get_base()):
     fullname = sqla.Column(sqla.Unicode(255), info={
         'title': const.FULLNAME_TITLE,
         'description': const.FULLNAME_DESCR,
+        'required': False
     })
     username = sqla.Column(sqla.Unicode(255), unique=True, info={
         'title': const.USERNAME_TITLE,
