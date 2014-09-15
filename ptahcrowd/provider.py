@@ -187,9 +187,9 @@ class CrowdAuthProvider(object):
     _sql_search = ptah.QueryFreezer(
         lambda: ptah.get_session().query(CrowdUser) \
             .filter(sqla.sql.or_(
-                CrowdUser.name.contains(sqla.sql.bindparam('term')),
+                CrowdUser.username.contains(sqla.sql.bindparam('term')),
                 CrowdUser.email.contains(sqla.sql.bindparam('term'))))\
-            .order_by(sqla.sql.asc('name')))
+            .order_by(sqla.sql.asc('fullname')))
 
     def authenticate(self, creds):
         login, password = creds['login'], creds['password']
@@ -200,11 +200,10 @@ class CrowdAuthProvider(object):
             if ptah.pwd_tool.check(user.password, password):
                 return user
 
-
     def get_principal_bylogin(self, login):
-        user = self.get_principal_byusername(login)
+        user = self._sql_get_username.first(username=login)
         if not user:
-            user = get_principal_byemail(login)
+            user = self._sql_get_email.first(email=login)
         return user
 
     @classmethod
@@ -219,14 +218,6 @@ class CrowdAuthProvider(object):
         Session.flush()
 
         return user
-
-    def get_principal_byusername(self, username):
-        """ Given a username string return a user """
-        return self._sql_get_username.first(username=username)
-
-    def get_principal_byemail(self, email):
-        """ Given a email string return a user """
-        return self._sql_get_email.first(email=email)
 
 
 @ptah.password_changer('ptah-crowd-user')

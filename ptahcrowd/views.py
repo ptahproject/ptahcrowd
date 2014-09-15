@@ -78,8 +78,8 @@ class CrowdModuleView(pform.Form, ptah.View):
             self.users = Session.query(CrowdUser) \
                 .filter(sqla.sql.or_(
                     CrowdUser.email.contains('%%%s%%' % term),
-                    CrowdUser.name.contains('%%%s%%' % term)))\
-                .order_by(sqla.sql.asc('name')).all()
+                    CrowdUser.username.contains('%%%s%%' % term)))\
+                .order_by(sqla.sql.asc('fullname')).all()
         else:
             self.size = Session.query(CrowdUser).count()
 
