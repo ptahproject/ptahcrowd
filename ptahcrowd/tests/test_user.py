@@ -17,7 +17,7 @@ class TestCreateUser(PtahTestCase):
         mod = CrowdModule(None, request)
 
         view = CreateUserForm(mod, request)
-        res = view.update_to_resp()
+        res = view()
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'], '.')
 
@@ -27,12 +27,12 @@ class TestCreateUser(PtahTestCase):
 
         request = self.make_request(
             POST = {'form.buttons.create': 'Create'})
-        request.POST[CreateUserForm.csrfname] = \
+        request.POST[CreateUserForm.csrf_name] = \
             request.session.get_csrf_token()
         mod = CrowdModule(None, request)
 
         view = CreateUserForm(mod, request)
-        view.update()
+        view.update_form()
         self.assertIn(
             'Please fix indicated errors.',
             request.render_messages())
@@ -42,19 +42,19 @@ class TestCreateUser(PtahTestCase):
         from ptahcrowd.user import CreateUserForm
 
         request = self.make_request(
-            POST = {'name': 'NKim',
-                    'login': 'ptah@ptahproject.org',
+            POST = {'username': 'NKim',
+                    'email': 'ptah@ptahproject.org',
                     'password': '12345',
                     'validated': 'false',
                     'suspended': 'true',
                     'form.buttons.create': 'Create'})
-        request.POST[CreateUserForm.csrfname] = \
+        request.POST[CreateUserForm.csrf_name] = \
             request.session.get_csrf_token()
 
         mod = CrowdModule(None, request)
 
         view = CreateUserForm(mod, request)
-        res = view.update_to_resp()
+        res = view()
 
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'], '.')
@@ -62,8 +62,8 @@ class TestCreateUser(PtahTestCase):
         transaction.commit()
 
         user = ptah.auth_service.get_principal_bylogin('ptah@ptahproject.org')
-        self.assertEqual(user.name, 'NKim')
-        self.assertEqual(user.login, 'ptah@ptahproject.org')
+        self.assertEqual(user.username, 'NKim')
+        self.assertEqual(user.email, 'ptah@ptahproject.org')
         self.assertTrue(user.suspended)
         self.assertFalse(user.validated)
 
@@ -74,7 +74,7 @@ class TestModifyUser(PtahTestCase):
 
     def _user(self):
         from ptahcrowd.provider import CrowdUser
-        user = CrowdUser(name='name', login='ptah@local', email='ptah@local')
+        user = CrowdUser(username='username', email='ptah@local')
         user.__type__.add(user)
         return user
 
@@ -87,7 +87,7 @@ class TestModifyUser(PtahTestCase):
             POST = {'form.buttons.back': 'Back'})
 
         view = ModifyUserForm(user, request)
-        res = view.update_to_resp()
+        res = view()
 
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'], '..')
@@ -99,8 +99,8 @@ class TestModifyUser(PtahTestCase):
 
         request = self.make_request(
             POST = {'form.buttons.modify': 'Modify',
-                    'name': 'NKim',
-                    'login': 'ptah@ptahproject.org',
+                    'username': 'NKim',
+                    'email': 'ptah@ptahproject.org',
                     'password': '12345',
                     'validated': 'false',
                     'suspended': 'true',
@@ -109,7 +109,7 @@ class TestModifyUser(PtahTestCase):
         view = ModifyUserForm(user, request)
         res = None
         try:
-            view.update()
+            view.update_form()
         except Exception as err:
             res = err
 
@@ -126,7 +126,7 @@ class TestModifyUser(PtahTestCase):
 
         view = ModifyUserForm(user, request)
         view.csrf = False
-        view.update()
+        view.update_form()
 
         self.assertIn(
             'Please fix indicated errors.',
@@ -138,18 +138,18 @@ class TestModifyUser(PtahTestCase):
         user = self._user()
         request = self.make_request(
             POST = {'form.buttons.modify': 'Modify',
-                    'name': 'NKim',
-                    'login': 'ptah@ptahproject.org',
+                    'username': 'NKim',
+                    'email': 'ptah@ptahproject.org',
                     'password': '12345',
                     'validated': 'false',
                     'suspended': 'true'})
 
         view = ModifyUserForm(user, request)
         view.csrf = False
-        view.update()
+        view.update_form()
 
-        self.assertEqual(user.name, 'NKim')
-        self.assertEqual(user.login, 'ptah@ptahproject.org')
+        self.assertEqual(user.username, 'NKim')
+        self.assertEqual(user.email, 'ptah@ptahproject.org')
 
     def test_modify_user_remove(self):
         from ptahcrowd.user import ModifyUserForm
@@ -161,7 +161,7 @@ class TestModifyUser(PtahTestCase):
 
         view = ModifyUserForm(user, request)
         view.csrf = False
-        res = view.update_to_resp()
+        res = view()
 
         self.assertIsInstance(res, HTTPFound)
         self.assertEqual(res.headers['location'], '..')

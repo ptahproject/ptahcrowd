@@ -34,8 +34,7 @@ class TestProvider(PtahTestCase):
             provider.authenticate(
                 {'login': 'test', 'password': '12345'}))
 
-        user = CrowdUser(name='test',
-                         login='test',
+        user = CrowdUser(username='test',
                          email='test@ptahproject.org',
                          password=ptah.pwd_tool.encode('12345'))
         ptah.get_session().add(user)
@@ -57,24 +56,22 @@ class TestProvider(PtahTestCase):
         provider = CrowdAuthProvider()
         self.assertIsNone(provider.get_principal_bylogin('test'))
 
-        user = CrowdUser(name='test', login='test',
-                         email='test@ptahproject.org',
+        user = CrowdUser(username='test', email='test@ptahproject.org',
                          password=ptah.pwd_tool.encode('12345'))
         ptah.get_session().add(user)
         ptah.get_session().flush()
 
         user = provider.get_principal_bylogin('test')
         self.assertIsInstance(user, CrowdUser)
-        self.assertEqual(user.login, 'test')
+        self.assertEqual(user.username, 'test')
 
     def test_crowd_user_ctor(self):
         from ptahcrowd.provider import CrowdUser
 
-        user = CrowdUser(name='user-name', login='user-login',
-                         email='user-email', password='passwd')
+        user = CrowdUser(username='user-name', email='user-email',
+                         password='passwd')
 
-        self.assertEqual(user.name, 'user-name')
-        self.assertEqual(user.login, 'user-login')
+        self.assertEqual(user.username, 'user-name')
         self.assertEqual(user.email, 'user-email')
         self.assertEqual(user.password, 'passwd')
         self.assertTrue(user.__uri__.startswith('ptah-crowd-user:'))
@@ -85,8 +82,8 @@ class TestProvider(PtahTestCase):
     def test_crowd_user_change_password(self):
         from ptahcrowd.provider import CrowdUser, change_password
 
-        user = CrowdUser(name='user-name', login='user-login',
-                         email='user-email', password='passwd')
+        user = CrowdUser(username='user-name', email='user-email',
+                         password='passwd')
 
         change_password(user, '123456')
         self.assertEqual(user.password, '123456')
@@ -94,8 +91,8 @@ class TestProvider(PtahTestCase):
     def test_crowd_user_change_search(self):
         from ptahcrowd.provider import CrowdUser, CrowdAuthProvider
 
-        user = CrowdUser(name='user-name', login='user-login',
-                         email='user-email', password='passwd')
+        user = CrowdUser(username='user-name', email='user-email',
+                         password='passwd')
         ptah.get_session().add(user)
         ptah.get_session().flush()
         uri = user.__uri__
@@ -116,7 +113,7 @@ class TestPasswordChanger(PtahTestCase):
     def test_password_changer(self):
         from ptahcrowd.provider import CrowdUser
 
-        user = CrowdUser(name='user-name', login='user-login',
-                         email='user-email', password='passwd')
+        user = CrowdUser(username='user-name', email='user-email',
+                         password='passwd')
 
         self.assertTrue(ptah.pwd_tool.can_change_password(user))

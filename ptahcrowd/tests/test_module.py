@@ -28,7 +28,7 @@ class TestModule(PtahTestCase):
         from ptahcrowd.module import CrowdModule
         from ptahcrowd.provider import CrowdUser
 
-        user = CrowdUser(name='name', login='login', email='email')
+        user = CrowdUser(username='username', email='email')
         user.__type__.add(user)
 
         uri = user.__uri__
@@ -54,7 +54,7 @@ class TestModuleView(PtahTestCase):
     def _make_user(self):
         from ptahcrowd.provider import CrowdUser
 
-        user = CrowdUser(name='name', login='login', email='email')
+        user = CrowdUser(username='username', email='email')
         return user.__type__.add(user)
 
     def test_module_search(self):
@@ -66,7 +66,7 @@ class TestModuleView(PtahTestCase):
                 POST=MultiDict((('form.buttons.search', 'Search'),
                                 ('term', 'search term')))))
         form.csrf = False
-        form.update()
+        form.update_form()
 
         self.assertIn('ptah-search-term', form.request.session)
         self.assertEqual(
@@ -81,7 +81,7 @@ class TestModuleView(PtahTestCase):
                 session = {'ptah-search-term': 'test'},
                 POST=MultiDict((('form.buttons.clear', 'Clear'),))))
         form.csrf = False
-        form.update()
+        form.update_form()
 
         self.assertNotIn('ptah-search-term', form.request.session)
 
@@ -93,7 +93,7 @@ class TestModuleView(PtahTestCase):
         form = CrowdModuleView(mod, self.make_request(
                 POST=MultiDict((('form.buttons.search', 'Search'),))))
         form.csrf = False
-        form.update()
+        form.update_form()
 
         self.assertIn('Please specify search term',
                       form.request.render_messages())
@@ -145,7 +145,7 @@ class TestModuleView(PtahTestCase):
                                 ('validate', 'validate')))))
 
         form.csrf = False
-        form.update()
+        form.update_form()
         transaction.commit()
 
         self.assertIn('The selected accounts have been validated.',
@@ -167,8 +167,8 @@ class TestModuleView(PtahTestCase):
         form = CrowdModuleView(mod, self.make_request(
                 POST=MultiDict((('uid', id),
                                 ('suspend', 'suspend')))))
-        form.request.POST[form.csrfname] = form.request.session.get_csrf_token()
-        form.update()
+        form.request.POST[form.csrf_name] = form.request.session.get_csrf_token()
+        form.update_form()
 
         self.assertIn('The selected accounts have been suspended.',
                       form.request.render_messages())
@@ -193,7 +193,7 @@ class TestModuleView(PtahTestCase):
                                 ('activate', 'activate')))))
 
         form.csrf = False
-        form.update()
+        form.update_form()
         transaction.commit()
 
         self.assertIn('The selected accounts have been activated.',
@@ -214,7 +214,7 @@ class TestModuleView(PtahTestCase):
         form = CrowdModuleView(mod, self.make_request(
                 POST=MultiDict((('uid', user.id),
                                 ('remove', 'remove')))))
-        form.update()
+        form.update_form()
 
         self.assertIn('The selected accounts have been removed.',
                       form.request.render_messages())

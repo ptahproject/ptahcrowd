@@ -9,10 +9,10 @@ import ptahcrowd
 
 class Principal(object):
 
-    def __init__(self, uri, name, login):
+    def __init__(self, uri, username, email):
         self.__uri__ = uri
-        self.name = name
-        self.login = login
+        self.username = username
+        self.email = email
         self.validated = False
         self.suspended = False
 
@@ -24,7 +24,7 @@ class TestValidation(ptah.PtahTestCase):
     def test_validation_auth_checker_validation(self):
         from ptahcrowd.validation import validationAndSuspendedChecker
 
-        principal = Principal('1', 'user', 'user')
+        principal = Principal('1', 'user', 'user@example.com')
 
         cfg = ptah.get_settings(ptahcrowd.CFG_ID_CROWD)
 
@@ -59,7 +59,7 @@ class TestValidation(ptah.PtahTestCase):
         from ptah.authentication import AuthInfo
         from ptahcrowd.validation import validationAndSuspendedChecker
 
-        principal = Principal('2', 'user', 'user')
+        principal = Principal('2', 'user', 'user@example.com')
         principal.validated = True
         principal.suspended = False
 
@@ -75,7 +75,7 @@ class TestValidation(ptah.PtahTestCase):
     def test_validation_registered_unvalidated(self):
         from ptahcrowd.provider import CrowdUser
 
-        user = CrowdUser(name='name', login='login', email='email')
+        user = CrowdUser(username='username', email='email')
         CrowdUser.__type__.add(user)
 
         cfg = ptah.get_settings(ptahcrowd.CFG_ID_CROWD)
@@ -87,7 +87,7 @@ class TestValidation(ptah.PtahTestCase):
     def test_validation_registered_no_validation(self):
         from ptahcrowd.provider import CrowdUser
 
-        user = CrowdUser(name='name', login='login', email='email')
+        user = CrowdUser(username='username', email='email')
         CrowdUser.__type__.add(user)
 
         cfg = ptah.get_settings(ptahcrowd.CFG_ID_CROWD)
@@ -113,7 +113,7 @@ class TestValidation(ptah.PtahTestCase):
 
         validation.ValidationTemplate = Stub
 
-        user = CrowdUser(name='name', login='login', email='email')
+        user = CrowdUser(username='username', email='email')
         CrowdUser.__type__.add(user)
 
         validation.initiate_email_validation(user.email, user, self.request)
@@ -130,7 +130,7 @@ class TestValidation(ptah.PtahTestCase):
         from ptahcrowd.provider import CrowdUser
 
         origValidationTemplate = validation.ValidationTemplate
-        user = CrowdUser(name='name', login='login', email='email')
+        user = CrowdUser(username='username', email='email')
         CrowdUser.__type__.add(user)
 
         template = validation.ValidationTemplate(
@@ -150,7 +150,7 @@ class TestValidation(ptah.PtahTestCase):
         from ptahcrowd import validation
         from ptahcrowd.provider import CrowdUser
 
-        user = CrowdUser(name='name', login='login', email='email')
+        user = CrowdUser(username='username', email='email')
         CrowdUser.__type__.add(user)
 
         t = ptah.token.service.generate(validation.TOKEN_TYPE, user.__uri__)
