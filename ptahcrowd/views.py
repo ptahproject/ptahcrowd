@@ -1,9 +1,9 @@
 import sqlalchemy as sqla
-import pform
-import player
+import ptah.form
+import ptah.renderer
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
-from player import renderer
+from ptah.renderer import renderer
 
 import ptah
 import ptahcrowd
@@ -15,13 +15,13 @@ from ptahcrowd.providers import Storage
 
 @view_config(
     context=CrowdModule,
-    renderer=player.layout('ptahcrowd:users.lt', 'ptah-manage'))
-class CrowdModuleView(pform.Form, ptah.View):
+    renderer=ptah.renderer.layout('ptahcrowd:users.lt', 'ptah-manage'))
+class CrowdModuleView(ptah.form.Form, ptah.View):
     __doc__ = 'List/search users view'
 
     csrf = True
-    fields = pform.Fieldset(
-        pform.TextField(
+    fields = ptah.form.Fieldset(
+        ptah.form.TextField(
             'term',
             title=_('Search term'),
             description=_('Ptah searches users by login and email'),
@@ -114,7 +114,7 @@ class CrowdModuleView(pform.Form, ptah.View):
                 data.append(entry.domain)
                 extr[entry.uri] = data
 
-    @pform.button(_('Search'), actype=pform.AC_PRIMARY)
+    @ptah.form.button(_('Search'), actype=ptah.form.AC_PRIMARY)
     def search(self):
         data, error = self.extract()
 
@@ -124,7 +124,7 @@ class CrowdModuleView(pform.Form, ptah.View):
 
         self.request.session['ptah-search-term'] = data['term']
 
-    @pform.button(_('Clear term'), name='clear')
+    @ptah.form.button(_('Clear term'), name='clear')
     def clear(self):
         if 'ptah-search-term' in self.request.session:
             del self.request.session['ptah-search-term']
@@ -133,7 +133,7 @@ class CrowdModuleView(pform.Form, ptah.View):
 @view_config(
     name='groups.html',
     context=CrowdModule,
-    renderer=player.layout('ptahcrowd:groups.lt', 'ptah-manage'))
+    renderer=ptah.renderer.layout('ptahcrowd:groups.lt', 'ptah-manage'))
 
 class CrowdGroupsView(ptah.View):
     __doc__ = 'List groups view'
@@ -178,8 +178,8 @@ class CrowdGroupsView(ptah.View):
 
 @view_config(name='create-grp.html',
              context=CrowdModule,
-             renderer=player.layout('', 'ptah-manage'))
-class CreateGroupForm(pform.Form):
+             renderer=ptah.renderer.layout('', 'ptah-manage'))
+class CreateGroupForm(ptah.form.Form):
 
     csrf = True
     label = _('Create new group')
@@ -188,11 +188,11 @@ class CreateGroupForm(pform.Form):
     def fields(self):
         return CrowdGroup.__type__.fieldset
 
-    @pform.button(_('Back'))
+    @ptah.form.button(_('Back'))
     def back(self):
         return HTTPFound(location='groups.html')
 
-    @pform.button(_('Create'), actype=pform.AC_PRIMARY)
+    @ptah.form.button(_('Create'), actype=ptah.form.AC_PRIMARY)
     def create(self):
         data, errors = self.extract()
 
@@ -211,8 +211,8 @@ class CreateGroupForm(pform.Form):
 
 
 @view_config(context=CrowdGroup,
-             renderer=player.layout('', 'ptah-manage'))
-class ModifyGroupView(pform.Form):
+             renderer=ptah.renderer.layout('', 'ptah-manage'))
+class ModifyGroupView(ptah.form.Form):
 
     csrf = True
     label = _('Update group')
@@ -228,7 +228,7 @@ class ModifyGroupView(pform.Form):
 
         return data
 
-    @pform.button(_('Modify'), actype=pform.AC_PRIMARY)
+    @ptah.form.button(_('Modify'), actype=ptah.form.AC_PRIMARY)
     def modify(self):
         data, errors = self.extract()
 
@@ -247,6 +247,6 @@ class ModifyGroupView(pform.Form):
         return HTTPFound(location='.')
 
 
-    @pform.button(_('Back'))
+    @ptah.form.button(_('Back'))
     def back(self):
         return HTTPFound(location='../groups.html')

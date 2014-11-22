@@ -1,4 +1,4 @@
-import pform
+import ptah.form
 import ptahcrowd
 from ptah.testing import PtahTestCase
 
@@ -14,7 +14,7 @@ class TestCheckLogin(PtahTestCase):
         CrowdUser.__type__.add(user)
 
         self.assertRaises(
-            pform.Invalid, ptahcrowd.checkUsernameValidator, None, 'username')
+            ptah.form.Invalid, ptahcrowd.checkUsernameValidator, None, 'username')
 
         class Field(object):
             """ """
@@ -25,7 +25,7 @@ class TestCheckLogin(PtahTestCase):
 
         field.value = 'other-username'
         self.assertRaises(
-            pform.Invalid, ptahcrowd.checkUsernameValidator, field, 'username')
+            ptah.form.Invalid, ptahcrowd.checkUsernameValidator, field, 'username')
 
     def test_lower(self):
         from ptahcrowd.schemas import lower

@@ -1,7 +1,7 @@
 """ login form """
 import ptah
-import pform
-import player
+import ptah.form
+import ptah.renderer
 from pyramid import security
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
@@ -13,21 +13,21 @@ from ptahcrowd.settings import _, CFG_ID_CROWD
 
 @view_config(
     route_name='ptahcrowd-login',
-    renderer=player.layout('ptahcrowd:login.lt', 'ptahcrowd'))
-class LoginForm(pform.Form, ptah.View):
+    renderer=ptah.renderer.layout('ptahcrowd:login.lt', 'ptahcrowd'))
+class LoginForm(ptah.form.Form, ptah.View):
     """ Login form """
 
     id = 'login-form'
     title = _('Login')
 
-    fields = pform.Fieldset(
-        pform.fields.TextField(
+    fields = ptah.form.Fieldset(
+        ptah.form.fields.TextField(
             'login',
             title=const.LOGIN_TITLE,
             description=const.CASE_WARN,
             default=''),
 
-        pform.fields.PasswordField(
+        ptah.form.fields.PasswordField(
             'password',
             title=const.PASSWORD_TITLE,
             description=const.CASE_WARN,
@@ -50,7 +50,7 @@ class LoginForm(pform.Form, ptah.View):
 
         return location
 
-    @pform.button(_("Log in"), name='login', actype=pform.AC_PRIMARY)
+    @ptah.form.button(_("Log in"), name='login', actype=ptah.form.AC_PRIMARY)
     def login_handler(self):
         request = self.request
 
@@ -103,7 +103,7 @@ class LoginForm(pform.Form, ptah.View):
 
 @view_config(
     route_name='ptahcrowd-login-success',
-    renderer=player.layout('ptahcrowd:login-success.lt', 'ptahcrowd'))
+    renderer=ptah.renderer.layout('ptahcrowd:login-success.lt', 'ptahcrowd'))
 class LoginSuccess(ptah.View):
     """ Login successful information page. """
 
@@ -122,13 +122,16 @@ class LoginSuccess(ptah.View):
 
 @view_config(
     route_name='ptahcrowd-login-suspended',
-    renderer=player.layout('ptahcrowd:login-suspended.lt', 'ptahcrowd'))
+    renderer=ptah.renderer.layout('ptahcrowd:login-suspended.lt', 'ptahcrowd'))
 class LoginSuspended(ptah.View):
     """ Suspended account information page. """
 
     def update(self):
         principal = ptah.auth_service.get_current_principal()
-        if principal and not principal.suspended:
+        if not principal:
+            return HTTPFound(location=self.request.application_url)
+
+        if not principal.suspended:
             return HTTPFound(location=self.request.application_url)
 
         MAIL = ptah.get_settings(ptah.CFG_ID_PTAH)

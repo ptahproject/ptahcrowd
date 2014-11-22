@@ -1,10 +1,11 @@
 """ schemas """
-import pform
+import ptah.form
 from pyramid.compat import string_types
 
 import ptah
 from ptah.password import passwordValidator
 
+import ptahcrowd
 from ptahcrowd import const
 from ptahcrowd.settings import _
 
@@ -21,8 +22,12 @@ def checkUsernameValidator(field, username):
     if getattr(field, 'value', None) == username:
         return
 
-    if ptah.auth_service.get_principal_byusername(username) is not None:
-        raise pform.Invalid(_("This login is already in use."), field)
+    session = ptah.get_session()
+    user = session.query(ptahcrowd.CrowdUser).filter(
+        ptahcrowd.CrowdUser.username == username).first()
+
+    if user is not None:
+        raise ptah.form.Invalid(_("This login is already in use."), field)
 
 def checkEmailValidator(field, email):
     """Ptah field validator, checks if email is already in use."""
@@ -30,32 +35,36 @@ def checkEmailValidator(field, email):
     if getattr(field, 'value', None) == email:
         return
 
-    if ptah.auth_service.get_principal_byemail(email) is not None:
-        raise pform.Invalid(_("This email is already in use."), field)
+    session = ptah.get_session()
+    user = session.query(ptahcrowd.CrowdUser).filter(
+        ptahcrowd.CrowdUser.email == email).first()
+
+    if user is not None:
+        raise ptah.form.Invalid(_("This email is already in use."), field)
 
 
-RegistrationSchema = pform.Fieldset(
+RegistrationSchema = ptah.form.Fieldset(
 
-    pform.TextField(
+    ptah.form.TextField(
         'username',
         title=const.USERNAME_TITLE,
         description=const.USERNAME_DESCR,
         validator=checkUsernameValidator,
         ),
 
-    pform.TextField(
+    ptah.form.TextField(
         'email',
         title=const.EMAIL_TITLE,
         description=const.EMAIL_DESCR,
         preparer=lower,
-        validator=pform.All(pform.Email(), checkEmailValidator),
+        validator=ptah.form.All(ptah.form.Email(), checkEmailValidator),
         )
     )
 
 
-ResetPasswordSchema = pform.Fieldset(
+ResetPasswordSchema = ptah.form.Fieldset(
 
-    pform.TextField(
+    ptah.form.TextField(
         'login',
         title=const.LOGIN_TITLE,
         description=' '.join([const.LOGIN_DESCR, const.CASE_DESCR]),
@@ -64,43 +73,43 @@ ResetPasswordSchema = pform.Fieldset(
     )
 
 
-UserSchema = pform.Fieldset(
+UserSchema = ptah.form.Fieldset(
 
-    pform.fields.TextField(
+    ptah.form.fields.TextField(
         'fullname',
         title=const.FULLNAME_TITLE,
         description=const.FULLNAME_DESCR,
         required=False
         ),
 
-    pform.fields.TextField(
+    ptah.form.fields.TextField(
         'username',
         title=const.USERNAME_TITLE,
         description=const.USERNAME_DESCR,
         validator=checkUsernameValidator,
         ),
 
-    pform.fields.TextField(
+    ptah.form.fields.TextField(
         'email',
         title=const.EMAIL_TITLE,
         description=const.EMAIL_DESCR,
         preparer=lower,
-        validator=pform.All(pform.Email(), checkEmailValidator),
+        validator=ptah.form.All(ptah.form.Email(), checkEmailValidator),
         ),
 
-    pform.fields.TextField(
+    ptah.form.fields.TextField(
         'password',
         title=const.PASSWORD_TITLE,
         description=const.PASSWORD_DESCR,
         validator=passwordValidator),
 
-    pform.fields.BoolField(
+    ptah.form.fields.BoolField(
         'validated',
         title=_('Validated'),
         default=True,
         ),
 
-    pform.fields.BoolField(
+    ptah.form.fields.BoolField(
         'suspended',
         title=_('Suspended'),
         default=False,
@@ -109,9 +118,9 @@ UserSchema = pform.Fieldset(
     )
 
 
-ManagerChangePasswordSchema = pform.Fieldset(
+ManagerChangePasswordSchema = ptah.form.Fieldset(
 
-    pform.PasswordField(
+    ptah.form.PasswordField(
         'password',
         title=const.PASSWORD_TITLE,
         description=const.PASSWORD_DESCR,

@@ -2,8 +2,8 @@ import json
 import logging
 import sqlalchemy as sqla
 from datetime import datetime, timedelta
-import pform
-import player
+import ptah.form
+import ptah.renderer
 from pyramid import security
 from pyramid.view import view_config
 from pyramid.config import Configurator
@@ -97,14 +97,14 @@ def login(uri, request):
 
 @view_config(
     route_name='ptahcrowd-verify-email',
-    renderer=player.layout('', 'pthacrowd'))
-class VerifyEmail(pform.Form):
+    renderer=ptah.renderer.layout('', 'pthacrowd'))
+class VerifyEmail(ptah.form.Form):
     """ verify email """
 
     label = 'Please verify your email'
 
-    fields = pform.Fieldset(
-        pform.TextField(
+    fields = ptah.form.Fieldset(
+        ptah.form.TextField(
             'email',
             title = 'E-mail',
             description = ('Please enter your email address.'
@@ -112,7 +112,7 @@ class VerifyEmail(pform.Form):
                            'any user or be shared with anyone else.'),
             preparer = lower,
             required = True,
-            validator = pform.Email())
+            validator = ptah.form.Email())
         )
 
     def update(self):
@@ -127,7 +127,7 @@ class VerifyEmail(pform.Form):
 
         return super(VerifyEmail, self).update()
 
-    @pform.button('Verify', actype=pform.AC_PRIMARY)
+    @ptah.form.button('Verify', actype=ptah.form.AC_PRIMARY)
     def verify_handler(self):
         data, errors = self.extract()
 

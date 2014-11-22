@@ -1,6 +1,6 @@
 """ user registration form """
-import pform
-import player
+import ptah.form
+import ptah.renderer
 from pyramid import security
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound, HTTPForbidden
@@ -17,12 +17,12 @@ from ptahcrowd.validation import initiate_email_validation
 
 @view_config(
     route_name='ptahcrowd-join',
-    renderer=player.layout('ptahcrowd:registration.lt', 'ptahcrowd'))
+    renderer=ptah.renderer.layout('ptahcrowd:registration.lt', 'ptahcrowd'))
 
-class Registration(pform.Form):
+class Registration(ptah.form.Form):
     """ Ptah crowd registration form """
 
-    fields = pform.Fieldset(RegistrationSchema, PasswordSchema)
+    fields = ptah.form.Fieldset(RegistrationSchema, PasswordSchema)
     autocomplete = 'off'
 
     def update(self):
@@ -48,7 +48,7 @@ class Registration(pform.Form):
 
         return tinfo.add(user)
 
-    @pform.button(_("Register"), actype=pform.AC_PRIMARY)
+    @ptah.form.button(_("Register"), actype=ptah.form.AC_PRIMARY)
     def register_handler(self):
         data, errors = self.extract()
         if errors:

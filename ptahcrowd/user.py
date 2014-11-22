@@ -1,6 +1,6 @@
 """ add/edit user """
-import pform
-import player
+import ptah.form
+import ptah.renderer
 from pyramid.view import view_config
 from pyramid.httpexceptions import HTTPFound
 
@@ -22,9 +22,9 @@ def get_roles_vocabulary(context):
             continue
 
         roles.append([role.title,
-                      pform.Term(role.id, role.id, role.title)])
+                      ptah.form.Term(role.id, role.id, role.title)])
 
-    return pform.Vocabulary(*[term for _t, term in sorted(roles)])
+    return ptah.form.Vocabulary(*[term for _t, term in sorted(roles)])
 
 
 def get_groups_vocabulary(context):
@@ -32,27 +32,27 @@ def get_groups_vocabulary(context):
     for grp in ptah.get_session().query(CrowdGroup).all():
         groups.append(
             (grp.title,
-             pform.Term(grp.__uri__, grp.__uri__, grp.title)))
+             ptah.form.Term(grp.__uri__, grp.__uri__, grp.title)))
 
     groups.sort()
-    return pform.Vocabulary(*[term for _t, term in sorted(groups)])
+    return ptah.form.Vocabulary(*[term for _t, term in sorted(groups)])
 
 
 @view_config(name='create.html',
              context=CrowdModule,
-             renderer=player.layout('', 'ptah-manage'))
+             renderer=ptah.renderer.layout('', 'ptah-manage'))
 
-class CreateUserForm(pform.Form):
+class CreateUserForm(ptah.form.Form):
 
     csrf = True
     label = _('Create new user')
     fields = UserSchema
 
-    @pform.button(_('Back'))
+    @ptah.form.button(_('Back'))
     def back(self):
         return HTTPFound(location='.')
 
-    @pform.button(_('Create'), actype=pform.AC_PRIMARY)
+    @ptah.form.button(_('Create'), actype=ptah.form.AC_PRIMARY)
     def create(self):
         data, errors = self.extract()
 
@@ -83,16 +83,16 @@ class CreateUserForm(pform.Form):
 
 
 @view_config(context=CrowdUser,
-             renderer=player.layout('', 'ptah-manage'),
+             renderer=ptah.renderer.layout('', 'ptah-manage'),
              route_name=ptahcrowd.CROWD_APP_ID)
-class ModifyUserForm(pform.Form):
+class ModifyUserForm(ptah.form.Form):
 
     csrf = True
     label = 'Update user'
-    fields = pform.Fieldset(
+    fields = ptah.form.Fieldset(
         UserSchema,
 
-        pform.fields.MultiChoiceField(
+        ptah.form.fields.MultiChoiceField(
             'roles',
             title=_('Roles'),
             description=_("Choose user default roles."),
@@ -100,7 +100,7 @@ class ModifyUserForm(pform.Form):
             required=False,
             voc_factory=get_roles_vocabulary),
 
-        pform.fields.MultiChoiceField(
+        ptah.form.fields.MultiChoiceField(
             'groups',
             title=_("Groups"),
             description=_("Choose user groups."),
@@ -121,7 +121,7 @@ class ModifyUserForm(pform.Form):
                 'roles': user.properties.get('roles', ()),
                 'groups': user.properties.get('groups', ())}
 
-    @pform.button(_('Modify'), actype=pform.AC_PRIMARY)
+    @ptah.form.button(_('Modify'), actype=ptah.form.AC_PRIMARY)
     def modify(self):
         data, errors = self.extract()
 
@@ -140,12 +140,12 @@ class ModifyUserForm(pform.Form):
         user.properties['roles'] = data['roles']
         user.properties['groups'] = data['groups']
 
-        if data['password'] is not pform.null:
+        if data['password'] is not ptah.form.null:
             user.password = ptah.pwd_tool.encode(data['password'])
 
         self.request.add_message(_("User properties have been updated."), 'info')
 
-    @pform.button(_('Remove'), actype=pform.AC_DANGER)
+    @ptah.form.button(_('Remove'), actype=ptah.form.AC_DANGER)
     def remove(self):
         self.validate_csrf_token()
 
@@ -157,6 +157,6 @@ class ModifyUserForm(pform.Form):
         self.request.add_message(_("User has been removed."), 'info')
         return HTTPFound(location='..')
 
-    @pform.button(_('Back'))
+    @ptah.form.button(_('Back'))
     def back(self):
         return HTTPFound(location='..')

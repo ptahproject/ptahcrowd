@@ -2,7 +2,7 @@ import sqlalchemy as sqla
 from datetime import datetime
 from pyramid.compat import text_type
 
-import pform
+import ptah.form
 import ptah
 from ptah.password import passwordValidator
 from ptahcrowd.settings import CFG_ID_CROWD
@@ -50,7 +50,7 @@ class CrowdUser(ptah.get_base()):
         'title': const.EMAIL_TITLE,
         'description': const.EMAIL_DESCR,
         'preparer': lower,
-        'validator': pform.All(pform.Email(), checkEmailValidator),
+        'validator': ptah.form.All(ptah.form.Email(), checkEmailValidator),
     })
     joined = sqla.Column(sqla.DateTime(), info={'skip': True})
     password = sqla.Column(sqla.Unicode(255), info={

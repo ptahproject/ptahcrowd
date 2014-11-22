@@ -1,6 +1,6 @@
 """ reset password form """
-import pform
-import player
+import ptah.form
+import ptah.renderer
 from datetime import datetime
 from pyramid import security
 from pyramid.view import view_config
@@ -19,9 +19,9 @@ from ptahcrowd.settings import _
 
 @view_config(
     route_name='ptahcrowd-resetpassword',
-    renderer=player.layout('ptahcrowd:resetpassword.lt', 'ptahcrowd'))
+    renderer=ptah.renderer.layout('ptahcrowd:resetpassword.lt', 'ptahcrowd'))
 
-class ResetPassword(pform.Form):
+class ResetPassword(ptah.form.Form):
 
     fields = ResetPasswordSchema
 
@@ -35,8 +35,8 @@ class ResetPassword(pform.Form):
 
         return super(ResetPassword, self).update()
 
-    @pform.button(_('Start password reset'),
-                      name='reset', actype=pform.AC_PRIMARY)
+    @ptah.form.button(_('Start password reset'),
+                      name='reset', actype=ptah.form.AC_PRIMARY)
     def reset(self):
         request = self.request
         data, errors = self.extract()
@@ -61,16 +61,16 @@ class ResetPassword(pform.Form):
 
         self.request.add_message(_("The system can't restore the password for this user."), 'error')
 
-    @pform.button(_('Cancel'))
+    @ptah.form.button(_('Cancel'))
     def cancel(self):
         return HTTPFound(location=self.request.application_url)
 
 
 @view_config(
     route_name='ptahcrowd-resetpassword-form',
-    renderer=player.layout('ptahcrowd:resetpasswordform.lt', 'ptahcrowd'))
+    renderer=ptah.renderer.layout('ptahcrowd:resetpasswordform.lt', 'ptahcrowd'))
 
-class ResetPasswordForm(pform.Form):
+class ResetPasswordForm(ptah.form.Form):
 
     fields = PasswordSchema
 
@@ -101,8 +101,8 @@ class ResetPasswordForm(pform.Form):
             return HTTPFound(
                 location='%s/resetpassword.html' % self.request.application_url)
 
-    @pform.button(_("Change password"),
-                      name='change', actype=pform.AC_PRIMARY)
+    @ptah.form.button(_("Change password"),
+                      name='change', actype=ptah.form.AC_PRIMARY)
     def changePassword(self):
         data, errors = self.extract()
 

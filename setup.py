@@ -6,7 +6,7 @@ version = '0.2'
 install_requires = ['setuptools',
                     'ptah >= 0.8.0',
                     'requests >= 0.6.6',
-                    'pform >= 0.4',
+                    'ptah.form >= 0.4',
                     ]
 tests_require = install_requires + ['nose']
 
