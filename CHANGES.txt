@@ -2,10 +2,24 @@
 CHANGES
 =======
 
+0.3 (unreleased)
+----------------
 
-- Use `player.layout` 
+- Added python 3.3 and 3.4 support
 
-- Update to pform 0.4
+- Removed python 3.2 support
+
+- Added user defaults validated and suspended
+
+- Added possibility to login with username and email
+
+- Changed CrowdUser model columns:
+    - `name` to `fullname`
+    - `login` to `username`
+
+- Use `ptah.renderer`
+
+- Use `ptah.form`
 
 
 0.2 (2012-11-08)
