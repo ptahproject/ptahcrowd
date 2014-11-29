@@ -6,7 +6,7 @@ python:
   - 3.4
 
 install:
-  - pip install -e git+https@github.com:ptahproject/ptah#egg=ptah
+  - pip install -e git+http@github.com:ptahproject/ptah#egg=ptah
   - python setup.py develop --allow-hosts='pypi.python.org'
 
 script: python setup.py test
